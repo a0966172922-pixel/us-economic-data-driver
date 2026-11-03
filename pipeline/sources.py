@@ -126,7 +126,7 @@ def fetch_api(key):
         return out
 
     meta = {
-        "revised": _find_date(r"(?:Last Revised on|Release Date)", notes),
+        "revised": _find_date(r"(?:Last ?Revised(?: on)?|Release Date)", notes),   # API 寫成 LastRevised: October 29, 2026
         "next": _find_date(r"Next Release Date", notes),
         "notes": " ".join(notes.split())[:400],
     }
