@@ -34,7 +34,10 @@ def main():
             source = "excel"
         data, summary = build_data(months, P, E, zh, meta["revised"], meta["next"], source)
     except Exception as e:
-        print(f"::error::{e}")
+        # GitHub 的 Annotations 只顯示每則錯誤的第一行，所以每一行分開輸出
+        for line in str(e).splitlines():
+            if line.strip():
+                print(f"::error::{line.strip()}")
         sys.exit(1)
 
     os.makedirs(os.path.dirname(os.path.abspath(a.out)), exist_ok=True)

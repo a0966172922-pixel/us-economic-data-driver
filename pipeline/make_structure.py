@@ -25,7 +25,8 @@ for l in lines:
     zh = prev["zh"] if prev and clean_label(prev["label"]) == clean_label(l["label"]) else None
     if not zh:
         missing.append(l["line"])
-    out.append({"line": l["line"], "indent": l["indent"], "label": l["label"], "zh": zh or clean_label(l["label"])})
+    out.append({"line": l["line"], "indent": l["indent"], "label": l["label"], "zh": zh or clean_label(l["label"]),
+                "hasPrice": any(v is not None for v in l["values"])})
 
 with open(STRUCTURE, "w", encoding="utf-8") as f:
     json.dump(out, f, ensure_ascii=False, indent=0)

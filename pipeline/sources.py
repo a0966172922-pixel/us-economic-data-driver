@@ -107,7 +107,8 @@ def fetch_api(key):
     for s in struct:
         got = tables["price"].get(s["line"])
         if got is None:
-            if s["line"] <= 368:
+            # API 不會回傳整列都沒有數字的項目；結構檔標記 hasPrice=false 的列本來就是空的
+            if s["line"] <= 368 and s.get("hasPrice", True):
                 problems.append(f"line {s['line']} 不見了（{s['label']}）")
             continue
         a, b = _norm(s["label"]), _norm(got["label"])

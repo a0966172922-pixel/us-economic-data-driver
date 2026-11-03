@@ -3,2412 +3,2814 @@
 "line": 1,
 "indent": 3,
 "label": "Personal consumption expenditures",
-"zh": "個人消費支出（PCE）"
+"zh": "個人消費支出（PCE）",
+"hasPrice": true
 },
 {
 "line": 2,
 "indent": 0,
 "label": "Goods",
-"zh": "商品"
+"zh": "商品",
+"hasPrice": true
 },
 {
 "line": 3,
 "indent": 1,
 "label": "Durable goods",
-"zh": "耐久財"
+"zh": "耐久財",
+"hasPrice": true
 },
 {
 "line": 4,
 "indent": 2,
 "label": "Motor vehicles and parts",
-"zh": "機動車輛及零件"
+"zh": "機動車輛及零件",
+"hasPrice": true
 },
 {
 "line": 5,
 "indent": 3,
 "label": "New motor vehicles (55)",
-"zh": "新車"
+"zh": "新車",
+"hasPrice": true
 },
 {
 "line": 6,
 "indent": 4,
 "label": "New autos",
-"zh": "新轎車"
+"zh": "新轎車",
+"hasPrice": true
 },
 {
 "line": 7,
 "indent": 5,
 "label": "New domestic autos",
-"zh": "美國國產新轎車"
+"zh": "美國國產新轎車",
+"hasPrice": true
 },
 {
 "line": 8,
 "indent": 5,
 "label": "New foreign autos",
-"zh": "外國品牌新轎車"
+"zh": "外國品牌新轎車",
+"hasPrice": true
 },
 {
 "line": 9,
 "indent": 4,
 "label": "New light trucks",
-"zh": "新輕型卡車"
+"zh": "新輕型卡車",
+"hasPrice": true
 },
 {
 "line": 10,
 "indent": 5,
 "label": "New domestic light trucks",
-"zh": "美國國產新輕型卡車"
+"zh": "美國國產新輕型卡車",
+"hasPrice": true
 },
 {
 "line": 11,
 "indent": 5,
 "label": "New foreign light trucks",
-"zh": "外國品牌新輕型卡車"
+"zh": "外國品牌新輕型卡車",
+"hasPrice": true
 },
 {
 "line": 12,
 "indent": 3,
 "label": "Net purchases of used motor vehicles (56)",
-"zh": "中古車淨購買"
+"zh": "中古車淨購買",
+"hasPrice": true
 },
 {
 "line": 13,
 "indent": 4,
 "label": "Used autos",
-"zh": "中古轎車"
+"zh": "中古轎車",
+"hasPrice": true
 },
 {
 "line": 14,
 "indent": 5,
 "label": "Net transactions in used autos",
-"zh": "中古轎車淨交易"
+"zh": "中古轎車淨交易",
+"hasPrice": true
 },
 {
 "line": 15,
 "indent": 5,
 "label": "Used auto margin",
-"zh": "中古轎車經銷毛利"
+"zh": "中古轎車經銷毛利",
+"hasPrice": true
 },
 {
 "line": 16,
 "indent": 5,
 "label": "Employee reimbursement",
-"zh": "員工補償"
+"zh": "員工補償",
+"hasPrice": true
 },
 {
 "line": 17,
 "indent": 4,
 "label": "Used light trucks",
-"zh": "中古輕型卡車"
+"zh": "中古輕型卡車",
+"hasPrice": true
 },
 {
 "line": 18,
 "indent": 5,
 "label": "Net transactions in used trucks",
-"zh": "中古卡車淨交易"
+"zh": "中古卡車淨交易",
+"hasPrice": true
 },
 {
 "line": 19,
 "indent": 5,
 "label": "Used truck margin",
-"zh": "中古卡車經銷毛利"
+"zh": "中古卡車經銷毛利",
+"hasPrice": true
 },
 {
 "line": 20,
 "indent": 3,
 "label": "Motor vehicle parts and accessories (58)",
-"zh": "汽車零件及配件"
+"zh": "汽車零件及配件",
+"hasPrice": true
 },
 {
 "line": 21,
 "indent": 4,
 "label": "Tires",
-"zh": "輪胎"
+"zh": "輪胎",
+"hasPrice": true
 },
 {
 "line": 22,
 "indent": 4,
 "label": "Accessories and parts",
-"zh": "配件及零件"
+"zh": "配件及零件",
+"hasPrice": true
 },
 {
 "line": 23,
 "indent": 2,
 "label": "Furnishings and durable household equipment",
-"zh": "家具及耐久家用設備"
+"zh": "家具及耐久家用設備",
+"hasPrice": true
 },
 {
 "line": 24,
 "indent": 3,
 "label": "Furniture and furnishings (parts of 31 and 32)",
-"zh": "家具及家飾"
+"zh": "家具及家飾",
+"hasPrice": true
 },
 {
 "line": 25,
 "indent": 4,
 "label": "Furniture",
-"zh": "家具"
+"zh": "家具",
+"hasPrice": true
 },
 {
 "line": 26,
 "indent": 4,
 "label": "Clocks, lamps, lighting fixtures, and other household decorative items",
-"zh": "時鐘、燈具及其他居家裝飾品"
+"zh": "時鐘、燈具及其他居家裝飾品",
+"hasPrice": true
 },
 {
 "line": 27,
 "indent": 4,
 "label": "Carpets and other floor coverings",
-"zh": "地毯及其他地板覆蓋物"
+"zh": "地毯及其他地板覆蓋物",
+"hasPrice": true
 },
 {
 "line": 28,
 "indent": 4,
 "label": "Window coverings",
-"zh": "窗簾及窗飾"
+"zh": "窗簾及窗飾",
+"hasPrice": true
 },
 {
 "line": 29,
 "indent": 3,
 "label": "Household appliances (part of 33)",
-"zh": "家用電器"
+"zh": "家用電器",
+"hasPrice": true
 },
 {
 "line": 30,
 "indent": 4,
 "label": "Major household appliances",
-"zh": "大型家電"
+"zh": "大型家電",
+"hasPrice": true
 },
 {
 "line": 31,
 "indent": 4,
 "label": "Small electric household appliances",
-"zh": "小型家電"
+"zh": "小型家電",
+"hasPrice": true
 },
 {
 "line": 32,
 "indent": 3,
 "label": "Glassware, tableware, and household utensils (34)",
-"zh": "玻璃器皿、餐具及家用器皿"
+"zh": "玻璃器皿、餐具及家用器皿",
+"hasPrice": true
 },
 {
 "line": 33,
 "indent": 4,
 "label": "Dishes and flatware",
-"zh": "碗盤及刀叉餐具"
+"zh": "碗盤及刀叉餐具",
+"hasPrice": true
 },
 {
 "line": 34,
 "indent": 4,
 "label": "Nonelectric cookware and tableware",
-"zh": "非電動炊具及餐具"
+"zh": "非電動炊具及餐具",
+"hasPrice": true
 },
 {
 "line": 35,
 "indent": 3,
 "label": "Tools and equipment for house and garden (35)",
-"zh": "居家及園藝工具設備"
+"zh": "居家及園藝工具設備",
+"hasPrice": true
 },
 {
 "line": 36,
 "indent": 4,
 "label": "Tools, hardware, and supplies",
-"zh": "工具、五金及用品"
+"zh": "工具、五金及用品",
+"hasPrice": true
 },
 {
 "line": 37,
 "indent": 4,
 "label": "Outdoor equipment and supplies",
-"zh": "戶外設備及用品"
+"zh": "戶外設備及用品",
+"hasPrice": true
 },
 {
 "line": 38,
 "indent": 2,
 "label": "Recreational goods and vehicles",
-"zh": "休閒用品及車輛"
+"zh": "休閒用品及車輛",
+"hasPrice": true
 },
 {
 "line": 39,
 "indent": 3,
 "label": "Video, audio, photographic, and information processing equipment and media (75, 76, and part of 93)",
-"zh": "影音、攝影及資訊設備與媒體"
+"zh": "影音、攝影及資訊設備與媒體",
+"hasPrice": true
 },
 {
 "line": 40,
 "indent": 4,
 "label": "Video and audio equipment",
-"zh": "影音設備"
+"zh": "影音設備",
+"hasPrice": true
 },
 {
 "line": 41,
 "indent": 5,
 "label": "Televisions",
-"zh": "電視"
+"zh": "電視",
+"hasPrice": true
 },
 {
 "line": 42,
 "indent": 5,
 "label": "Other video equipment",
-"zh": "其他視訊設備"
+"zh": "其他視訊設備",
+"hasPrice": true
 },
 {
 "line": 43,
 "indent": 5,
 "label": "Audio equipment",
-"zh": "音響設備"
+"zh": "音響設備",
+"hasPrice": true
 },
 {
 "line": 44,
 "indent": 5,
 "label": "Recording media",
-"zh": "錄製媒體"
+"zh": "錄製媒體",
+"hasPrice": true
 },
 {
 "line": 45,
 "indent": 6,
 "label": "Audio discs, tapes, vinyl, and permanent digital downloads",
-"zh": "音樂光碟、錄音帶、黑膠及數位下載"
+"zh": "音樂光碟、錄音帶、黑膠及數位下載",
+"hasPrice": true
 },
 {
 "line": 46,
 "indent": 6,
 "label": "Video discs, tapes, and permanent digital downloads",
-"zh": "影片光碟、錄影帶及數位下載"
+"zh": "影片光碟、錄影帶及數位下載",
+"hasPrice": true
 },
 {
 "line": 47,
 "indent": 4,
 "label": "Photographic equipment",
-"zh": "攝影器材"
+"zh": "攝影器材",
+"hasPrice": true
 },
 {
 "line": 48,
 "indent": 4,
 "label": "Information processing equipment",
-"zh": "資訊處理設備"
+"zh": "資訊處理設備",
+"hasPrice": true
 },
 {
 "line": 49,
 "indent": 5,
 "label": "Personal computers/tablets and peripheral equipment",
-"zh": "個人電腦／平板及周邊設備"
+"zh": "個人電腦／平板及周邊設備",
+"hasPrice": true
 },
 {
 "line": 50,
 "indent": 5,
 "label": "Computer software and accessories",
-"zh": "電腦軟體及配件"
+"zh": "電腦軟體及配件",
+"hasPrice": true
 },
 {
 "line": 51,
 "indent": 5,
 "label": "Calculators, typewriters, and other information processing equipment",
-"zh": "計算機、打字機及其他資訊設備"
+"zh": "計算機、打字機及其他資訊設備",
+"hasPrice": true
 },
 {
 "line": 52,
 "indent": 3,
 "label": "Sporting equipment, supplies, guns, and ammunition (part of 80)",
-"zh": "運動器材、用品、槍枝及彈藥"
+"zh": "運動器材、用品、槍枝及彈藥",
+"hasPrice": true
 },
 {
 "line": 53,
 "indent": 3,
 "label": "Sports and recreational vehicles (79)",
-"zh": "運動及休閒車輛"
+"zh": "運動及休閒車輛",
+"hasPrice": true
 },
 {
 "line": 54,
 "indent": 4,
 "label": "Motorcycles",
-"zh": "機車"
+"zh": "機車",
+"hasPrice": true
 },
 {
 "line": 55,
 "indent": 4,
 "label": "Bicycles and accessories",
-"zh": "自行車及配件"
+"zh": "自行車及配件",
+"hasPrice": true
 },
 {
 "line": 56,
 "indent": 4,
 "label": "Pleasure boats, aircraft, and other recreational vehicles",
-"zh": "遊艇、私人飛機及其他休閒車輛"
+"zh": "遊艇、私人飛機及其他休閒車輛",
+"hasPrice": true
 },
 {
 "line": 57,
 "indent": 5,
 "label": "Pleasure boats",
-"zh": "遊艇"
+"zh": "遊艇",
+"hasPrice": true
 },
 {
 "line": 58,
 "indent": 5,
 "label": "Pleasure aircraft",
-"zh": "私人飛機"
+"zh": "私人飛機",
+"hasPrice": true
 },
 {
 "line": 59,
 "indent": 5,
 "label": "Other recreational vehicles",
-"zh": "其他休閒車輛"
+"zh": "其他休閒車輛",
+"hasPrice": true
 },
 {
 "line": 60,
 "indent": 3,
 "label": "Recreational books (part of 90)",
-"zh": "休閒書籍"
+"zh": "休閒書籍",
+"hasPrice": true
 },
 {
 "line": 61,
 "indent": 3,
 "label": "Musical instruments (part of 80)",
-"zh": "樂器"
+"zh": "樂器",
+"hasPrice": true
 },
 {
 "line": 62,
 "indent": 2,
 "label": "Other durable goods",
-"zh": "其他耐久財"
+"zh": "其他耐久財",
+"hasPrice": true
 },
 {
 "line": 63,
 "indent": 3,
 "label": "Jewelry and watches (part of 119)",
-"zh": "珠寶及鐘錶"
+"zh": "珠寶及鐘錶",
+"hasPrice": true
 },
 {
 "line": 64,
 "indent": 4,
 "label": "Jewelry",
-"zh": "珠寶"
+"zh": "珠寶",
+"hasPrice": true
 },
 {
 "line": 65,
 "indent": 4,
 "label": "Watches",
-"zh": "手錶"
+"zh": "手錶",
+"hasPrice": true
 },
 {
 "line": 66,
 "indent": 3,
 "label": "Therapeutic appliances and equipment (42)",
-"zh": "醫療輔具及設備"
+"zh": "醫療輔具及設備",
+"hasPrice": true
 },
 {
 "line": 67,
 "indent": 4,
 "label": "Therapeutic medical equipment",
-"zh": "醫療設備"
+"zh": "醫療設備",
+"hasPrice": true
 },
 {
 "line": 68,
 "indent": 4,
 "label": "Corrective eyeglasses and contact lenses",
-"zh": "矯正眼鏡及隱形眼鏡"
+"zh": "矯正眼鏡及隱形眼鏡",
+"hasPrice": true
 },
 {
 "line": 69,
 "indent": 3,
 "label": "Educational books (96)",
-"zh": "教育書籍"
+"zh": "教育書籍",
+"hasPrice": true
 },
 {
 "line": 70,
 "indent": 3,
 "label": "Luggage and similar personal items (part of 119)",
-"zh": "行李箱及個人用品"
+"zh": "行李箱及個人用品",
+"hasPrice": true
 },
 {
 "line": 71,
 "indent": 3,
 "label": "Telephone and related communication equipment",
-"zh": "電話及通訊設備"
+"zh": "電話及通訊設備",
+"hasPrice": true
 },
 {
 "line": 72,
 "indent": 1,
 "label": "Nondurable goods",
-"zh": "非耐久財"
+"zh": "非耐久財",
+"hasPrice": true
 },
 {
 "line": 73,
 "indent": 2,
 "label": "Food and beverages purchased for off-premises consumption",
-"zh": "居家食品及飲料"
+"zh": "居家食品及飲料",
+"hasPrice": true
 },
 {
 "line": 74,
 "indent": 3,
 "label": "Food and nonalcoholic beverages purchased for off-premises consumption (4)",
-"zh": "居家食品及非酒精飲料"
+"zh": "居家食品及非酒精飲料",
+"hasPrice": true
 },
 {
 "line": 75,
 "indent": 4,
 "label": "Food purchased for off-premises consumption",
-"zh": "居家食品"
+"zh": "居家食品",
+"hasPrice": true
 },
 {
 "line": 76,
 "indent": 5,
 "label": "Cereals and bakery products",
-"zh": "穀類及烘焙食品"
+"zh": "穀類及烘焙食品",
+"hasPrice": true
 },
 {
 "line": 77,
 "indent": 6,
 "label": "Cereals",
-"zh": "穀類"
+"zh": "穀類",
+"hasPrice": true
 },
 {
 "line": 78,
 "indent": 6,
 "label": "Bakery products",
-"zh": "烘焙食品"
+"zh": "烘焙食品",
+"hasPrice": true
 },
 {
 "line": 79,
 "indent": 5,
 "label": "Meats and poultry",
-"zh": "肉類及禽肉"
+"zh": "肉類及禽肉",
+"hasPrice": true
 },
 {
 "line": 80,
 "indent": 6,
 "label": "Beef and veal",
-"zh": "牛肉及小牛肉"
+"zh": "牛肉及小牛肉",
+"hasPrice": true
 },
 {
 "line": 81,
 "indent": 6,
 "label": "Pork",
-"zh": "豬肉"
+"zh": "豬肉",
+"hasPrice": true
 },
 {
 "line": 82,
 "indent": 6,
 "label": "Other meats",
-"zh": "其他肉類"
+"zh": "其他肉類",
+"hasPrice": true
 },
 {
 "line": 83,
 "indent": 6,
 "label": "Poultry",
-"zh": "禽肉"
+"zh": "禽肉",
+"hasPrice": true
 },
 {
 "line": 84,
 "indent": 5,
 "label": "Fish and seafood",
-"zh": "魚類及海鮮"
+"zh": "魚類及海鮮",
+"hasPrice": true
 },
 {
 "line": 85,
 "indent": 5,
 "label": "Milk, dairy products, and eggs",
-"zh": "乳製品及蛋"
+"zh": "乳製品及蛋",
+"hasPrice": true
 },
 {
 "line": 86,
 "indent": 6,
 "label": "Fresh milk",
-"zh": "鮮乳"
+"zh": "鮮乳",
+"hasPrice": true
 },
 {
 "line": 87,
 "indent": 6,
 "label": "Processed dairy products",
-"zh": "加工乳製品"
+"zh": "加工乳製品",
+"hasPrice": true
 },
 {
 "line": 88,
 "indent": 6,
 "label": "Eggs",
-"zh": "蛋"
+"zh": "蛋",
+"hasPrice": true
 },
 {
 "line": 89,
 "indent": 5,
 "label": "Fats and oils",
-"zh": "油脂"
+"zh": "油脂",
+"hasPrice": true
 },
 {
 "line": 90,
 "indent": 5,
 "label": "Fresh fruits and vegetables",
-"zh": "新鮮蔬果"
+"zh": "新鮮蔬果",
+"hasPrice": true
 },
 {
 "line": 91,
 "indent": 6,
 "label": "Fruit (fresh)",
-"zh": "新鮮水果"
+"zh": "新鮮水果",
+"hasPrice": true
 },
 {
 "line": 92,
 "indent": 6,
 "label": "Vegetables (fresh)",
-"zh": "新鮮蔬菜"
+"zh": "新鮮蔬菜",
+"hasPrice": true
 },
 {
 "line": 93,
 "indent": 5,
 "label": "Processed fruits and vegetables",
-"zh": "加工蔬果"
+"zh": "加工蔬果",
+"hasPrice": true
 },
 {
 "line": 94,
 "indent": 5,
 "label": "Sugar and sweets",
-"zh": "糖及甜食"
+"zh": "糖及甜食",
+"hasPrice": true
 },
 {
 "line": 95,
 "indent": 5,
 "label": "Food products, not elsewhere classified",
-"zh": "其他食品"
+"zh": "其他食品",
+"hasPrice": true
 },
 {
 "line": 96,
 "indent": 4,
 "label": "Nonalcoholic beverages purchased for off-premises consumption",
-"zh": "居家非酒精飲料"
+"zh": "居家非酒精飲料",
+"hasPrice": true
 },
 {
 "line": 97,
 "indent": 5,
 "label": "Coffee, tea, and other beverage materials",
-"zh": "咖啡、茶及其他飲料原料"
+"zh": "咖啡、茶及其他飲料原料",
+"hasPrice": true
 },
 {
 "line": 98,
 "indent": 5,
 "label": "Mineral waters, soft drinks, and vegetable juices",
-"zh": "礦泉水、汽水及蔬菜汁"
+"zh": "礦泉水、汽水及蔬菜汁",
+"hasPrice": true
 },
 {
 "line": 99,
 "indent": 3,
 "label": "Alcoholic beverages purchased for off-premises consumption (5)",
-"zh": "居家酒類"
+"zh": "居家酒類",
+"hasPrice": true
 },
 {
 "line": 100,
 "indent": 4,
 "label": "Spirits",
-"zh": "烈酒"
+"zh": "烈酒",
+"hasPrice": true
 },
 {
 "line": 101,
 "indent": 4,
 "label": "Wine",
-"zh": "葡萄酒"
+"zh": "葡萄酒",
+"hasPrice": true
 },
 {
 "line": 102,
 "indent": 4,
 "label": "Beer",
-"zh": "啤酒"
+"zh": "啤酒",
+"hasPrice": true
 },
 {
 "line": 103,
 "indent": 3,
 "label": "Food produced and consumed on farms (6)",
-"zh": "農場自產自用食品"
+"zh": "農場自產自用食品",
+"hasPrice": true
 },
 {
 "line": 104,
 "indent": 2,
 "label": "Clothing and footwear",
-"zh": "服裝及鞋類"
+"zh": "服裝及鞋類",
+"hasPrice": true
 },
 {
 "line": 105,
 "indent": 3,
 "label": "Garments",
-"zh": "成衣"
+"zh": "成衣",
+"hasPrice": true
 },
 {
 "line": 106,
 "indent": 4,
 "label": "Women's and girls' clothing (10)",
-"zh": "女裝及女童裝"
+"zh": "女裝及女童裝",
+"hasPrice": true
 },
 {
 "line": 107,
 "indent": 4,
 "label": "Men's and boys' clothing (11)",
-"zh": "男裝及男童裝"
+"zh": "男裝及男童裝",
+"hasPrice": true
 },
 {
 "line": 108,
 "indent": 4,
 "label": "Children's and infants' clothing (12)",
-"zh": "兒童及嬰兒服裝"
+"zh": "兒童及嬰兒服裝",
+"hasPrice": true
 },
 {
 "line": 109,
 "indent": 3,
 "label": "Other clothing materials and footwear (13 and 17)",
-"zh": "其他衣料及鞋類"
+"zh": "其他衣料及鞋類",
+"hasPrice": true
 },
 {
 "line": 110,
 "indent": 4,
 "label": "Clothing materials",
-"zh": "衣料"
+"zh": "衣料",
+"hasPrice": true
 },
 {
 "line": 111,
 "indent": 4,
 "label": "Standard clothing issued to military personnel",
-"zh": "軍人配發制服"
+"zh": "軍人配發制服",
+"hasPrice": true
 },
 {
 "line": 112,
 "indent": 4,
 "label": "Shoes and other footwear",
-"zh": "鞋類"
+"zh": "鞋類",
+"hasPrice": true
 },
 {
 "line": 113,
 "indent": 2,
 "label": "Gasoline and other energy goods",
-"zh": "汽油及其他能源商品"
+"zh": "汽油及其他能源商品",
+"hasPrice": true
 },
 {
 "line": 114,
 "indent": 3,
 "label": "Motor vehicle fuels, lubricants, and fluids (59)",
-"zh": "車用燃料、潤滑油及油液"
+"zh": "車用燃料、潤滑油及油液",
+"hasPrice": true
 },
 {
 "line": 115,
 "indent": 4,
 "label": "Gasoline and other motor fuel",
-"zh": "汽油及其他車用燃料"
+"zh": "汽油及其他車用燃料",
+"hasPrice": true
 },
 {
 "line": 116,
 "indent": 4,
 "label": "Lubricants and fluids",
-"zh": "潤滑油及油液"
+"zh": "潤滑油及油液",
+"hasPrice": true
 },
 {
 "line": 117,
 "indent": 3,
 "label": "Fuel oil and other fuels (29)",
-"zh": "燃油及其他燃料"
+"zh": "燃油及其他燃料",
+"hasPrice": true
 },
 {
 "line": 118,
 "indent": 4,
 "label": "Fuel oil",
-"zh": "燃油"
+"zh": "燃油",
+"hasPrice": true
 },
 {
 "line": 119,
 "indent": 4,
 "label": "Other fuels",
-"zh": "其他燃料"
+"zh": "其他燃料",
+"hasPrice": true
 },
 {
 "line": 120,
 "indent": 2,
 "label": "Other nondurable goods",
-"zh": "其他非耐久財"
+"zh": "其他非耐久財",
+"hasPrice": true
 },
 {
 "line": 121,
 "indent": 3,
 "label": "Pharmaceutical and other medical products (40 and 41)",
-"zh": "藥品及其他醫療用品"
+"zh": "藥品及其他醫療用品",
+"hasPrice": true
 },
 {
 "line": 122,
 "indent": 4,
 "label": "Pharmaceutical products",
-"zh": "藥品"
+"zh": "藥品",
+"hasPrice": true
 },
 {
 "line": 123,
 "indent": 5,
 "label": "Prescription drugs",
-"zh": "處方藥"
+"zh": "處方藥",
+"hasPrice": true
 },
 {
 "line": 124,
 "indent": 5,
 "label": "Nonprescription drugs",
-"zh": "非處方藥"
+"zh": "非處方藥",
+"hasPrice": true
 },
 {
 "line": 125,
 "indent": 4,
 "label": "Other medical products",
-"zh": "其他醫療用品"
+"zh": "其他醫療用品",
+"hasPrice": true
 },
 {
 "line": 126,
 "indent": 3,
 "label": "Recreational items (parts of 80, 92, and 93)",
-"zh": "休閒用品（非耐久）"
+"zh": "休閒用品（非耐久）",
+"hasPrice": true
 },
 {
 "line": 127,
 "indent": 4,
 "label": "Games, toys, and hobbies",
-"zh": "遊戲、玩具及嗜好用品"
+"zh": "遊戲、玩具及嗜好用品",
+"hasPrice": true
 },
 {
 "line": 128,
 "indent": 4,
 "label": "Pets and related products",
-"zh": "寵物及相關用品"
+"zh": "寵物及相關用品",
+"hasPrice": true
 },
 {
 "line": 129,
 "indent": 4,
 "label": "Flowers, seeds, and potted plants",
-"zh": "花卉、種子及盆栽"
+"zh": "花卉、種子及盆栽",
+"hasPrice": true
 },
 {
 "line": 130,
 "indent": 4,
 "label": "Film and photographic supplies",
-"zh": "底片及攝影耗材"
+"zh": "底片及攝影耗材",
+"hasPrice": true
 },
 {
 "line": 131,
 "indent": 3,
 "label": "Household supplies (parts of 32 and 36)",
-"zh": "家用耗材"
+"zh": "家用耗材",
+"hasPrice": true
 },
 {
 "line": 132,
 "indent": 4,
 "label": "Household cleaning products",
-"zh": "居家清潔用品"
+"zh": "居家清潔用品",
+"hasPrice": true
 },
 {
 "line": 133,
 "indent": 4,
 "label": "Household paper products",
-"zh": "家用紙製品"
+"zh": "家用紙製品",
+"hasPrice": true
 },
 {
 "line": 134,
 "indent": 4,
 "label": "Household linens",
-"zh": "家用織品"
+"zh": "家用織品",
+"hasPrice": true
 },
 {
 "line": 135,
 "indent": 4,
 "label": "Sewing items",
-"zh": "縫紉用品"
+"zh": "縫紉用品",
+"hasPrice": true
 },
 {
 "line": 136,
 "indent": 4,
 "label": "Miscellaneous household products",
-"zh": "其他家用品"
+"zh": "其他家用品",
+"hasPrice": true
 },
 {
 "line": 137,
 "indent": 3,
 "label": "Personal care products (part of 118)",
-"zh": "個人護理用品"
+"zh": "個人護理用品",
+"hasPrice": true
 },
 {
 "line": 138,
 "indent": 4,
 "label": "Hair, dental, shaving, and miscellaneous personal care products except electrical products",
-"zh": "美髮、口腔及刮鬍等護理用品（非電器）"
+"zh": "美髮、口腔及刮鬍等護理用品（非電器）",
+"hasPrice": true
 },
 {
 "line": 139,
 "indent": 4,
 "label": "Cosmetic / perfumes / bath / nail preparations and implements",
-"zh": "化妝品、香水、沐浴及美甲用品"
+"zh": "化妝品、香水、沐浴及美甲用品",
+"hasPrice": true
 },
 {
 "line": 140,
 "indent": 4,
 "label": "Electric appliances for personal care",
-"zh": "個人護理電器"
+"zh": "個人護理電器",
+"hasPrice": true
 },
 {
 "line": 141,
 "indent": 3,
 "label": "Tobacco (127)",
-"zh": "菸草"
+"zh": "菸草",
+"hasPrice": true
 },
 {
 "line": 142,
 "indent": 3,
 "label": "Magazines, newspapers, and stationery (part of 90)",
-"zh": "雜誌、報紙及文具"
+"zh": "雜誌、報紙及文具",
+"hasPrice": true
 },
 {
 "line": 143,
 "indent": 4,
 "label": "Newspapers and periodicals",
-"zh": "報紙及期刊"
+"zh": "報紙及期刊",
+"hasPrice": true
 },
 {
 "line": 144,
 "indent": 4,
 "label": "Stationery and miscellaneous printed materials",
-"zh": "文具及其他印刷品"
+"zh": "文具及其他印刷品",
+"hasPrice": true
 },
 {
 "line": 145,
 "indent": 3,
 "label": "Net expenditures abroad by U.S. residents (131)",
-"zh": "美國居民海外淨支出"
+"zh": "美國居民海外淨支出",
+"hasPrice": false
 },
 {
 "line": 146,
 "indent": 4,
 "label": "Expenditures abroad by U.S. residents",
-"zh": "美國居民海外支出"
+"zh": "美國居民海外支出",
+"hasPrice": true
 },
 {
 "line": 147,
 "indent": 5,
 "label": "Government employees' expenditures abroad",
-"zh": "政府雇員海外支出"
+"zh": "政府雇員海外支出",
+"hasPrice": true
 },
 {
 "line": 148,
 "indent": 5,
 "label": "Private employees' expenditures abroad",
-"zh": "民間雇員海外支出"
+"zh": "民間雇員海外支出",
+"hasPrice": true
 },
 {
 "line": 149,
 "indent": 4,
 "label": "Less: Personal remittances in kind to nonresidents",
-"zh": "減：對非居民的實物匯款"
+"zh": "減：對非居民的實物匯款",
+"hasPrice": true
 },
 {
 "line": 150,
 "indent": 0,
 "label": "Services",
-"zh": "服務"
+"zh": "服務",
+"hasPrice": true
 },
 {
 "line": 151,
 "indent": 1,
 "label": "Household consumption expenditures (for services)",
-"zh": "家庭服務消費支出"
+"zh": "家庭服務消費支出",
+"hasPrice": true
 },
 {
 "line": 152,
 "indent": 2,
 "label": "Housing and utilities",
-"zh": "住房及公用事業"
+"zh": "住房及公用事業",
+"hasPrice": true
 },
 {
 "line": 153,
 "indent": 3,
 "label": "Housing",
-"zh": "住房"
+"zh": "住房",
+"hasPrice": true
 },
 {
 "line": 154,
 "indent": 4,
 "label": "Rental of tenant-occupied nonfarm housing (20)",
-"zh": "承租住宅租金"
+"zh": "承租住宅租金",
+"hasPrice": true
 },
 {
 "line": 155,
 "indent": 5,
 "label": "Tenant-occupied mobile homes",
-"zh": "承租活動房屋"
+"zh": "承租活動房屋",
+"hasPrice": true
 },
 {
 "line": 156,
 "indent": 5,
 "label": "Tenant-occupied stationary homes and landlord durables",
-"zh": "承租固定住宅及房東耐久財"
+"zh": "承租固定住宅及房東耐久財",
+"hasPrice": true
 },
 {
 "line": 157,
 "indent": 6,
 "label": "Tenant-occupied stationary homes",
-"zh": "承租固定住宅"
+"zh": "承租固定住宅",
+"hasPrice": false
 },
 {
 "line": 158,
 "indent": 6,
 "label": "Tenant landlord durables",
-"zh": "房東耐久財"
+"zh": "房東耐久財",
+"hasPrice": false
 },
 {
 "line": 159,
 "indent": 6,
 "label": "Tenant-occupied, including landlord durables",
-"zh": "承租住宅（含房東耐久財）"
+"zh": "承租住宅（含房東耐久財）",
+"hasPrice": true
 },
 {
 "line": 160,
 "indent": 4,
 "label": "Imputed rental of owner-occupied nonfarm housing (21)",
-"zh": "自有住宅設算租金"
+"zh": "自有住宅設算租金",
+"hasPrice": true
 },
 {
 "line": 161,
 "indent": 5,
 "label": "Owner-occupied mobile homes",
-"zh": "自有活動房屋"
+"zh": "自有活動房屋",
+"hasPrice": true
 },
 {
 "line": 162,
 "indent": 5,
 "label": "Owner-occupied stationary homes",
-"zh": "自有固定住宅"
+"zh": "自有固定住宅",
+"hasPrice": true
 },
 {
 "line": 163,
 "indent": 4,
 "label": "Rental value of farm dwellings (22)",
-"zh": "農舍租賃價值"
+"zh": "農舍租賃價值",
+"hasPrice": true
 },
 {
 "line": 164,
 "indent": 4,
 "label": "Group housing (23)",
-"zh": "團體住宅"
+"zh": "團體住宅",
+"hasPrice": true
 },
 {
 "line": 165,
 "indent": 3,
 "label": "Household utilities",
-"zh": "家用公用事業"
+"zh": "家用公用事業",
+"hasPrice": true
 },
 {
 "line": 166,
 "indent": 4,
 "label": "Water supply and sanitation (25)",
-"zh": "供水及衛生服務"
+"zh": "供水及衛生服務",
+"hasPrice": true
 },
 {
 "line": 167,
 "indent": 5,
 "label": "Water supply and sewage maintenance",
-"zh": "供水及污水處理"
+"zh": "供水及污水處理",
+"hasPrice": true
 },
 {
 "line": 168,
 "indent": 5,
 "label": "Garbage and trash collection",
-"zh": "垃圾清運"
+"zh": "垃圾清運",
+"hasPrice": true
 },
 {
 "line": 169,
 "indent": 4,
 "label": "Electricity and gas",
-"zh": "電力與天然氣"
+"zh": "電力與天然氣",
+"hasPrice": true
 },
 {
 "line": 170,
 "indent": 5,
 "label": "Electricity (27)",
-"zh": "電力"
+"zh": "電力",
+"hasPrice": true
 },
 {
 "line": 171,
 "indent": 5,
 "label": "Natural gas (28)",
-"zh": "天然氣"
+"zh": "天然氣",
+"hasPrice": true
 },
 {
 "line": 172,
 "indent": 2,
 "label": "Health care",
-"zh": "醫療保健"
+"zh": "醫療保健",
+"hasPrice": true
 },
 {
 "line": 173,
 "indent": 3,
 "label": "Outpatient services",
-"zh": "門診服務"
+"zh": "門診服務",
+"hasPrice": true
 },
 {
 "line": 174,
 "indent": 4,
 "label": "Physician services (44)",
-"zh": "醫師服務"
+"zh": "醫師服務",
+"hasPrice": true
 },
 {
 "line": 175,
 "indent": 4,
 "label": "Dental services (45)",
-"zh": "牙醫服務"
+"zh": "牙醫服務",
+"hasPrice": true
 },
 {
 "line": 176,
 "indent": 4,
 "label": "Paramedical services (46)",
-"zh": "輔助醫療服務"
+"zh": "輔助醫療服務",
+"hasPrice": true
 },
 {
 "line": 177,
 "indent": 5,
 "label": "Home health care",
-"zh": "居家照護"
+"zh": "居家照護",
+"hasPrice": true
 },
 {
 "line": 178,
 "indent": 5,
 "label": "Medical laboratories",
-"zh": "醫學檢驗"
+"zh": "醫學檢驗",
+"hasPrice": true
 },
 {
 "line": 179,
 "indent": 5,
 "label": "Other professional medical services",
-"zh": "其他專業醫療服務"
+"zh": "其他專業醫療服務",
+"hasPrice": true
 },
 {
 "line": 180,
 "indent": 6,
 "label": "Specialty outpatient care facilities and health and allied services",
-"zh": "專科門診及醫療相關服務"
+"zh": "專科門診及醫療相關服務",
+"hasPrice": true
 },
 {
 "line": 181,
 "indent": 6,
 "label": "All other professional medical services",
-"zh": "其他各類專業醫療服務"
+"zh": "其他各類專業醫療服務",
+"hasPrice": true
 },
 {
 "line": 182,
 "indent": 3,
 "label": "Hospital and nursing home services",
-"zh": "醫院及護理之家服務"
+"zh": "醫院及護理之家服務",
+"hasPrice": true
 },
 {
 "line": 183,
 "indent": 4,
 "label": "Hospitals (51)",
-"zh": "醫院"
+"zh": "醫院",
+"hasPrice": true
 },
 {
 "line": 184,
 "indent": 5,
 "label": "Nonprofit hospitals' services to households",
-"zh": "非營利醫院服務"
+"zh": "非營利醫院服務",
+"hasPrice": true
 },
 {
 "line": 185,
 "indent": 5,
 "label": "Proprietary hospitals",
-"zh": "私立醫院"
+"zh": "私立醫院",
+"hasPrice": true
 },
 {
 "line": 186,
 "indent": 5,
 "label": "Government hospitals",
-"zh": "公立醫院"
+"zh": "公立醫院",
+"hasPrice": true
 },
 {
 "line": 187,
 "indent": 4,
 "label": "Nursing homes (52)",
-"zh": "護理之家"
+"zh": "護理之家",
+"hasPrice": true
 },
 {
 "line": 188,
 "indent": 5,
 "label": "Nonprofit nursing homes' services to households",
-"zh": "非營利護理之家服務"
+"zh": "非營利護理之家服務",
+"hasPrice": true
 },
 {
 "line": 189,
 "indent": 5,
 "label": "Proprietary and government nursing homes",
-"zh": "私立及公立護理之家"
+"zh": "私立及公立護理之家",
+"hasPrice": true
 },
 {
 "line": 190,
 "indent": 2,
 "label": "Transportation services",
-"zh": "交通服務"
+"zh": "交通服務",
+"hasPrice": true
 },
 {
 "line": 191,
 "indent": 3,
 "label": "Motor vehicle services",
-"zh": "汽車相關服務"
+"zh": "汽車相關服務",
+"hasPrice": true
 },
 {
 "line": 192,
 "indent": 4,
 "label": "Motor vehicle maintenance and repair (60)",
-"zh": "汽車保養及維修"
+"zh": "汽車保養及維修",
+"hasPrice": true
 },
 {
 "line": 193,
 "indent": 4,
 "label": "Other motor vehicle services (61)",
-"zh": "其他汽車服務"
+"zh": "其他汽車服務",
+"hasPrice": true
 },
 {
 "line": 194,
 "indent": 5,
 "label": "Motor vehicle leasing",
-"zh": "汽車租賃（長租）"
+"zh": "汽車租賃（長租）",
+"hasPrice": true
 },
 {
 "line": 195,
 "indent": 6,
 "label": "Auto leasing",
-"zh": "轎車租賃"
+"zh": "轎車租賃",
+"hasPrice": true
 },
 {
 "line": 196,
 "indent": 6,
 "label": "Truck leasing",
-"zh": "卡車租賃"
+"zh": "卡車租賃",
+"hasPrice": true
 },
 {
 "line": 197,
 "indent": 5,
 "label": "Motor vehicle rental",
-"zh": "汽車出租（短租）"
+"zh": "汽車出租（短租）",
+"hasPrice": true
 },
 {
 "line": 198,
 "indent": 5,
 "label": "Parking fees and tolls",
-"zh": "停車費及通行費"
+"zh": "停車費及通行費",
+"hasPrice": true
 },
 {
 "line": 199,
 "indent": 3,
 "label": "Public transportation",
-"zh": "大眾運輸"
+"zh": "大眾運輸",
+"hasPrice": true
 },
 {
 "line": 200,
 "indent": 4,
 "label": "Ground transportation (63)",
-"zh": "陸路運輸"
+"zh": "陸路運輸",
+"hasPrice": true
 },
 {
 "line": 201,
 "indent": 5,
 "label": "Railway transportation",
-"zh": "鐵路運輸"
+"zh": "鐵路運輸",
+"hasPrice": true
 },
 {
 "line": 202,
 "indent": 5,
 "label": "Road transportation",
-"zh": "道路運輸"
+"zh": "道路運輸",
+"hasPrice": true
 },
 {
 "line": 203,
 "indent": 6,
 "label": "Intercity buses",
-"zh": "城際巴士"
+"zh": "城際巴士",
+"hasPrice": true
 },
 {
 "line": 204,
 "indent": 6,
 "label": "Taxicabs and ride sharing services",
-"zh": "計程車及共乘服務"
+"zh": "計程車及共乘服務",
+"hasPrice": true
 },
 {
 "line": 205,
 "indent": 6,
 "label": "Intracity mass transit",
-"zh": "市區大眾運輸"
+"zh": "市區大眾運輸",
+"hasPrice": true
 },
 {
 "line": 206,
 "indent": 6,
 "label": "Other road transportation service",
-"zh": "其他道路運輸服務"
+"zh": "其他道路運輸服務",
+"hasPrice": true
 },
 {
 "line": 207,
 "indent": 4,
 "label": "Air transportation (64)",
-"zh": "航空運輸"
+"zh": "航空運輸",
+"hasPrice": true
 },
 {
 "line": 208,
 "indent": 4,
 "label": "Water transportation (65)",
-"zh": "水路運輸"
+"zh": "水路運輸",
+"hasPrice": true
 },
 {
 "line": 209,
 "indent": 2,
 "label": "Recreation services",
-"zh": "休閒服務"
+"zh": "休閒服務",
+"hasPrice": true
 },
 {
 "line": 210,
 "indent": 3,
 "label": "Membership clubs, sports centers, parks, theaters, and museums (82)",
-"zh": "會員俱樂部、運動中心、公園、劇院及博物館"
+"zh": "會員俱樂部、運動中心、公園、劇院及博物館",
+"hasPrice": true
 },
 {
 "line": 211,
 "indent": 4,
 "label": "Membership clubs and participant sports centers",
-"zh": "會員俱樂部及運動中心"
+"zh": "會員俱樂部及運動中心",
+"hasPrice": true
 },
 {
 "line": 212,
 "indent": 4,
 "label": "Amusement parks, campgrounds, and related recreational services",
-"zh": "遊樂園、露營地及相關休閒服務"
+"zh": "遊樂園、露營地及相關休閒服務",
+"hasPrice": true
 },
 {
 "line": 213,
 "indent": 4,
 "label": "Admissions to specified spectator amusements",
-"zh": "觀賞性娛樂門票"
+"zh": "觀賞性娛樂門票",
+"hasPrice": true
 },
 {
 "line": 214,
 "indent": 5,
 "label": "Motion picture theaters",
-"zh": "電影院"
+"zh": "電影院",
+"hasPrice": true
 },
 {
 "line": 215,
 "indent": 5,
 "label": "Live entertainment, excluding sports",
-"zh": "現場表演（不含運動）"
+"zh": "現場表演（不含運動）",
+"hasPrice": true
 },
 {
 "line": 216,
 "indent": 5,
 "label": "Spectator sports",
-"zh": "觀賞性運動賽事"
+"zh": "觀賞性運動賽事",
+"hasPrice": true
 },
 {
 "line": 217,
 "indent": 4,
 "label": "Museums and libraries",
-"zh": "博物館及圖書館"
+"zh": "博物館及圖書館",
+"hasPrice": true
 },
 {
 "line": 218,
 "indent": 3,
 "label": "Audio-video, photographic, and information processing equipment services (parts of 77 and 93)",
-"zh": "影音、攝影及資訊設備服務"
+"zh": "影音、攝影及資訊設備服務",
+"hasPrice": true
 },
 {
 "line": 219,
 "indent": 4,
 "label": "Cable, satellite, and other live television services",
-"zh": "有線、衛星及其他電視直播服務"
+"zh": "有線、衛星及其他電視直播服務",
+"hasPrice": true
 },
 {
 "line": 220,
 "indent": 4,
 "label": "Photo processing",
-"zh": "相片沖印"
+"zh": "相片沖印",
+"hasPrice": true
 },
 {
 "line": 221,
 "indent": 4,
 "label": "Photo studios",
-"zh": "照相館"
+"zh": "照相館",
+"hasPrice": true
 },
 {
 "line": 222,
 "indent": 4,
 "label": "Repair and rental of audio-visual, photographic, and information processing equipment",
-"zh": "影音、攝影及資訊設備維修與租賃"
+"zh": "影音、攝影及資訊設備維修與租賃",
+"hasPrice": true
 },
 {
 "line": 223,
 "indent": 4,
 "label": "Video and audio streaming and rental",
-"zh": "影音串流及租借"
+"zh": "影音串流及租借",
+"hasPrice": true
 },
 {
 "line": 224,
 "indent": 5,
 "label": "Video streaming and rental",
-"zh": "影片串流及租借"
+"zh": "影片串流及租借",
+"hasPrice": true
 },
 {
 "line": 225,
 "indent": 5,
 "label": "Audio streaming and radio services (including satellite radio)",
-"zh": "音訊串流及廣播"
+"zh": "音訊串流及廣播",
+"hasPrice": true
 },
 {
 "line": 226,
 "indent": 3,
 "label": "Gambling (91)",
-"zh": "博弈"
+"zh": "博弈",
+"hasPrice": true
 },
 {
 "line": 227,
 "indent": 4,
 "label": "Casino gambling",
-"zh": "賭場"
+"zh": "賭場",
+"hasPrice": true
 },
 {
 "line": 228,
 "indent": 4,
 "label": "Lotteries",
-"zh": "彩券"
+"zh": "彩券",
+"hasPrice": true
 },
 {
 "line": 229,
 "indent": 4,
 "label": "Pari-mutuel net receipts",
-"zh": "賽馬等彩池淨收入"
+"zh": "賽馬等彩池淨收入",
+"hasPrice": true
 },
 {
 "line": 230,
 "indent": 3,
 "label": "Other recreational services (81, 94, and part of 92)",
-"zh": "其他休閒服務"
+"zh": "其他休閒服務",
+"hasPrice": true
 },
 {
 "line": 231,
 "indent": 4,
 "label": "Veterinary and other services for pets",
-"zh": "獸醫及其他寵物服務"
+"zh": "獸醫及其他寵物服務",
+"hasPrice": true
 },
 {
 "line": 232,
 "indent": 4,
 "label": "Package tours",
-"zh": "套裝旅遊"
+"zh": "套裝旅遊",
+"hasPrice": true
 },
 {
 "line": 233,
 "indent": 4,
 "label": "Maintenance and repair of recreational vehicles and sports equipment",
-"zh": "休閒車輛及運動器材維修"
+"zh": "休閒車輛及運動器材維修",
+"hasPrice": true
 },
 {
 "line": 234,
 "indent": 2,
 "label": "Food services and accommodations",
-"zh": "餐飲及住宿服務"
+"zh": "餐飲及住宿服務",
+"hasPrice": true
 },
 {
 "line": 235,
 "indent": 3,
 "label": "Food services",
-"zh": "餐飲服務"
+"zh": "餐飲服務",
+"hasPrice": true
 },
 {
 "line": 236,
 "indent": 4,
 "label": "Purchased meals and beverages (102)",
-"zh": "外食餐飲"
+"zh": "外食餐飲",
+"hasPrice": true
 },
 {
 "line": 237,
 "indent": 5,
 "label": "Meals and nonalcoholic beverages",
-"zh": "餐點及非酒精飲料"
+"zh": "餐點及非酒精飲料",
+"hasPrice": true
 },
 {
 "line": 238,
 "indent": 6,
 "label": "Meals at schools",
-"zh": "學校餐點"
+"zh": "學校餐點",
+"hasPrice": true
 },
 {
 "line": 239,
 "indent": 7,
 "label": "Elementary and secondary school lunches",
-"zh": "中小學午餐"
+"zh": "中小學午餐",
+"hasPrice": true
 },
 {
 "line": 240,
 "indent": 7,
 "label": "Higher education school lunches",
-"zh": "大專院校餐點"
+"zh": "大專院校餐點",
+"hasPrice": true
 },
 {
 "line": 241,
 "indent": 6,
 "label": "Other purchased meals",
-"zh": "其他外食餐點"
+"zh": "其他外食餐點",
+"hasPrice": true
 },
 {
 "line": 242,
 "indent": 7,
 "label": "Meals at limited service eating places",
-"zh": "速食及簡餐店"
+"zh": "速食及簡餐店",
+"hasPrice": true
 },
 {
 "line": 243,
 "indent": 7,
 "label": "Meals at other eating places",
-"zh": "其他餐廳"
+"zh": "其他餐廳",
+"hasPrice": true
 },
 {
 "line": 244,
 "indent": 7,
 "label": "Meals at drinking places",
-"zh": "酒吧餐點"
+"zh": "酒吧餐點",
+"hasPrice": true
 },
 {
 "line": 245,
 "indent": 5,
 "label": "Alcohol in purchased meals",
-"zh": "外食中的酒類"
+"zh": "外食中的酒類",
+"hasPrice": true
 },
 {
 "line": 246,
 "indent": 4,
 "label": "Food furnished to employees (including military) (103)",
-"zh": "員工供餐（含軍隊）"
+"zh": "員工供餐（含軍隊）",
+"hasPrice": true
 },
 {
 "line": 247,
 "indent": 5,
 "label": "Food supplied to civilians",
-"zh": "民間員工供餐"
+"zh": "民間員工供餐",
+"hasPrice": true
 },
 {
 "line": 248,
 "indent": 5,
 "label": "Food supplied to military",
-"zh": "軍隊供餐"
+"zh": "軍隊供餐",
+"hasPrice": true
 },
 {
 "line": 249,
 "indent": 3,
 "label": "Accommodations (104)",
-"zh": "住宿"
+"zh": "住宿",
+"hasPrice": true
 },
 {
 "line": 250,
 "indent": 4,
 "label": "Hotels and motels",
-"zh": "旅館及汽車旅館"
+"zh": "旅館及汽車旅館",
+"hasPrice": true
 },
 {
 "line": 251,
 "indent": 4,
 "label": "Housing at schools",
-"zh": "學校宿舍"
+"zh": "學校宿舍",
+"hasPrice": true
 },
 {
 "line": 252,
 "indent": 2,
 "label": "Financial services and insurance",
-"zh": "金融服務及保險"
+"zh": "金融服務及保險",
+"hasPrice": true
 },
 {
 "line": 253,
 "indent": 3,
 "label": "Financial services",
-"zh": "金融服務"
+"zh": "金融服務",
+"hasPrice": true
 },
 {
 "line": 254,
 "indent": 4,
 "label": "Financial services furnished without payment (107)",
-"zh": "免付費金融服務（設算）"
+"zh": "免付費金融服務（設算）",
+"hasPrice": true
 },
 {
 "line": 255,
 "indent": 5,
 "label": "Commercial banks",
-"zh": "商業銀行"
+"zh": "商業銀行",
+"hasPrice": true
 },
 {
 "line": 256,
 "indent": 5,
 "label": "Other depository institutions and regulated investment companies",
-"zh": "其他存款機構及受監管投資公司"
+"zh": "其他存款機構及受監管投資公司",
+"hasPrice": true
 },
 {
 "line": 257,
 "indent": 5,
 "label": "Pension funds",
-"zh": "退休基金"
+"zh": "退休基金",
+"hasPrice": true
 },
 {
 "line": 258,
 "indent": 4,
 "label": "Financial service charges, fees, and commissions (108)",
-"zh": "金融服務手續費及佣金"
+"zh": "金融服務手續費及佣金",
+"hasPrice": true
 },
 {
 "line": 259,
 "indent": 5,
 "label": "Financial service charges and fees",
-"zh": "金融服務手續費"
+"zh": "金融服務手續費",
+"hasPrice": true
 },
 {
 "line": 260,
 "indent": 5,
 "label": "Securities commissions",
-"zh": "證券佣金"
+"zh": "證券佣金",
+"hasPrice": true
 },
 {
 "line": 261,
 "indent": 6,
 "label": "Direct commissions",
-"zh": "直接佣金"
+"zh": "直接佣金",
+"hasPrice": true
 },
 {
 "line": 262,
 "indent": 7,
 "label": "Exchange-listed equities",
-"zh": "交易所上市股票"
+"zh": "交易所上市股票",
+"hasPrice": true
 },
 {
 "line": 263,
 "indent": 7,
 "label": "Other direct commissions",
-"zh": "其他直接佣金"
+"zh": "其他直接佣金",
+"hasPrice": true
 },
 {
 "line": 264,
 "indent": 6,
 "label": "Indirect commissions",
-"zh": "間接佣金"
+"zh": "間接佣金",
+"hasPrice": true
 },
 {
 "line": 265,
 "indent": 7,
 "label": "Over-the-counter equity securities",
-"zh": "店頭市場股票"
+"zh": "店頭市場股票",
+"hasPrice": true
 },
 {
 "line": 266,
 "indent": 7,
 "label": "Other imputed commissions",
-"zh": "其他設算佣金"
+"zh": "其他設算佣金",
+"hasPrice": true
 },
 {
 "line": 267,
 "indent": 6,
 "label": "Mutual fund sales charges",
-"zh": "共同基金銷售手續費"
+"zh": "共同基金銷售手續費",
+"hasPrice": true
 },
 {
 "line": 268,
 "indent": 5,
 "label": "Portfolio management and investment advice services",
-"zh": "投資組合管理及投資顧問"
+"zh": "投資組合管理及投資顧問",
+"hasPrice": true
 },
 {
 "line": 269,
 "indent": 5,
 "label": "Trust, fiduciary, and custody activities",
-"zh": "信託、受託及保管業務"
+"zh": "信託、受託及保管業務",
+"hasPrice": true
 },
 {
 "line": 270,
 "indent": 3,
 "label": "Insurance",
-"zh": "保險"
+"zh": "保險",
+"hasPrice": true
 },
 {
 "line": 271,
 "indent": 4,
 "label": "Life insurance (110)",
-"zh": "壽險"
+"zh": "壽險",
+"hasPrice": true
 },
 {
 "line": 272,
 "indent": 4,
 "label": "Net household insurance (111)",
-"zh": "家庭保險淨額"
+"zh": "家庭保險淨額",
+"hasPrice": true
 },
 {
 "line": 273,
 "indent": 5,
 "label": "Household insurance premiums and premium supplements",
-"zh": "家庭保險保費"
+"zh": "家庭保險保費",
+"hasPrice": true
 },
 {
 "line": 274,
 "indent": 5,
 "label": "Less: Household insurance normal losses",
-"zh": "減：家庭保險正常理賠"
+"zh": "減：家庭保險正常理賠",
+"hasPrice": true
 },
 {
 "line": 275,
 "indent": 4,
 "label": "Net health insurance (112)",
-"zh": "健康保險淨額"
+"zh": "健康保險淨額",
+"hasPrice": true
 },
 {
 "line": 276,
 "indent": 5,
 "label": "Medical care and hospitalization",
-"zh": "醫療及住院"
+"zh": "醫療及住院",
+"hasPrice": true
 },
 {
 "line": 277,
 "indent": 5,
 "label": "Income loss",
-"zh": "所得損失"
+"zh": "所得損失",
+"hasPrice": true
 },
 {
 "line": 278,
 "indent": 5,
 "label": "Workers' compensation",
-"zh": "勞工補償"
+"zh": "勞工補償",
+"hasPrice": true
 },
 {
 "line": 279,
 "indent": 4,
 "label": "Net motor vehicle and other transportation insurance (116)",
-"zh": "汽車及其他運輸保險淨額"
+"zh": "汽車及其他運輸保險淨額",
+"hasPrice": true
 },
 {
 "line": 280,
 "indent": 2,
 "label": "Other services",
-"zh": "其他服務"
+"zh": "其他服務",
+"hasPrice": true
 },
 {
 "line": 281,
 "indent": 3,
 "label": "Communication",
-"zh": "通訊"
+"zh": "通訊",
+"hasPrice": true
 },
 {
 "line": 282,
 "indent": 4,
 "label": "Telecommunication services (71)",
-"zh": "電信服務"
+"zh": "電信服務",
+"hasPrice": true
 },
 {
 "line": 283,
 "indent": 5,
 "label": "Land-line telephone services, local charges",
-"zh": "市話（本地）"
+"zh": "市話（本地）",
+"hasPrice": true
 },
 {
 "line": 284,
 "indent": 5,
 "label": "Land-line telephone services, long-distance charges",
-"zh": "市話（長途）"
+"zh": "市話（長途）",
+"hasPrice": true
 },
 {
 "line": 285,
 "indent": 5,
 "label": "Cellular telephone services",
-"zh": "行動電話服務"
+"zh": "行動電話服務",
+"hasPrice": true
 },
 {
 "line": 286,
 "indent": 4,
 "label": "Postal and delivery services (68)",
-"zh": "郵政及快遞服務"
+"zh": "郵政及快遞服務",
+"hasPrice": true
 },
 {
 "line": 287,
 "indent": 5,
 "label": "First-class postal service (by U.S. Postal Service)",
-"zh": "平信郵件（美國郵政）"
+"zh": "平信郵件（美國郵政）",
+"hasPrice": true
 },
 {
 "line": 288,
 "indent": 5,
 "label": "Other delivery services (by non-U.S. postal facilities)",
-"zh": "其他快遞服務"
+"zh": "其他快遞服務",
+"hasPrice": true
 },
 {
 "line": 289,
 "indent": 4,
 "label": "Internet access (72)",
-"zh": "網路接取"
+"zh": "網路接取",
+"hasPrice": true
 },
 {
 "line": 290,
 "indent": 3,
 "label": "Education services",
-"zh": "教育服務"
+"zh": "教育服務",
+"hasPrice": true
 },
 {
 "line": 291,
 "indent": 4,
 "label": "Higher education (97)",
-"zh": "高等教育"
+"zh": "高等教育",
+"hasPrice": true
 },
 {
 "line": 292,
 "indent": 5,
 "label": "Proprietary and public higher education",
-"zh": "營利及公立高等教育"
+"zh": "營利及公立高等教育",
+"hasPrice": true
 },
 {
 "line": 293,
 "indent": 5,
 "label": "Nonprofit private higher education services to households",
-"zh": "非營利私立高等教育"
+"zh": "非營利私立高等教育",
+"hasPrice": true
 },
 {
 "line": 294,
 "indent": 4,
 "label": "Nursery, elementary, and secondary schools (98)",
-"zh": "幼兒園、小學及中學"
+"zh": "幼兒園、小學及中學",
+"hasPrice": true
 },
 {
 "line": 295,
 "indent": 5,
 "label": "Elementary and secondary schools",
-"zh": "中小學"
+"zh": "中小學",
+"hasPrice": true
 },
 {
 "line": 296,
 "indent": 5,
 "label": "Day care and nursery schools",
-"zh": "托育及幼兒園"
+"zh": "托育及幼兒園",
+"hasPrice": true
 },
 {
 "line": 297,
 "indent": 4,
 "label": "Commercial and vocational schools (99)",
-"zh": "職業及技術學校"
+"zh": "職業及技術學校",
+"hasPrice": true
 },
 {
 "line": 298,
 "indent": 3,
 "label": "Professional and other services (121)",
-"zh": "專業及其他服務"
+"zh": "專業及其他服務",
+"hasPrice": true
 },
 {
 "line": 299,
 "indent": 4,
 "label": "Legal services",
-"zh": "法律服務"
+"zh": "法律服務",
+"hasPrice": true
 },
 {
 "line": 300,
 "indent": 4,
 "label": "Accounting and other business services",
-"zh": "會計及其他商業服務"
+"zh": "會計及其他商業服務",
+"hasPrice": true
 },
 {
 "line": 301,
 "indent": 5,
 "label": "Tax preparation and other related services",
-"zh": "報稅及相關服務"
+"zh": "報稅及相關服務",
+"hasPrice": true
 },
 {
 "line": 302,
 "indent": 5,
 "label": "Employment agency services",
-"zh": "職業介紹服務"
+"zh": "職業介紹服務",
+"hasPrice": true
 },
 {
 "line": 303,
 "indent": 5,
 "label": "Other personal business services",
-"zh": "其他個人商務服務"
+"zh": "其他個人商務服務",
+"hasPrice": true
 },
 {
 "line": 304,
 "indent": 4,
 "label": "Labor organization dues",
-"zh": "工會會費"
+"zh": "工會會費",
+"hasPrice": true
 },
 {
 "line": 305,
 "indent": 4,
 "label": "Professional association dues",
-"zh": "專業協會會費"
+"zh": "專業協會會費",
+"hasPrice": true
 },
 {
 "line": 306,
 "indent": 4,
 "label": "Funeral and burial services",
-"zh": "喪葬服務"
+"zh": "喪葬服務",
+"hasPrice": true
 },
 {
 "line": 307,
 "indent": 3,
 "label": "Personal care and clothing services (14 and parts of 17 and 118)",
-"zh": "個人護理及衣物服務"
+"zh": "個人護理及衣物服務",
+"hasPrice": true
 },
 {
 "line": 308,
 "indent": 4,
 "label": "Personal care services",
-"zh": "個人護理服務"
+"zh": "個人護理服務",
+"hasPrice": true
 },
 {
 "line": 309,
 "indent": 5,
 "label": "Hairdressing salons and personal grooming establishments",
-"zh": "美髮及美容"
+"zh": "美髮及美容",
+"hasPrice": true
 },
 {
 "line": 310,
 "indent": 5,
 "label": "Miscellaneous personal care services",
-"zh": "其他個人護理服務"
+"zh": "其他個人護理服務",
+"hasPrice": true
 },
 {
 "line": 311,
 "indent": 4,
 "label": "Clothing and footwear services",
-"zh": "衣物及鞋類服務"
+"zh": "衣物及鞋類服務",
+"hasPrice": true
 },
 {
 "line": 312,
 "indent": 5,
 "label": "Laundry and drycleaning services",
-"zh": "洗衣及乾洗"
+"zh": "洗衣及乾洗",
+"hasPrice": true
 },
 {
 "line": 313,
 "indent": 5,
 "label": "Clothing repair, rental, and alterations",
-"zh": "衣物修改、租借及修補"
+"zh": "衣物修改、租借及修補",
+"hasPrice": true
 },
 {
 "line": 314,
 "indent": 5,
 "label": "Repair and hire of footwear",
-"zh": "鞋類修理及租借"
+"zh": "鞋類修理及租借",
+"hasPrice": true
 },
 {
 "line": 315,
 "indent": 3,
 "label": "Social services and religious activities (120)",
-"zh": "社會服務及宗教活動"
+"zh": "社會服務及宗教活動",
+"hasPrice": true
 },
 {
 "line": 316,
 "indent": 4,
 "label": "Child care",
-"zh": "托兒服務"
+"zh": "托兒服務",
+"hasPrice": true
 },
 {
 "line": 317,
 "indent": 4,
 "label": "Social assistance",
-"zh": "社會救助"
+"zh": "社會救助",
+"hasPrice": true
 },
 {
 "line": 318,
 "indent": 5,
 "label": "Homes for the elderly",
-"zh": "安養院"
+"zh": "安養院",
+"hasPrice": true
 },
 {
 "line": 319,
 "indent": 5,
 "label": "Residential mental health and substance abuse",
-"zh": "精神健康及物質濫用住宿治療"
+"zh": "精神健康及物質濫用住宿治療",
+"hasPrice": true
 },
 {
 "line": 320,
 "indent": 5,
 "label": "Individual and family services",
-"zh": "個人及家庭服務"
+"zh": "個人及家庭服務",
+"hasPrice": true
 },
 {
 "line": 321,
 "indent": 5,
 "label": "Vocational rehabilitation services",
-"zh": "職業復健服務"
+"zh": "職業復健服務",
+"hasPrice": true
 },
 {
 "line": 322,
 "indent": 5,
 "label": "Community food and housing / emergency / other relief services",
-"zh": "社區食物、住宅及緊急救助"
+"zh": "社區食物、住宅及緊急救助",
+"hasPrice": true
 },
 {
 "line": 323,
 "indent": 5,
 "label": "Other social assistance, not elsewere classified",
-"zh": "其他社會救助"
+"zh": "其他社會救助",
+"hasPrice": true
 },
 {
 "line": 324,
 "indent": 4,
 "label": "Social advocacy and civic and social organizations",
-"zh": "社會倡議及公民社團"
+"zh": "社會倡議及公民社團",
+"hasPrice": true
 },
 {
 "line": 325,
 "indent": 4,
 "label": "Religious organizations' services to households",
-"zh": "宗教組織服務"
+"zh": "宗教組織服務",
+"hasPrice": true
 },
 {
 "line": 326,
 "indent": 4,
 "label": "Foundations and grantmaking and giving services to households",
-"zh": "基金會及捐贈服務"
+"zh": "基金會及捐贈服務",
+"hasPrice": true
 },
 {
 "line": 327,
 "indent": 3,
 "label": "Household maintenance (parts of 31, 33, and 36)",
-"zh": "家務維護"
+"zh": "家務維護",
+"hasPrice": true
 },
 {
 "line": 328,
 "indent": 4,
 "label": "Domestic services",
-"zh": "家事服務"
+"zh": "家事服務",
+"hasPrice": true
 },
 {
 "line": 329,
 "indent": 4,
 "label": "Moving, storage, and freight services",
-"zh": "搬家、倉儲及貨運"
+"zh": "搬家、倉儲及貨運",
+"hasPrice": true
 },
 {
 "line": 330,
 "indent": 4,
 "label": "Repair of furniture, furnishings, and floor coverings",
-"zh": "家具及地毯修理"
+"zh": "家具及地毯修理",
+"hasPrice": true
 },
 {
 "line": 331,
 "indent": 4,
 "label": "Repair of household appliances",
-"zh": "家電修理"
+"zh": "家電修理",
+"hasPrice": true
 },
 {
 "line": 332,
 "indent": 4,
 "label": "Other household services",
-"zh": "其他家務服務"
+"zh": "其他家務服務",
+"hasPrice": true
 },
 {
 "line": 333,
 "indent": 3,
 "label": "Net foreign travel",
-"zh": "淨海外旅遊"
+"zh": "淨海外旅遊",
+"hasPrice": false
 },
 {
 "line": 334,
 "indent": 4,
 "label": "Foreign travel by U.S. residents (129)",
-"zh": "美國居民海外旅遊"
+"zh": "美國居民海外旅遊",
+"hasPrice": true
 },
 {
 "line": 335,
 "indent": 5,
 "label": "Passenger fares for foreign travel",
-"zh": "國際航線機票"
+"zh": "國際航線機票",
+"hasPrice": true
 },
 {
 "line": 336,
 "indent": 5,
 "label": "U.S. travel outside the United States",
-"zh": "美國居民在海外的旅遊支出"
+"zh": "美國居民在海外的旅遊支出",
+"hasPrice": true
 },
 {
 "line": 337,
 "indent": 5,
 "label": "U.S. student expenditures",
-"zh": "美國留學生海外支出"
+"zh": "美國留學生海外支出",
+"hasPrice": true
 },
 {
 "line": 338,
 "indent": 4,
 "label": "Less: Expenditures in the United States by nonresidents (130)",
-"zh": "減：非居民在美國的支出"
+"zh": "減：非居民在美國的支出",
+"hasPrice": true
 },
 {
 "line": 339,
 "indent": 5,
 "label": "Foreign travel in the United States",
-"zh": "外國旅客在美旅遊"
+"zh": "外國旅客在美旅遊",
+"hasPrice": true
 },
 {
 "line": 340,
 "indent": 5,
 "label": "Medical expenditures of foreigners",
-"zh": "外國人在美醫療支出"
+"zh": "外國人在美醫療支出",
+"hasPrice": true
 },
 {
 "line": 341,
 "indent": 5,
 "label": "Expenditures of foreign students in the United States",
-"zh": "外國留學生在美支出"
+"zh": "外國留學生在美支出",
+"hasPrice": true
 },
 {
 "line": 342,
 "indent": 1,
 "label": "Final consumption expenditures of nonprofit institutions serving households (NPISHs) (132)",
-"zh": "非營利機構最終消費支出"
+"zh": "非營利機構最終消費支出",
+"hasPrice": true
 },
 {
 "line": 343,
 "indent": 2,
 "label": "Gross output of nonprofit institutions (133)",
-"zh": "非營利機構總產出"
+"zh": "非營利機構總產出",
+"hasPrice": true
 },
 {
 "line": 344,
 "indent": 3,
 "label": "Health, gross output",
-"zh": "醫療（總產出）"
+"zh": "醫療（總產出）",
+"hasPrice": true
 },
 {
 "line": 345,
 "indent": 4,
 "label": "Outpatient services, gross output",
-"zh": "門診服務（總產出）"
+"zh": "門診服務（總產出）",
+"hasPrice": true
 },
 {
 "line": 346,
 "indent": 4,
 "label": "Nonprofit hospitals, gross output",
-"zh": "非營利醫院（總產出）"
+"zh": "非營利醫院（總產出）",
+"hasPrice": true
 },
 {
 "line": 347,
 "indent": 4,
 "label": "Nonprofit nursing homes, gross output",
-"zh": "非營利護理之家（總產出）"
+"zh": "非營利護理之家（總產出）",
+"hasPrice": true
 },
 {
 "line": 348,
 "indent": 3,
 "label": "Recreation services, gross output",
-"zh": "休閒服務（總產出）"
+"zh": "休閒服務（總產出）",
+"hasPrice": true
 },
 {
 "line": 349,
 "indent": 3,
 "label": "Education services, gross output",
-"zh": "教育服務（總產出）"
+"zh": "教育服務（總產出）",
+"hasPrice": true
 },
 {
 "line": 350,
 "indent": 3,
 "label": "Social services, gross output",
-"zh": "社會服務（總產出）"
+"zh": "社會服務（總產出）",
+"hasPrice": true
 },
 {
 "line": 351,
 "indent": 3,
 "label": "Religious organizations, gross output",
-"zh": "宗教組織（總產出）"
+"zh": "宗教組織（總產出）",
+"hasPrice": true
 },
 {
 "line": 352,
 "indent": 3,
 "label": "Foundations and grantmaking and giving establishments, gross output",
-"zh": "基金會及捐贈機構（總產出）"
+"zh": "基金會及捐贈機構（總產出）",
+"hasPrice": true
 },
 {
 "line": 353,
 "indent": 3,
 "label": "Social advocacy establishments, gross output",
-"zh": "社會倡議機構（總產出）"
+"zh": "社會倡議機構（總產出）",
+"hasPrice": true
 },
 {
 "line": 354,
 "indent": 3,
 "label": "Civic and social organizations, gross output",
-"zh": "公民及社會組織（總產出）"
+"zh": "公民及社會組織（總產出）",
+"hasPrice": true
 },
 {
 "line": 355,
 "indent": 3,
 "label": "Professional advocacy, gross output",
-"zh": "專業倡議（總產出）"
+"zh": "專業倡議（總產出）",
+"hasPrice": true
 },
 {
 "line": 356,
 "indent": 2,
 "label": "Less: Receipts from sales of goods and services by nonprofit institutions (134)",
-"zh": "減：非營利機構銷售收入"
+"zh": "減：非營利機構銷售收入",
+"hasPrice": true
 },
 {
 "line": 357,
 "indent": 3,
 "label": "Health services to households",
-"zh": "對家庭的醫療服務"
+"zh": "對家庭的醫療服務",
+"hasPrice": true
 },
 {
 "line": 358,
 "indent": 4,
 "label": "Outpatient services to households",
-"zh": "對家庭的門診服務"
+"zh": "對家庭的門診服務",
+"hasPrice": true
 },
 {
 "line": 359,
 "indent": 4,
 "label": "Nonprofit hospitals services to households",
-"zh": "非營利醫院對家庭的服務"
+"zh": "非營利醫院對家庭的服務",
+"hasPrice": true
 },
 {
 "line": 360,
 "indent": 4,
 "label": "Nonprofit nursing homes services to households",
-"zh": "非營利護理之家對家庭的服務"
+"zh": "非營利護理之家對家庭的服務",
+"hasPrice": true
 },
 {
 "line": 361,
 "indent": 3,
 "label": "Recreation services to households",
-"zh": "對家庭的休閒服務"
+"zh": "對家庭的休閒服務",
+"hasPrice": true
 },
 {
 "line": 362,
 "indent": 3,
 "label": "Education services to households",
-"zh": "對家庭的教育服務"
+"zh": "對家庭的教育服務",
+"hasPrice": true
 },
 {
 "line": 363,
 "indent": 3,
 "label": "Social services to households",
-"zh": "對家庭的社會服務"
+"zh": "對家庭的社會服務",
+"hasPrice": true
 },
 {
 "line": 364,
 "indent": 3,
 "label": "Religious organizations' services to households",
-"zh": "宗教組織對家庭的服務"
+"zh": "宗教組織對家庭的服務",
+"hasPrice": true
 },
 {
 "line": 365,
 "indent": 3,
 "label": "Foundations and grantmaking and giving services to households",
-"zh": "基金會及捐贈機構對家庭的服務"
+"zh": "基金會及捐贈機構對家庭的服務",
+"hasPrice": true
 },
 {
 "line": 366,
 "indent": 3,
 "label": "Services of social advocacy establishments to households",
-"zh": "社會倡議機構對家庭的服務"
+"zh": "社會倡議機構對家庭的服務",
+"hasPrice": true
 },
 {
 "line": 367,
 "indent": 3,
 "label": "Civic and social organizations' services to households",
-"zh": "公民及社會組織對家庭的服務"
+"zh": "公民及社會組織對家庭的服務",
+"hasPrice": true
 },
 {
 "line": 368,
 "indent": 3,
 "label": "Professional advocacy services to households",
-"zh": "專業倡議對家庭的服務"
+"zh": "專業倡議對家庭的服務",
+"hasPrice": true
 },
 {
 "line": 369,
 "indent": 1,
 "label": "Control group",
-"zh": "Control group"
+"zh": "Control group",
+"hasPrice": true
 },
 {
 "line": 370,
 "indent": 1,
 "label": "PCE food and energy",
-"zh": "PCE food and energy"
+"zh": "PCE food and energy",
+"hasPrice": true
 },
 {
 "line": 371,
 "indent": 1,
 "label": "PCE energy goods and services1",
-"zh": "PCE energy goods and services"
+"zh": "PCE energy goods and services",
+"hasPrice": true
 },
 {
 "line": 372,
 "indent": 1,
 "label": "PCE excluding food",
-"zh": "PCE excluding food"
+"zh": "PCE excluding food",
+"hasPrice": true
 },
 {
 "line": 373,
 "indent": 1,
 "label": "PCE excluding energy",
-"zh": "PCE excluding energy"
+"zh": "PCE excluding energy",
+"hasPrice": true
 },
 {
 "line": 374,
 "indent": 1,
 "label": "PCE excluding food and energy2",
-"zh": "PCE excluding food and energy"
+"zh": "PCE excluding food and energy",
+"hasPrice": true
 },
 {
 "line": 375,
 "indent": 1,
 "label": "PCE goods excluding food and energy2",
-"zh": "PCE goods excluding food and energy"
+"zh": "PCE goods excluding food and energy",
+"hasPrice": true
 },
 {
 "line": 376,
 "indent": 1,
 "label": "PCE services excluding energy",
-"zh": "PCE services excluding energy"
+"zh": "PCE services excluding energy",
+"hasPrice": true
 },
 {
 "line": 377,
 "indent": 2,
 "label": "Market-based PCE",
-"zh": "Market-based PCE"
+"zh": "Market-based PCE",
+"hasPrice": true
 },
 {
 "line": 378,
 "indent": 1,
 "label": "Market-based PCE motor vehicles and parts",
-"zh": "Market-based PCE motor vehicles and parts"
+"zh": "Market-based PCE motor vehicles and parts",
+"hasPrice": true
 },
 {
 "line": 379,
 "indent": 1,
 "label": "Market-based PCE durable goods other than motor vehicles and parts",
-"zh": "Market-based PCE durable goods other than motor vehicles and parts"
+"zh": "Market-based PCE durable goods other than motor vehicles and parts",
+"hasPrice": true
 },
 {
 "line": 380,
 "indent": 1,
 "label": "Market-based PCE food and beverages purchased for off-premises consumption",
-"zh": "Market-based PCE food and beverages purchased for off-premises consumption"
+"zh": "Market-based PCE food and beverages purchased for off-premises consumption",
+"hasPrice": true
 },
 {
 "line": 381,
 "indent": 1,
 "label": "Market-based PCE clothing and footwear",
-"zh": "Market-based PCE clothing and footwear"
+"zh": "Market-based PCE clothing and footwear",
+"hasPrice": true
 },
 {
 "line": 382,
 "indent": 1,
 "label": "Market-based PCE gasoline and other energy goods",
-"zh": "Market-based PCE gasoline and other energy goods"
+"zh": "Market-based PCE gasoline and other energy goods",
+"hasPrice": true
 },
 {
 "line": 383,
 "indent": 1,
 "label": "Market-based PCE other nondurable goods",
-"zh": "Market-based PCE other nondurable goods"
+"zh": "Market-based PCE other nondurable goods",
+"hasPrice": true
 },
 {
 "line": 384,
 "indent": 1,
 "label": "Market-based PCE services",
-"zh": "Market-based PCE services"
+"zh": "Market-based PCE services",
+"hasPrice": true
 },
 {
 "line": 385,
 "indent": 2,
 "label": "Market-based PCE housing services",
-"zh": "Market-based PCE housing services"
+"zh": "Market-based PCE housing services",
+"hasPrice": true
 },
 {
 "line": 386,
 "indent": 2,
 "label": "Market-based PCE household utilities",
-"zh": "Market-based PCE household utilities"
+"zh": "Market-based PCE household utilities",
+"hasPrice": true
 },
 {
 "line": 387,
 "indent": 2,
 "label": "Market-based PCE health care",
-"zh": "Market-based PCE health care"
+"zh": "Market-based PCE health care",
+"hasPrice": true
 },
 {
 "line": 388,
 "indent": 2,
 "label": "Market-based PCE transportation services",
-"zh": "Market-based PCE transportation services"
+"zh": "Market-based PCE transportation services",
+"hasPrice": true
 },
 {
 "line": 389,
 "indent": 2,
 "label": "Market-based PCE recreation services",
-"zh": "Market-based PCE recreation services"
+"zh": "Market-based PCE recreation services",
+"hasPrice": true
 },
 {
 "line": 390,
 "indent": 2,
 "label": "Market-based PCE food services and accommodations",
-"zh": "Market-based PCE food services and accommodations"
+"zh": "Market-based PCE food services and accommodations",
+"hasPrice": true
 },
 {
 "line": 391,
 "indent": 2,
 "label": "Market-based PCE financial services and insurance",
-"zh": "Market-based PCE financial services and insurance"
+"zh": "Market-based PCE financial services and insurance",
+"hasPrice": true
 },
 {
 "line": 392,
 "indent": 2,
 "label": "Market-based PCE other services",
-"zh": "Market-based PCE other services"
+"zh": "Market-based PCE other services",
+"hasPrice": true
 },
 {
 "line": 393,
 "indent": 3,
 "label": "Market-based PCE communication services",
-"zh": "Market-based PCE communication services"
+"zh": "Market-based PCE communication services",
+"hasPrice": true
 },
 {
 "line": 394,
 "indent": 3,
 "label": "Market-based PCE education",
-"zh": "Market-based PCE education"
+"zh": "Market-based PCE education",
+"hasPrice": true
 },
 {
 "line": 395,
 "indent": 3,
 "label": "Market-based PCE professional services",
-"zh": "Market-based PCE professional services"
+"zh": "Market-based PCE professional services",
+"hasPrice": true
 },
 {
 "line": 396,
 "indent": 3,
 "label": "Market-based PCE personal care and clothing services",
-"zh": "Market-based PCE personal care and clothing services"
+"zh": "Market-based PCE personal care and clothing services",
+"hasPrice": true
 },
 {
 "line": 397,
 "indent": 3,
 "label": "Market-based PCE child care",
-"zh": "Market-based PCE child care"
+"zh": "Market-based PCE child care",
+"hasPrice": true
 },
 {
 "line": 398,
 "indent": 3,
 "label": "Market-based PCE household maintenance",
-"zh": "Market-based PCE household maintenance"
+"zh": "Market-based PCE household maintenance",
+"hasPrice": true
 },
 {
 "line": 399,
 "indent": 0,
 "label": "Market-based PCE food and energy",
-"zh": "Market-based PCE food and energy"
+"zh": "Market-based PCE food and energy",
+"hasPrice": true
 },
 {
 "line": 400,
 "indent": 0,
 "label": "Market-based PCE excluding food",
-"zh": "Market-based PCE excluding food"
+"zh": "Market-based PCE excluding food",
+"hasPrice": true
 },
 {
 "line": 401,
 "indent": 0,
 "label": "Market-based PCE excluding energy",
-"zh": "Market-based PCE excluding energy"
+"zh": "Market-based PCE excluding energy",
+"hasPrice": true
 },
 {
 "line": 402,
 "indent": 0,
 "label": "Market-based PCE excluding food and energy",
-"zh": "Market-based PCE excluding food and energy"
+"zh": "Market-based PCE excluding food and energy",
+"hasPrice": true
 }
 ]
