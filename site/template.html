@@ -1,0 +1,726 @@
+<title>PCE Driver</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans+Condensed:wght@500;600;700&family=Noto+Sans+TC:wght@400;500;700&display=swap">
+<style>
+/* Layout: a statistical release sheet — masthead, control rail, headline reading beside the
+   drilled node, stacked monthly contributions with a breadcrumb, then a driver ledger. */
+:root {
+  --bg: #eef1f4;
+  --surface: #fbfcfd;
+  --ink: #121820;
+  --ink-2: #465061;
+  --muted: #747d8c;
+  --rule: #dfe3e9;
+  --axis: #c3cad3;
+  --sel: #e6ebf1;
+  --chip: #e7ebf0;
+  --hover: #f0f3f6;
+  --s1: #2a78d6; --s2: #eb6834; --s3: #1baf7a; --s4: #eda100;
+  --s5: #e87ba4; --s6: #008300; --s7: #6250d6; --s8: #e34948;
+  --other: #9aa2ae;
+  --f-display: "IBM Plex Sans Condensed", "Noto Sans TC", system-ui, -apple-system, "Segoe UI", sans-serif;
+  --f-body: "Noto Sans TC", system-ui, -apple-system, "Segoe UI", "PingFang TC", "Microsoft JhengHei", sans-serif;
+  --f-data: "IBM Plex Mono", ui-monospace, "SFMono-Regular", Menlo, Consolas, monospace;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #0e1114; --surface: #161a1f; --ink: #edf0f3; --ink-2: #b6bfca; --muted: #858e9c;
+    --rule: #252b32; --axis: #3a424c; --sel: #20262e; --chip: #20262e; --hover: #1b2026;
+    --s1: #3987e5; --s2: #d95926; --s3: #199e70; --s4: #c98500;
+    --s5: #d55181; --s6: #008300; --s7: #9085e9; --s8: #e66767; --other: #5d6673;
+    color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #0e1114; --surface: #161a1f; --ink: #edf0f3; --ink-2: #b6bfca; --muted: #858e9c;
+  --rule: #252b32; --axis: #3a424c; --sel: #20262e; --chip: #20262e; --hover: #1b2026;
+  --s1: #3987e5; --s2: #d95926; --s3: #199e70; --s4: #c98500;
+  --s5: #d55181; --s6: #008300; --s7: #9085e9; --s8: #e66767; --other: #5d6673;
+  color-scheme: dark;
+}
+
+* { box-sizing: border-box; }
+body {
+  background: var(--bg);
+  color: var(--ink);
+  font-family: var(--f-body);
+  font-size: 15px;
+  line-height: 1.55;
+  padding-left: max(16px, env(safe-area-inset-left, 0px));
+  padding-right: max(16px, env(safe-area-inset-right, 0px));
+  padding-block: 28px 48px;
+}
+.wrap { max-width: 1120px; margin: 0 auto; display: grid; gap: 18px; }
+
+/* Masthead */
+.masthead { display: flex; flex-wrap: wrap; align-items: flex-end; justify-content: space-between; gap: 12px 24px; }
+.eyebrow { font-size: 12px; letter-spacing: 0.12em; color: var(--muted); margin: 0 0 2px; }
+h1 { font-family: var(--f-display); font-weight: 700; font-size: clamp(34px, 6vw, 48px); line-height: 1; margin: 0; letter-spacing: -0.01em; }
+h1 span { font-weight: 500; color: var(--ink-2); }
+.meta { display: flex; flex-wrap: wrap; gap: 8px; }
+.tag { display: inline-flex; align-items: center; gap: 6px; padding: 3px 10px; border-radius: 999px; background: var(--chip); color: var(--ink-2); font-size: 12.5px; white-space: nowrap; }
+
+/* Control rail */
+.controls { display: flex; flex-wrap: wrap; gap: 10px 22px; align-items: center; padding: 12px 0; border-top: 1px solid var(--rule); border-bottom: 1px solid var(--rule); }
+.ctl { display: flex; align-items: center; gap: 8px; }
+.ctl-label { font-size: 12px; color: var(--muted); letter-spacing: 0.06em; }
+.seg { display: inline-flex; background: var(--chip); border-radius: 8px; padding: 2px; gap: 2px; }
+.seg button {
+  font: inherit; font-size: 13.5px; border: 0; background: transparent; color: var(--ink-2);
+  padding: 5px 12px; border-radius: 6px; cursor: pointer; white-space: nowrap;
+}
+.seg button:hover { color: var(--ink); background: var(--surface); }
+.seg button[aria-pressed="true"] { background: var(--ink); color: var(--surface); font-weight: 500; }
+button:focus-visible, select:focus-visible, [tabindex]:focus-visible { outline: 2px solid var(--s1); outline-offset: 2px; }
+
+/* Reading */
+.reading { display: grid; grid-template-columns: minmax(0, 0.9fr) minmax(0, 1.3fr); gap: 18px 36px; align-items: end; }
+.stepper { display: flex; align-items: center; gap: 6px; margin-bottom: 8px; }
+.stepper button { font: inherit; width: 30px; height: 30px; border-radius: 8px; border: 1px solid var(--rule); background: var(--surface); color: var(--ink); cursor: pointer; font-size: 16px; line-height: 1; }
+.stepper button:disabled { opacity: 0.35; cursor: default; }
+.stepper select { font: inherit; font-size: 14px; font-weight: 500; padding: 4px 8px; border-radius: 8px; border: 1px solid var(--rule); background: var(--surface); color: var(--ink); }
+.hero-label { font-size: 14px; color: var(--ink-2); margin: 0; }
+.hero { display: flex; align-items: baseline; gap: 14px; flex-wrap: wrap; }
+.hero-num { font-family: var(--f-display); font-weight: 600; font-size: clamp(52px, 9vw, 72px); line-height: 1; letter-spacing: -0.02em; }
+.hero-num small { font-size: 0.45em; font-weight: 500; color: var(--ink-2); margin-left: 2px; }
+.delta { font-size: 14px; color: var(--ink-2); white-space: nowrap; }
+.delta b { font-family: var(--f-data); font-weight: 500; color: var(--ink); }
+
+.focus { border-left: 1px solid var(--rule); padding-left: 24px; min-width: 0; }
+.focus-label { font-size: 12px; color: var(--muted); letter-spacing: 0.08em; margin: 0; }
+.focus-name { font-family: var(--f-display); font-size: 22px; font-weight: 600; margin: 0 0 10px; line-height: 1.25; text-wrap: balance; }
+.focus-name small { display: block; font-family: var(--f-body); font-size: 12.5px; font-weight: 400; color: var(--muted); }
+.stats { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px; margin-bottom: 10px; }
+.stat span { display: block; font-size: 12px; color: var(--muted); }
+.stat b { font-family: var(--f-data); font-size: 20px; font-weight: 500; }
+.stat small { font-size: 12px; color: var(--ink-2); margin-left: 3px; }
+.story { margin: 0; font-size: 14.5px; color: var(--ink-2); max-width: 62ch; }
+.story b { color: var(--ink); font-weight: 700; }
+
+/* Panels */
+.panel { background: var(--surface); border-radius: 12px; padding: 18px 20px 16px; box-shadow: 0 0 0 1px var(--rule); min-width: 0; }
+.crumbs { display: flex; flex-wrap: wrap; align-items: center; gap: 2px 4px; font-size: 13px; margin-bottom: 8px; }
+.crumbs button {
+  font: inherit; border: 0; background: transparent; color: var(--ink-2); padding: 2px 6px; border-radius: 6px; cursor: pointer;
+  text-decoration: underline; text-decoration-color: var(--axis); text-underline-offset: 3px;
+}
+.crumbs button:hover { color: var(--ink); background: var(--chip); }
+.crumbs .sep { color: var(--muted); }
+.crumbs .here { color: var(--ink); font-weight: 700; padding: 2px 6px; }
+.panel-head { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: baseline; gap: 8px 16px; margin-bottom: 10px; }
+h2 { font-family: var(--f-display); font-weight: 600; font-size: 19px; margin: 0; text-wrap: balance; }
+h2 em { font-style: normal; color: var(--muted); font-weight: 500; font-size: 15px; margin-left: 6px; }
+.hint { font-size: 12.5px; color: var(--muted); margin: 0; }
+.legend { display: flex; flex-wrap: wrap; gap: 6px 16px; font-size: 13px; color: var(--ink-2); margin-bottom: 6px; }
+.legend span { display: inline-flex; align-items: center; gap: 6px; }
+.legend i { width: 10px; height: 10px; border-radius: 3px; display: inline-block; flex: none; }
+.legend .line-key { width: 16px; height: 2px; border-radius: 1px; background: var(--ink); }
+
+.chart { position: relative; width: 100%; }
+.chart svg { display: block; width: 100%; overflow: visible; outline: none; }
+.chart text { font-family: var(--f-data); font-size: 11px; fill: var(--muted); }
+.chart .yr { fill: var(--ink-2); font-weight: 500; }
+.chart .seg.drill { cursor: pointer; }
+.chart .seg.drill:hover { opacity: 0.82; }
+.tip {
+  position: absolute; pointer-events: none; min-width: 230px; max-width: 320px; background: var(--surface); color: var(--ink);
+  border-radius: 10px; box-shadow: 0 0 0 1px var(--rule), 0 8px 24px rgba(10, 20, 30, 0.14);
+  padding: 10px 12px; font-size: 12.5px; z-index: 2;
+}
+.tip h3 { margin: 0 0 6px; font-size: 13px; font-weight: 700; display: flex; justify-content: space-between; gap: 12px; }
+.tip h3 b { font-family: var(--f-data); font-weight: 500; }
+.tip div { display: grid; grid-template-columns: 10px 1fr auto; gap: 8px; align-items: center; padding: 2px 0; color: var(--ink-2); }
+.tip div.on { color: var(--ink); font-weight: 700; }
+.tip div i { width: 10px; height: 10px; border-radius: 3px; }
+.tip div i.ring { box-shadow: inset 0 0 0 1px var(--axis); }
+.tip div b { font-family: var(--f-data); font-weight: 400; color: var(--ink); font-variant-numeric: tabular-nums; }
+.tip p { margin: 6px 0 0; color: var(--muted); font-size: 11.5px; }
+
+/* Driver ledger */
+.ledger { display: grid; }
+.row {
+  display: grid; grid-template-columns: minmax(0, 1.7fr) 66px 76px minmax(110px, 1.8fr) 78px;
+  gap: 12px; align-items: center; padding: 7px 6px; border-bottom: 1px solid var(--rule); font-size: 14px;
+  border-radius: 6px;
+}
+.row.head { font-size: 12px; color: var(--muted); letter-spacing: 0.04em; padding-top: 0; }
+.row.head .num { text-align: right; }
+.row.drillable { cursor: pointer; }
+.row.drillable:hover { background: var(--hover); }
+.row.total { border-bottom: 0; border-top: 1px solid var(--axis); font-weight: 700; border-radius: 0; }
+.row.resid { color: var(--ink-2); }
+.name { display: flex; align-items: center; gap: 8px; min-width: 0; }
+.name i { flex: none; width: 10px; height: 10px; border-radius: 3px; }
+.name i.ring { box-shadow: inset 0 0 0 1px var(--axis); }
+.name > span { overflow-wrap: anywhere; min-width: 0; }
+.name small { color: var(--muted); font-size: 11.5px; display: block; line-height: 1.35; font-weight: 400; }
+.chev { flex: none; margin-left: auto; color: var(--muted); font-family: var(--f-data); font-size: 16px; padding-left: 6px; }
+.row.drillable:hover .chev { color: var(--ink); }
+.num { font-family: var(--f-data); font-variant-numeric: tabular-nums; text-align: right; font-size: 13.5px; }
+.num.dim { color: var(--ink-2); }
+.bar { position: relative; height: 14px; }
+.bar::before { content: ""; position: absolute; left: 50%; top: -6px; bottom: -6px; width: 1px; background: var(--axis); }
+.bar i { position: absolute; top: 1px; height: 12px; }
+.bar i.pos { border-radius: 0 4px 4px 0; }
+.bar i.neg { border-radius: 4px 0 0 4px; }
+.sortbar { display: flex; align-items: center; gap: 8px; }
+
+/* Notes */
+.notes { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 14px 28px; font-size: 13.5px; color: var(--ink-2); }
+.notes h3 { font-family: var(--f-display); font-size: 15px; font-weight: 600; color: var(--ink); margin: 0 0 4px; }
+.notes p, .notes ol { margin: 0; max-width: 62ch; }
+.notes ol { padding-left: 1.2em; }
+.notes code { font-family: var(--f-data); font-size: 12.5px; background: var(--chip); padding: 1px 5px; border-radius: 4px; }
+
+@media (max-width: 820px) {
+  .reading { grid-template-columns: minmax(0, 1fr); }
+  .focus { border-left: 0; padding-left: 0; border-top: 1px solid var(--rule); padding-top: 14px; }
+}
+@media (max-width: 600px) {
+  body { padding-block: 18px 36px; }
+  .panel { padding: 14px 12px 12px; }
+  .row { grid-template-columns: minmax(0, 1.5fr) minmax(64px, 1.1fr) 66px; gap: 8px; }
+  .row .c-w, .row .c-chg { display: none; }
+  .row .name small .en { display: none; }
+  .controls { gap: 10px 14px; }
+  .ctl-label { display: none; }
+  .stat b { font-size: 17px; }
+}
+@media (prefers-reduced-motion: no-preference) {
+  .bar i { transition: left 220ms ease, width 220ms ease; }
+}
+</style>
+
+<div class="wrap">
+  <header class="masthead">
+    <div>
+      <p class="eyebrow">美國 PCE 物價 · 細項貢獻度拆解</p>
+      <h1>PCE Driver <span>原型</span></h1>
+    </div>
+    <div class="meta">
+      <span class="tag" id="vintage"></span>
+      <span class="tag">BEA Table 2.4.4U ＋ 2.4.5U · 月資料</span>
+      <span class="tag" id="next-release" hidden></span>
+    </div>
+  </header>
+
+  <nav class="controls" aria-label="檢視設定">
+    <div class="ctl"><span class="ctl-label">指數</span>
+      <div class="seg" data-key="index">
+        <button type="button" id="ix-pce" data-v="pce">PCE</button>
+        <button type="button" id="ix-core" data-v="core">核心 PCE</button>
+      </div></div>
+    <div class="ctl"><span class="ctl-label">變動</span>
+      <div class="seg" data-key="mode">
+        <button type="button" id="md-yoy" data-v="yoy">年增率</button>
+        <button type="button" id="md-mom" data-v="mom">月增率</button>
+      </div></div>
+    <div class="ctl"><span class="ctl-label">期間</span>
+      <div class="seg" data-key="range">
+        <button type="button" id="rg-12" data-v="12">12 個月</button>
+        <button type="button" id="rg-24" data-v="24">24 個月</button>
+        <button type="button" id="rg-all" data-v="all">全部</button>
+      </div></div>
+  </nav>
+
+  <section class="reading" aria-live="polite">
+    <div>
+      <div class="stepper">
+        <button type="button" id="prev" aria-label="上一個月">‹</button>
+        <select id="month" aria-label="選擇月份"></select>
+        <button type="button" id="next" aria-label="下一個月">›</button>
+      </div>
+      <p class="hero-label" id="hero-label"></p>
+      <div class="hero">
+        <div class="hero-num" id="hero-num">–</div>
+        <div class="delta" id="hero-delta"></div>
+      </div>
+    </div>
+    <div class="focus">
+      <p class="focus-label">目前展開</p>
+      <h2 class="focus-name" id="focus-name"></h2>
+      <div class="stats" id="stats"></div>
+      <p class="story" id="story"></p>
+    </div>
+  </section>
+
+  <section class="panel">
+    <nav class="crumbs" id="crumbs" aria-label="展開路徑"></nav>
+    <div class="panel-head">
+      <h2 id="chart-title"></h2>
+      <p class="hint" id="chart-hint"></p>
+    </div>
+    <div class="legend" id="legend"></div>
+    <div class="chart" id="chart"><div class="tip" id="tip" hidden></div></div>
+  </section>
+
+  <section class="panel">
+    <div class="panel-head">
+      <h2 id="ledger-title"></h2>
+      <div class="sortbar"><span class="ctl-label">排序</span>
+        <div class="seg" data-key="sort">
+          <button type="button" id="st-contrib" data-v="contrib">依貢獻</button>
+          <button type="button" id="st-table" data-v="table">依 BEA 表格順序</button>
+        </div></div>
+    </div>
+    <div class="ledger" id="ledger" role="table" aria-label="細項貢獻表"></div>
+  </section>
+
+  <section class="notes">
+    <div>
+      <h3>計算方法</h3>
+      <p>價格取自 Table 2.4.4U，權重取自 Table 2.4.5U 的名目支出。貢獻度在最細的 221 個項目上計算，任何一層的數字都是底下最細項目的加總，所以子項一定加總成父項。所有層級都是「對 PCE 總指數的貢獻」，單位相同，可以直接和頭條數字比較。月貢獻採用 BEA 的 Fisher 加法拆解，年貢獻把 12 個月的月貢獻依累積指數水準串接。</p>
+    </div>
+    <div>
+      <h3>樹狀結構與特殊項目</h3>
+      <p>層級完全依照 BEA 表格的縮排。家庭保險淨額與非營利機構最終消費本身就是淨額，視為最細項目。美國居民海外淨支出與淨海外旅遊沒有價格指數，往下拆開，標示「減：」的項目以負權重計入，所以價格上漲時貢獻為負。核心 PCE 會移除居家食品及飲料、汽油等能源商品、電力與天然氣三個分支。</p>
+    </div>
+    <div>
+      <h3>資料來源與更新</h3>
+      <ol>
+        <li id="source-note">資料來自 BEA API：資料集 <code>NIUnderlyingDetail</code>，表格 <code>U20404</code>、<code>U20405</code>，月資料。排程每個工作日檢查一次，BEA 發布新數字後自動更新。</li>
+        <li>每次 BEA 發布都會修正過去幾個月的數字，本頁每次都重抓完整歷史，不只補最新一個月。</li>
+        <li>越細的項目，BEA 的來源資料品質越弱，解讀時請留意。</li>
+      </ol>
+    </div>
+  </section>
+</div>
+
+<script>
+const DATA = /*DATA*/null;
+/*COMPUTE*/
+
+(() => {
+  const T = DATA.months.length;
+  const N = new Map(DATA.nodes.map(n => [n.id, n]));
+  const LEAF = new Map(DATA.leaves.map(l => [l.id, l]));
+  const ROOT = 1;
+
+  // 每個節點底下的最細項目
+  const leafIds = new Map();
+  (function collect(id) {
+    const n = N.get(id);
+    const r = n.lf ? [id] : n.kids.flatMap(collect);
+    leafIds.set(id, r);
+    return r;
+  })(ROOT);
+
+  const models = {}, pos = {};
+  for (const k of ["pce", "core"]) {
+    const items = DATA.leaves.filter(l => k === "pce" || l.core).map(l => ({ id: l.id, price: N.get(l.id).price, spend: l.spend }));
+    models[k] = buildModel(items, T);
+    pos[k] = new Map(items.map((it, i) => [it.id, i]));
+  }
+
+  const state = { index: "pce", mode: "yoy", range: "24", sort: "contrib", t: T - 1, node: ROOT };
+
+  const $ = id => document.getElementById(id);
+  const esc = s => String(s).replace(/[&<>"]/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
+  const monthLabel = t => { const [y, m] = DATA.months[t].split("-"); return `${y} 年 ${+m} 月`; };
+  const signed = (v, d) => (v > 0 ? "+" : v < 0 ? "−" : "±") + Math.abs(v).toFixed(d);
+  const firstValid = () => state.mode === "yoy" ? 12 : 1;
+  const modeWord = () => state.mode === "yoy" ? "年增率" : "月增率";
+  const indexWord = () => state.index === "pce" ? "PCE" : "核心 PCE";
+  const inScope = id => state.index === "pce" || N.get(id).core;
+  const kidsOf = id => N.get(id).kids.filter(inScope);
+  const nameOf = id => id === ROOT ? (state.index === "pce" ? "個人消費支出（PCE）" : "核心 PCE（不含食品與能源）") : N.get(id).zh;
+  const decFor = vals => {
+    const a = vals.map(Math.abs), m = Math.max(...a, 0);
+    let d = m >= 0.1 ? 2 : m >= 0.01 ? 3 : 4;
+    const smallest = Math.min(...a.filter(v => v > 0), Infinity);
+    if (d < 4 && smallest < 0.5 * Math.pow(10, -d)) d++;   // 讓很小的貢獻不會顯示成 0
+    return d;
+  };
+
+  // ---------- 計算 ----------
+  const cache = new Map();
+  function leafContrib(t) {
+    const key = `${state.index}|${state.mode}|${t}`;
+    if (!cache.has(key)) {
+      const r = changeAt(models[state.index], t, state.mode);
+      cache.set(key, r ? Float64Array.from(r.contrib) : null);
+    }
+    return cache.get(key);
+  }
+  function nodeContrib(id, lc) {
+    const p = pos[state.index];
+    let s = 0;
+    for (const l of leafIds.get(id)) { const i = p.get(l); if (i !== undefined) s += lc[i]; }
+    return s;
+  }
+  function nodeSpend(id, t) {
+    let s = 0;
+    for (const l of leafIds.get(id)) { const lf = LEAF.get(l); if (state.index === "pce" || lf.core) s += lf.spend[t]; }
+    return s;
+  }
+  const subModels = new Map();
+  function ownChange(id, t) {
+    const n = N.get(id);
+    const allIn = state.index === "pce" || leafIds.get(id).every(l => LEAF.get(l).core);
+    if (allIn) return n.price ? pctChange(n.price, t, state.mode) : null;   // BEA 公布的價格指數
+    if (!subModels.has(id)) {                                                // 核心模式下被移除部分子項的節點
+      const items = leafIds.get(id).filter(l => LEAF.get(l).core).map(l => ({ price: N.get(l).price, spend: LEAF.get(l).spend }));
+      subModels.set(id, buildModel(items, T));
+    }
+    return pctChange(subModels.get(id).idx, t, state.mode);
+  }
+
+  // 目前節點的子項顏色：BEA 順序依序配色，超過 8 項時把支出最小的併入「其他」
+  function colorPlan(id) {
+    const kids = kidsOf(id);
+    const map = new Map();
+    let folded = new Set();
+    if (kids.length > 8) {
+      const ranked = [...kids].sort((a, b) => Math.abs(nodeSpend(b, T - 1)) - Math.abs(nodeSpend(a, T - 1)));
+      folded = new Set(ranked.slice(7));
+    }
+    let slot = 0;
+    for (const k of kids) map.set(k, folded.has(k) ? "var(--other)" : `var(--s${++slot})`);
+    return { map, folded };
+  }
+
+  function snapshot(t) {
+    const lc = leafContrib(t);
+    if (!lc) return null;
+    const wb = state.mode === "mom" ? t - 1 : t;
+    const tot = nodeSpend(ROOT, wb);
+    const rows = kidsOf(state.node).map((id, k) => ({
+      id, order: k, n: N.get(id),
+      contrib: nodeContrib(id, lc),
+      weight: nodeSpend(id, wb) / tot * 100,
+      change: ownChange(id, t),
+      drill: !N.get(id).lf,
+    }));
+    const nodeTotal = rows.reduce((a, r) => a + r.contrib, 0);
+    const headline = pctChange(DATA.official[state.index], t, state.mode);
+    const allSum = state.node === ROOT ? nodeTotal : nodeContrib(ROOT, lc);
+    return {
+      rows, nodeTotal, headline, residual: headline - allSum,
+      nodeWeight: nodeSpend(state.node, wb) / tot * 100,
+      nodeChange: state.node === ROOT ? headline : ownChange(state.node, t),
+    };
+  }
+
+  // ---------- 導覽 ----------
+  function pathTo(id) { const p = []; while (id) { p.unshift(id); id = N.get(id).p; } return p; }
+  function drillTo(id, fromHash) {
+    if (!N.has(id)) id = ROOT;
+    if (N.get(id).lf) id = N.get(id).p;
+    while (!inScope(id)) id = N.get(id).p;
+    state.node = id;
+    if (!fromHash) { try { location.hash = id === ROOT ? "" : "n" + id; } catch (e) {} }
+    render();
+  }
+  window.addEventListener("hashchange", () => {
+    const m = /^#n(\d+)$/.exec(location.hash);
+    const id = m ? +m[1] : ROOT;
+    if (id !== state.node) drillTo(id, true);
+  });
+
+  document.querySelectorAll(".seg").forEach(seg => {
+    seg.addEventListener("click", e => {
+      const b = e.target.closest("button"); if (!b) return;
+      state[seg.dataset.key] = b.dataset.v;
+      if (state.t < firstValid()) state.t = firstValid();
+      while (!inScope(state.node)) state.node = N.get(state.node).p;
+      render();
+    });
+  });
+  $("prev").addEventListener("click", () => { if (state.t > firstValid()) { state.t--; render(); } });
+  $("next").addEventListener("click", () => { if (state.t < T - 1) { state.t++; render(); } });
+  $("month").addEventListener("change", e => { state.t = +e.target.value; render(); });
+  $("crumbs").addEventListener("click", e => { const b = e.target.closest("button[data-id]"); if (b) drillTo(+b.dataset.id); });
+
+  function syncControls() {
+    document.querySelectorAll(".seg").forEach(seg => {
+      seg.querySelectorAll("button").forEach(b => b.setAttribute("aria-pressed", String(state[seg.dataset.key] === b.dataset.v)));
+    });
+    const opts = [];
+    for (let t = T - 1; t >= firstValid(); t--) opts.push(`<option value="${t}">${monthLabel(t)}</option>`);
+    $("month").innerHTML = opts.join("");
+    $("month").value = String(state.t);
+    $("prev").disabled = state.t <= firstValid();
+    $("next").disabled = state.t >= T - 1;
+  }
+
+  // ---------- 頭條與目前節點 ----------
+  function renderReading(snap, plan) {
+    const prev = state.t - 1 >= firstValid() ? pctChange(DATA.official[state.index], state.t - 1, state.mode) : null;
+    $("hero-label").textContent = `${indexWord()} 物價${modeWord()} · ${monthLabel(state.t)} · BEA 官方`;
+    $("hero-num").innerHTML = `${snap.headline.toFixed(2)}<small>%</small>`;
+    $("hero-delta").innerHTML = prev === null ? "" : `較上月 <b>${signed(snap.headline - prev, 2)}</b> 個百分點`;
+
+    const node = N.get(state.node);
+    $("focus-name").innerHTML = `${esc(nameOf(state.node))}<small>${esc(node.en)} · line ${node.id}</small>`;
+    const d = decFor([snap.nodeTotal]);
+    const ch = snap.nodeChange;
+    $("stats").innerHTML = [
+      [`對${indexWord()}${modeWord()}的貢獻`, signed(state.node === ROOT ? snap.headline : snap.nodeTotal, state.node === ROOT ? 2 : d), "個百分點"],
+      [`自身${modeWord()}`, ch === null ? "—" : signed(ch, 2) + "%", ""],
+      [`占${indexWord()}支出`, (state.node === ROOT ? 100 : snap.nodeWeight).toFixed(snap.nodeWeight < 1 ? 2 : 1) + "%", ""],
+    ].map(([k, v, u]) => `<div class="stat"><span>${k}</span><b>${v}</b>${u ? `<small>${u}</small>` : ""}</div>`).join("");
+
+    const rows = snap.rows;
+    const dd = decFor(rows.map(r => r.contrib));
+    const sorted = [...rows].sort((a, b) => b.contrib - a.contrib);
+    const top = sorted[0], bottom = sorted[sorted.length - 1];
+    let s = `底下推升最多的是<b>${esc(top.n.zh)}</b>（${signed(top.contrib, dd)}）`;
+    s += bottom.contrib < 0 ? `，拖累最多的是<b>${esc(bottom.n.zh)}</b>（${signed(bottom.contrib, dd)}）。` : `，${rows.length} 個子項都在推升。`;
+    $("story").innerHTML = s;
+  }
+
+  // ---------- 堆疊柱狀圖 ----------
+  const SVGNS = "http://www.w3.org/2000/svg";
+  const svg = document.createElementNS(SVGNS, "svg");
+  svg.setAttribute("tabindex", "0");
+  svg.setAttribute("role", "img");
+  $("chart").prepend(svg);
+  svg.addEventListener("keydown", e => {
+    if (e.key === "ArrowLeft" && state.t > firstValid()) { state.t--; render(); e.preventDefault(); }
+    if (e.key === "ArrowRight" && state.t < T - 1) { state.t++; render(); e.preventDefault(); }
+    if ((e.key === "Escape" || e.key === "Backspace") && state.node !== ROOT) { drillTo(N.get(state.node).p); e.preventDefault(); }
+  });
+
+  function niceStep(span) {
+    const raw = span / 5, mag = Math.pow(10, Math.floor(Math.log10(raw)));
+    const n = raw / mag;
+    return (n < 1.5 ? 1 : n < 3 ? 2 : n < 7 ? 5 : 10) * mag;
+  }
+  function roundedRect(x, y, w, h, r, end) {
+    if (h <= 0) return "";
+    r = Math.min(r, h, w / 2);
+    if (end === "top") return `M${x},${y + h}V${y + r}Q${x},${y} ${x + r},${y}H${x + w - r}Q${x + w},${y} ${x + w},${y + r}V${y + h}Z`;
+    if (end === "bottom") return `M${x},${y}V${y + h - r}Q${x},${y + h} ${x + r},${y + h}H${x + w - r}Q${x + w},${y + h} ${x + w},${y + h - r}V${y}Z`;
+    return `M${x},${y}h${w}v${h}h${-w}Z`;
+  }
+
+  let series = [], segMeta = [];
+  function chartSeries(plan) {
+    const start = state.range === "all" ? firstValid() : Math.max(firstValid(), T - +state.range);
+    const kids = kidsOf(state.node);
+    segMeta = kids.filter(k => !plan.folded.has(k)).map(k => ({ key: k, name: N.get(k).zh, color: plan.map.get(k), drill: !N.get(k).lf }));
+    if (plan.folded.size) segMeta.push({ key: "other", name: `其他 ${plan.folded.size} 項`, color: "var(--other)", drill: false });
+    series = [];
+    for (let t = start; t < T; t++) {
+      const lc = leafContrib(t);
+      const vals = new Map();
+      let other = 0, sum = 0;
+      for (const k of kids) {
+        const v = nodeContrib(k, lc); sum += v;
+        if (plan.folded.has(k)) other += v; else vals.set(k, v);
+      }
+      if (plan.folded.size) vals.set("other", other);
+      const headline = pctChange(DATA.official[state.index], t, state.mode);
+      const allSum = state.node === ROOT ? sum : nodeContrib(ROOT, lc);
+      series.push({ t, vals, total: state.node === ROOT ? headline : sum, residual: headline - allSum });
+    }
+  }
+
+  function drawChart() {
+    const box = $("chart");
+    const W = box.clientWidth;
+    if (!W || !series.length) return;
+    const H = W < 520 ? 260 : 320;
+    const m = { l: 50, r: 10, t: 16, b: 40 };
+    let lo = 0, hi = 0;
+    for (const p of series) {
+      let ps = 0, ng = 0;
+      p.vals.forEach(v => v >= 0 ? ps += v : ng += v);
+      hi = Math.max(hi, ps, p.total); lo = Math.min(lo, ng, p.total);
+    }
+    const step = niceStep(hi - lo || 0.01);
+    lo = Math.floor(lo / step - 1e-6) * step; hi = Math.ceil(hi / step + 1e-6) * step;
+    if (lo > -step * 0.5) lo = lo < 0 ? -step : 0;
+    const tickDec = Math.max(0, -Math.floor(Math.log10(step) + 1e-9));
+    const pw = W - m.l - m.r, ph = H - m.t - m.b;
+    const y = v => m.t + (hi - v) / (hi - lo) * ph;
+    const band = pw / series.length;
+    const bw = Math.max(3, Math.min(24, band * 0.64));
+    const cx = i => m.l + band * i + band / 2;
+
+    let out = "";
+    for (let v = lo; v <= hi + step * 1e-6; v += step) {
+      const yy = Math.round(y(v)) + 0.5;
+      const zero = Math.abs(v) < step * 1e-6;
+      out += `<line x1="${m.l}" x2="${W - m.r}" y1="${yy}" y2="${yy}" style="stroke:var(${zero ? "--axis" : "--rule"})" stroke-width="1"/>`;
+      out += `<text x="${m.l - 8}" y="${yy + 4}" text-anchor="end">${(zero ? 0 : v).toFixed(tickDec)}</text>`;
+    }
+    const si = series.findIndex(p => p.t === state.t);
+    if (si >= 0) out += `<rect x="${m.l + band * si}" y="${m.t}" width="${band}" height="${ph}" rx="4" style="fill:var(--sel)"/>`;
+    // 互動熱區（在色塊後方：點空白處只切換月份）
+    series.forEach((p, i) => {
+      out += `<rect class="hit" data-i="${i}" x="${m.l + band * i}" y="${m.t}" width="${band}" height="${ph + 22}" fill="transparent" style="cursor:pointer"/>`;
+    });
+    series.forEach((p, i) => {
+      const x = cx(i) - bw / 2;
+      const segs = segMeta.map(s => ({ ...s, v: p.vals.get(s.key) || 0 }));
+      const pos = segs.filter(s => s.v > 0), neg = segs.filter(s => s.v < 0);
+      let acc = 0;
+      pos.forEach((s, k) => {
+        const y0 = y(acc), y1 = y(acc + s.v); acc += s.v;
+        const top = y1 + (k === pos.length - 1 ? 0 : 1), bot = y0 - (k === 0 ? 0 : 1);
+        out += `<path class="seg${s.drill ? " drill" : ""}" data-i="${i}" data-key="${s.key}" d="${roundedRect(x, top, bw, bot - top, 4, k === pos.length - 1 ? "top" : null)}" style="fill:${s.color}"/>`;
+      });
+      acc = 0;
+      neg.forEach((s, k) => {
+        const y0 = y(acc), y1 = y(acc + s.v); acc += s.v;
+        const top = y0 + (k === 0 ? 0 : 1), bot = y1 - (k === neg.length - 1 ? 0 : 1);
+        out += `<path class="seg${s.drill ? " drill" : ""}" data-i="${i}" data-key="${s.key}" d="${roundedRect(x, top, bw, bot - top, 4, k === neg.length - 1 ? "bottom" : null)}" style="fill:${s.color}"/>`;
+      });
+    });
+    const pts = series.map((p, i) => `${cx(i).toFixed(1)},${y(p.total).toFixed(1)}`).join(" ");
+    out += `<polyline points="${pts}" fill="none" style="stroke:var(--ink);pointer-events:none" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"/>`;
+    if (si >= 0) {
+      const d = state.node === ROOT ? 2 : decFor([series[si].total]);
+      out += `<circle cx="${cx(si)}" cy="${y(series[si].total)}" r="4.5" style="fill:var(--ink);stroke:var(--surface);pointer-events:none" stroke-width="2"/>`;
+      const anchor = si > series.length - 3 ? "end" : si < 2 ? "start" : "middle";
+      out += `<text x="${cx(si)}" y="${Math.max(11, y(series[si].total) - 12)}" text-anchor="${anchor}" style="fill:var(--ink);font-weight:500;font-size:12px;pointer-events:none">${state.node === ROOT ? series[si].total.toFixed(2) + "%" : signed(series[si].total, d)}</text>`;
+    }
+    const every = band < 9 ? 12 : band < 16 ? 6 : band < 28 ? 3 : 1;
+    series.forEach((p, i) => {
+      const mm = +DATA.months[p.t].slice(5);
+      const janSoon = i === 0 && series.slice(1, 5).some(q => DATA.months[q.t].endsWith("-01"));
+      if (mm === 1 || (i === 0 && !janSoon)) {
+        out += `<text class="yr" x="${cx(i)}" y="${H - 6}" text-anchor="${i === 0 ? "start" : "middle"}">${DATA.months[p.t].slice(0, 4)}</text>`;
+      }
+      const nearSel = every > 1 && Math.abs(p.t - state.t) <= 1 && p.t !== state.t;
+      if (((mm - 1) % every === 0 && every < 12 && !nearSel) || p.t === state.t) {
+        out += `<text x="${cx(i)}" y="${m.t + ph + 16}" text-anchor="middle" ${p.t === state.t ? 'style="fill:var(--ink);font-weight:500"' : ""}>${mm}</text>`;
+      }
+    });
+    svg.setAttribute("viewBox", `0 0 ${W} ${H}`);
+    svg.setAttribute("height", H);
+    svg.setAttribute("aria-label", `${nameOf(state.node)} 底下各項目對 ${indexWord()} ${modeWord()}的貢獻，${monthLabel(series[0].t)} 至 ${monthLabel(T - 1)}`);
+    svg.innerHTML = out;
+    svg._geom = { cx, W };
+  }
+
+  const tip = $("tip");
+  svg.addEventListener("pointermove", e => {
+    const el = e.target.closest(".seg, .hit");
+    if (!el) { tip.hidden = true; return; }
+    const i = +el.dataset.i, p = series[i], on = el.dataset.key;
+    const d = decFor([...p.vals.values()]);
+    const rows = [...segMeta].reverse().map(s =>
+      `<div class="${String(s.key) === on ? "on" : ""}"><i style="background:${s.color}"></i><span>${esc(s.name)}</span><b>${signed(p.vals.get(s.key) || 0, d)}</b></div>`).join("");
+    const head = state.node === ROOT ? `${p.total.toFixed(2)}%` : signed(p.total, d);
+    const resid = state.node === ROOT ? `<div><i class="ring"></i><span>殘差</span><b>${signed(p.residual, d)}</b></div>` : "";
+    const meta = segMeta.find(s => String(s.key) === on);
+    const foot = meta ? (meta.drill ? "點一下展開這一項" : meta.key === "other" ? "併入「其他」的項目請從下方列表展開" : "這是最細項目") : "點一下切換到這個月";
+    tip.innerHTML = `<h3><span>${monthLabel(p.t)}</span><b>${head}</b></h3>${rows}${resid}<p>${foot}</p>`;
+    tip.hidden = false;
+    const g = svg._geom, scale = svg.clientWidth / g.W, x = g.cx(i) * scale, tw = tip.offsetWidth;
+    let left = x + 14;
+    if (left + tw > svg.clientWidth) left = x - tw - 14;
+    tip.style.left = Math.max(0, left) + "px";
+    tip.style.top = "8px";
+  });
+  svg.addEventListener("pointerleave", () => { tip.hidden = true; });
+  svg.addEventListener("click", e => {
+    const el = e.target.closest(".seg, .hit");
+    if (!el) return;
+    state.t = series[+el.dataset.i].t;
+    const meta = el.classList.contains("seg") ? segMeta.find(s => String(s.key) === el.dataset.key) : null;
+    tip.hidden = true;
+    if (meta && meta.drill) drillTo(meta.key); else render();
+  });
+
+  // ---------- 排行表 ----------
+  function renderLedger(snap, plan) {
+    const d = decFor(snap.rows.map(r => r.contrib));
+    const list = [...snap.rows].sort(state.sort === "contrib" ? (a, b) => b.contrib - a.contrib : (a, b) => a.order - b.order);
+    const max = Math.max(...list.map(r => Math.abs(r.contrib)), 1e-12);
+    $("ledger-title").innerHTML = `${monthLabel(state.t)} · ${esc(nameOf(state.node))} 底下各項目<em>對${indexWord()}${modeWord()}的貢獻，百分點</em>`;
+    const head = `<div class="row head" role="row"><span role="columnheader">項目</span><span class="num c-w" role="columnheader">支出權重</span><span class="num c-chg" role="columnheader">${modeWord()}</span><span role="columnheader" aria-hidden="true"></span><span class="num" role="columnheader">貢獻</span></div>`;
+    const body = list.map(r => {
+      const color = plan.map.get(r.id);
+      const half = Math.abs(r.contrib) / max * 50;
+      const bar = r.contrib >= 0
+        ? `<i class="pos" style="left:50%;width:${half}%;background:${color}"></i>`
+        : `<i class="neg" style="left:${50 - half}%;width:${half}%;background:${color}"></i>`;
+      const sub = `<span class="en">${esc(r.n.en)}</span>${r.drill ? `<span class="en"> · </span>${kidsOf(r.id).length} 個子項` : ""}`;
+      return `<div class="row${r.drill ? " drillable" : ""}" role="row" ${r.drill ? `tabindex="0" data-id="${r.id}" aria-label="展開 ${esc(r.n.zh)}"` : ""}>
+        <span class="name" role="cell"><i style="background:${color}"></i><span>${esc(r.n.zh)}<small>${sub}</small></span>${r.drill ? '<span class="chev" aria-hidden="true">›</span>' : ""}</span>
+        <span class="num dim c-w" role="cell">${r.weight.toFixed(Math.abs(r.weight) < 1 ? 2 : 1)}%</span>
+        <span class="num dim c-chg" role="cell">${r.change === null ? "—" : signed(r.change, state.mode === "yoy" ? 1 : 2) + "%"}</span>
+        <span class="bar" role="cell" aria-hidden="true">${bar}</span>
+        <span class="num" role="cell">${signed(r.contrib, d)}</span>
+      </div>`;
+    }).join("");
+    let foot;
+    if (state.node === ROOT) {
+      foot = `<div class="row resid" role="row"><span class="name" role="cell"><i class="ring"></i><span>殘差<small>BEA 官方數字與細項合成的差異</small></span></span><span class="num c-w" role="cell"></span><span class="num c-chg" role="cell"></span><span role="cell"></span><span class="num dim" role="cell">${signed(snap.residual, d)}</span></div>` +
+        `<div class="row total" role="row"><span class="name" role="cell"><span>${indexWord()}（BEA 官方）</span></span><span class="num c-w" role="cell">100%</span><span class="num c-chg" role="cell">${signed(snap.headline, 2)}%</span><span role="cell"></span><span class="num" role="cell">${signed(snap.headline, d)}</span></div>`;
+    } else {
+      foot = `<div class="row total" role="row"><span class="name" role="cell"><span>${esc(nameOf(state.node))} 合計</span></span><span class="num c-w" role="cell">${snap.nodeWeight.toFixed(Math.abs(snap.nodeWeight) < 1 ? 2 : 1)}%</span><span class="num c-chg" role="cell">${snap.nodeChange === null ? "—" : signed(snap.nodeChange, state.mode === "yoy" ? 1 : 2) + "%"}</span><span role="cell"></span><span class="num" role="cell">${signed(snap.nodeTotal, d)}</span></div>`;
+    }
+    $("ledger").innerHTML = head + body + foot;
+  }
+  $("ledger").addEventListener("click", e => { const r = e.target.closest(".row.drillable"); if (r) drillTo(+r.dataset.id); });
+  $("ledger").addEventListener("keydown", e => {
+    const r = e.target.closest(".row.drillable");
+    if (r && (e.key === "Enter" || e.key === " ")) { e.preventDefault(); drillTo(+r.dataset.id); }
+  });
+
+  function renderChrome(plan) {
+    const path = pathTo(state.node);
+    $("crumbs").innerHTML = path.map((id, k) => k === path.length - 1
+      ? `<span class="here" aria-current="page">${esc(id === ROOT ? indexWord() : N.get(id).zh)}</span>`
+      : `<button type="button" data-id="${id}">${esc(id === ROOT ? indexWord() : N.get(id).zh)}</button><span class="sep" aria-hidden="true">›</span>`).join("");
+    $("chart-title").innerHTML = `${esc(nameOf(state.node))} 底下各項目的貢獻<em>對${indexWord()}${modeWord()}，百分點</em>`;
+    const anyDrill = segMeta.some(s => s.drill);
+    $("chart-hint").textContent = anyDrill ? "點色塊往下展開，點空白處切換月份" : "這一層都是最細項目，點柱子切換月份";
+    $("legend").innerHTML = [...segMeta].reverse().map(s => `<span><i style="background:${s.color}"></i>${esc(s.name)}</span>`).join("") +
+      `<span><i class="line-key"></i>${state.node === ROOT ? `${indexWord()} ${modeWord()}（BEA 官方）` : `${esc(N.get(state.node).zh)}的貢獻合計`}</span>`;
+  }
+
+  function render() {
+    syncControls();
+    const plan = colorPlan(state.node);
+    const snap = snapshot(state.t);
+    chartSeries(plan);
+    renderReading(snap, plan);
+    renderChrome(plan);
+    drawChart();
+    renderLedger(snap, plan);
+  }
+
+  $("vintage").textContent = DATA.vintage;
+  if (DATA.source === "excel") {
+    $("source-note").textContent = "資料來自 BEA iTable 匯出的 Excel（Table 2.4.4U 與 2.4.5U，月資料），手動更新。";
+  }
+  // 下次發布：BEA 公布的日期，美東 8:30，換算成台北時間
+  (function () {
+    const m = /([A-Z][a-z]+) (\d{1,2}), (\d{4})/.exec(DATA.nextRelease || "");
+    if (!m) return;
+    const mo = ["January","February","March","April","May","June","July","August","September","October","November","December"].indexOf(m[1]);
+    if (mo < 0) return;
+    let when = null;
+    try {
+      for (const h of [12, 13]) {   // 夏令時間 12:30 UTC，標準時間 13:30 UTC
+        const d = new Date(Date.UTC(+m[3], mo, +m[2], h, 30));
+        const etHour = +new Intl.DateTimeFormat("en-US", { timeZone: "America/New_York", hour: "numeric", hourCycle: "h23" }).format(d);
+        if (etHour === 8) { when = d; break; }
+      }
+    } catch (e) { when = null; }
+    const el = $("next-release");
+    if (when) {
+      if (when.getTime() < Date.now()) return;   // 已經過了：等排程抓到新資料後自然更新
+      const f = new Intl.DateTimeFormat("zh-TW", { timeZone: "Asia/Taipei", month: "numeric", day: "numeric", hour: "2-digit", minute: "2-digit", hourCycle: "h23" });
+      el.textContent = `下次發布：${f.format(when)}（台北）`;
+    } else {
+      el.textContent = `下次發布：${m[3]}/${mo + 1}/${m[2]}（美東 8:30）`;
+    }
+    el.hidden = false;
+  })();
+  let lastW = 0;
+  new ResizeObserver(() => {
+    const w = $("chart").clientWidth;
+    if (w && w !== lastW) { lastW = w; drawChart(); }
+  }).observe($("chart"));
+  const m0 = /^#n(\d+)$/.exec(location.hash || "");
+  if (m0 && N.has(+m0[1])) drillTo(+m0[1], true); else render();
+})();
+</script>
