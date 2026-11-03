@@ -15,6 +15,7 @@ import re
 
 MAIN_LAST_LINE = 368          # 主表最後一列；之後是額外彙總
 CORE_LINE = 374               # PCE excluding food and energy（官方核心 PCE）
+GROUP_LINES = {"fe": 370, "cg": 375, "sx": 376}  # 通用分類：食品與能源、核心商品、服務排除能源
 NON_CORE_ROOTS = (73, 113, 169)  # 居家食品及飲料；汽油等能源商品；電力與天然氣
 
 
@@ -118,7 +119,8 @@ def build_data(months, P, E, zh, revised="", next_release="", source=""):
         "revised": revised,
         "nextRelease": next_release,
         "months": months,
-        "official": {"pce": PV[1], "core": PV[CORE_LINE]},
+        "official": {"pce": PV[1], "core": PV[CORE_LINE],
+                     **{k: PV[ln] for k, ln in GROUP_LINES.items() if has_price(ln)}},
         "nodes": [nodes[k] for k in sorted(nodes)],
         "leaves": leaves,
     }

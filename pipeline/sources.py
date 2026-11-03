@@ -128,6 +128,7 @@ def fetch_api(key):
     meta = {
         "revised": _find_date(r"(?:Last Revised on|Release Date)", notes),
         "next": _find_date(r"Next Release Date", notes),
+        "notes": " ".join(notes.split())[:400],
     }
     return meta, months, lines("price"), lines("spend"), {s["line"]: s["zh"] for s in struct}
 

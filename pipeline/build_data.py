@@ -32,6 +32,9 @@ def main():
         else:
             meta, months, P, E, zh = read_excel(*a.excel)
             source = "excel"
+        if not meta["revised"]:
+            # 找不到版本日期時，把 BEA 的說明文字印在紀錄裡，方便調整讀取方式
+            print(f"::notice::BEA 說明文字中找不到版本日期：{meta.get('notes') or '（沒有說明文字）'}")
         data, summary = build_data(months, P, E, zh, meta["revised"], meta["next"], source)
     except Exception as e:
         # GitHub 的 Annotations 只顯示每則錯誤的第一行，所以每一行分開輸出
