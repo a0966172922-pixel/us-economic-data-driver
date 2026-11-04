@@ -17,8 +17,9 @@
   --sel: #e6ebf1;
   --chip: #e7ebf0;
   --hover: #f0f3f6;
-  --s1: #2a78d6; --s2: #eb6834; --s3: #1baf7a; --s4: #eda100;
-  --s5: #e87ba4; --s6: #008300; --s7: #6250d6; --s8: #e34948;
+  /* 公司 9 色；深色模式只把對比不足的 4 色稍微調亮 */
+  --s1: #156082; --s2: #E97132; --s3: #196B24; --s4: #0F9ED5; --s5: #A02B93;
+  --s6: #4EA72E; --s7: #00897B; --s8: #FF8080; --s9: #C8102E;
   --other: #9aa2ae;
   --f-display: "IBM Plex Sans Condensed", "Noto Sans TC", system-ui, -apple-system, "Segoe UI", sans-serif;
   --f-body: "Noto Sans TC", system-ui, -apple-system, "Segoe UI", "PingFang TC", "Microsoft JhengHei", sans-serif;
@@ -28,16 +29,16 @@
   :root:not([data-theme="light"]) {
     --bg: #0e1114; --surface: #161a1f; --ink: #edf0f3; --ink-2: #b6bfca; --muted: #858e9c;
     --rule: #252b32; --axis: #3a424c; --sel: #20262e; --chip: #20262e; --hover: #1b2026;
-    --s1: #3987e5; --s2: #d95926; --s3: #199e70; --s4: #c98500;
-    --s5: #d55181; --s6: #008300; --s7: #9085e9; --s8: #e66767; --other: #5d6673;
+    --s1: #2B7194; --s2: #E97132; --s3: #2B7A33; --s4: #0F9ED5; --s5: #AD39A0;
+    --s6: #4EA72E; --s7: #00897B; --s8: #FF8080; --s9: #CF1D34; --other: #5d6673;
     color-scheme: dark;
   }
 }
 :root[data-theme="dark"] {
   --bg: #0e1114; --surface: #161a1f; --ink: #edf0f3; --ink-2: #b6bfca; --muted: #858e9c;
   --rule: #252b32; --axis: #3a424c; --sel: #20262e; --chip: #20262e; --hover: #1b2026;
-  --s1: #3987e5; --s2: #d95926; --s3: #199e70; --s4: #c98500;
-  --s5: #d55181; --s6: #008300; --s7: #9085e9; --s8: #e66767; --other: #5d6673;
+  --s1: #2B7194; --s2: #E97132; --s3: #2B7A33; --s4: #0F9ED5; --s5: #AD39A0;
+  --s6: #4EA72E; --s7: #00897B; --s8: #FF8080; --s9: #CF1D34; --other: #5d6673;
   color-scheme: dark;
 }
 
@@ -115,6 +116,10 @@ button:focus-visible, select:focus-visible, [tabindex]:focus-visible { outline: 
 h2 { font-family: var(--f-display); font-weight: 600; font-size: 19px; margin: 0; text-wrap: balance; }
 h2 em { font-style: normal; color: var(--muted); font-weight: 500; font-size: 15px; margin-left: 6px; }
 .hint { font-size: 12.5px; color: var(--muted); margin: 0; }
+.head-tools { display: flex; flex-wrap: wrap; align-items: center; gap: 8px 14px; }
+.dl-btn { font: inherit; font-size: 13px; padding: 5px 12px; border-radius: 8px; border: 1px solid var(--rule); background: var(--surface); color: var(--ink); cursor: pointer; white-space: nowrap; }
+.dl-btn:hover { border-color: var(--axis); background: var(--chip); }
+.dl-btn:disabled { opacity: 0.6; cursor: progress; }
 .legend { display: flex; flex-wrap: wrap; gap: 6px 16px; font-size: 13px; color: var(--ink-2); margin-bottom: 6px; }
 .legend span { display: inline-flex; align-items: center; gap: 6px; }
 .legend i { width: 10px; height: 10px; border-radius: 3px; display: inline-block; flex: none; }
@@ -259,7 +264,10 @@ h2 em { font-style: normal; color: var(--muted); font-weight: 500; font-size: 15
     <nav class="crumbs" id="crumbs" aria-label="展開路徑"></nav>
     <div class="panel-head">
       <h2 id="chart-title"></h2>
-      <p class="hint" id="chart-hint"></p>
+      <div class="head-tools">
+        <p class="hint" id="chart-hint"></p>
+        <button type="button" class="dl-btn" id="download" title="PNG 圖檔，8.5 × 5.2 公分、300 dpi，剛好放進報告左右並排的圖框">下載圖表</button>
+      </div>
     </div>
     <div class="legend" id="legend"></div>
     <div class="chart" id="chart"><div class="tip" id="tip" hidden></div></div>
@@ -452,17 +460,22 @@ const DATA = /*DATA*/null;
   }
 
   // 目前節點的子項顏色：依序配色，超過 8 項時把支出最小的併入「其他」
+  const CORP = ["#156082", "#E97132", "#196B24", "#0F9ED5", "#A02B93", "#4EA72E", "#00897B", "#FF8080", "#C8102E"];
+  const OTHER_HEX = "#9AA2AE";
   function colorPlan(id) {
     const kids = kidsOf(id);
-    const map = new Map();
+    const map = new Map(), hex = new Map();
     let folded = new Set();
-    if (kids.length > 8) {
+    if (kids.length > CORP.length) {
       const ranked = [...kids].sort((a, b) => Math.abs(nodeSpend(b, T - 1)) - Math.abs(nodeSpend(a, T - 1)));
-      folded = new Set(ranked.slice(7));
+      folded = new Set(ranked.slice(CORP.length - 1));
     }
     let slot = 0;
-    for (const k of kids) map.set(k, folded.has(k) ? "var(--other)" : `var(--s${++slot})`);
-    return { map, folded };
+    for (const k of kids) {
+      if (folded.has(k)) { map.set(k, "var(--other)"); hex.set(k, OTHER_HEX); }
+      else { slot++; map.set(k, `var(--s${slot})`); hex.set(k, CORP[slot - 1]); }
+    }
+    return { map, hex, folded };
   }
 
   function snapshot(t) {
@@ -652,8 +665,8 @@ const DATA = /*DATA*/null;
     const [start, end] = rangeBounds();
     const kids = kidsOf(state.node);
     const R = rootId(), atRoot = state.node === R;
-    segMeta = kids.filter(k => !plan.folded.has(k)).map(k => ({ key: k, name: label(k), color: plan.map.get(k), drill: !isLeaf(k) }));
-    if (plan.folded.size) segMeta.push({ key: "other", name: `其他 ${plan.folded.size} 項`, color: "var(--other)", drill: false });
+    segMeta = kids.filter(k => !plan.folded.has(k)).map(k => ({ key: k, name: label(k), color: plan.map.get(k), hex: plan.hex.get(k), drill: !isLeaf(k) }));
+    if (plan.folded.size) segMeta.push({ key: "other", name: `其他 ${plan.folded.size} 項`, color: "var(--other)", hex: OTHER_HEX, drill: false });
     series = [];
     for (let t = start; t <= end; t++) {
       const lc = leafContrib(t);
@@ -780,6 +793,187 @@ const DATA = /*DATA*/null;
     tip.hidden = true;
     if (meta && meta.drill) drillTo(meta.key); else render();
   });
+
+  // ---------- 下載圖表：PNG，8.5 × 5.2 公分、300 dpi，對應報告左右並排的圖框 ----------
+  // 圖框儲存格：寬 8.55 公分、列高 5.42 公分；扣掉段前間距與文字基線下方的空間，圖片高 5.2 公分剛好不撐大表格
+  const EXPORT = { wcm: 8.5, hcm: 5.2, dpi: 300 };
+  const CRC_TABLE = (() => {
+    const t = new Uint32Array(256);
+    for (let n = 0; n < 256; n++) { let c = n; for (let k = 0; k < 8; k++) c = c & 1 ? 0xEDB88320 ^ (c >>> 1) : c >>> 1; t[n] = c >>> 0; }
+    return t;
+  })();
+  function crc32(bytes) {
+    let c = 0xFFFFFFFF;
+    for (let i = 0; i < bytes.length; i++) c = CRC_TABLE[(c ^ bytes[i]) & 0xFF] ^ (c >>> 8);
+    return (c ^ 0xFFFFFFFF) >>> 0;
+  }
+  // 在 PNG 裡寫入解析度（pHYs），Word 插入時就會自動用 8.5 × 5.2 公分
+  function withDpi(png, dpi) {
+    const ppm = Math.round(dpi / 0.0254);
+    const chunk = new Uint8Array(21), dv = new DataView(chunk.buffer);
+    dv.setUint32(0, 9);
+    chunk.set([0x70, 0x48, 0x59, 0x73], 4);
+    dv.setUint32(8, ppm); dv.setUint32(12, ppm); chunk[16] = 1;
+    dv.setUint32(17, crc32(chunk.subarray(4, 17)));
+    const view = new DataView(png.buffer, png.byteOffset, png.byteLength);
+    let pos = 8, insertAt = -1;
+    while (pos + 8 <= png.length) {
+      const len = view.getUint32(pos), type = String.fromCharCode(...png.subarray(pos + 4, pos + 8));
+      if (type === "pHYs") {                    // 已經有解析度設定：直接覆寫
+        const out = png.slice();
+        out.set(chunk.subarray(8, 21), pos + 8);
+        return out;
+      }
+      if (type === "IHDR") insertAt = pos + 12 + len;
+      if (type === "IDAT" || type === "IEND") break;
+      pos += 12 + len;
+    }
+    if (insertAt < 0) return png;
+    const out = new Uint8Array(png.length + 21);
+    out.set(png.subarray(0, insertAt), 0);
+    out.set(chunk, insertAt);
+    out.set(png.subarray(insertAt), insertAt + 21);
+    return out;
+  }
+  function exportFileName() {
+    const view = { pce: "PCE", core: "核心PCE", general: "通用分類" }[state.index];
+    const [a, z] = rangeBounds();
+    const raw = `PCE_Driver_${view}_${label(state.node)}_${modeWord()}_${DATA.months[a]}_${DATA.months[z]}.png`;
+    return raw.replace(/[\\/:*?"<>|]/g, "_").replace(/\s+/g, "");
+  }
+  function drawExport() {
+    const pxW = Math.round(EXPORT.wcm / 2.54 * EXPORT.dpi), pxH = Math.round(EXPORT.hcm / 2.54 * EXPORT.dpi);
+    const pt = EXPORT.dpi / 72;                                   // 1 點 = 4.17 像素
+    const CJK = '"Microsoft JhengHei", "微軟正黑體", "PingFang TC", "Noto Sans TC", sans-serif';
+    const NUM = '"Times New Roman", Times, "Noto Serif", serif';
+    const INK = "#1A1A1A", AXIS = "#7F7F7F", TEXT2 = "#404040";
+    const atRoot = state.node === rootId();
+    const cv = document.createElement("canvas");
+    cv.width = pxW; cv.height = pxH;
+    const g = cv.getContext("2d");
+    g.fillStyle = "#FFFFFF"; g.fillRect(0, 0, pxW, pxH);
+
+    // 圖例（圖片上方，自動換行）
+    const items = segMeta.map(s => ({ name: s.name, color: s.hex, kind: "box" }));
+    items.push({ name: atRoot ? `${indexWord()}${modeWord()}` : `${label(state.node)}合計`, color: INK, kind: "line" });
+    const legendFont = `700 ${8 * pt}px ${CJK}`;
+    g.font = legendFont;
+    const sw = 7 * pt, sh = 5 * pt, lineW = 12 * pt, gapIn = 2.5 * pt, gapOut = 7 * pt, rowH = 11 * pt;
+    const padX = 2 * pt, top0 = 1.5 * pt;
+    const rows = [[]];
+    let x = padX;
+    for (const it of items) {
+      const mark = it.kind === "line" ? lineW : sw;
+      const w = mark + gapIn + g.measureText(it.name).width;
+      if (rows[rows.length - 1].length && x + w > pxW - padX) { rows.push([]); x = padX; }
+      rows[rows.length - 1].push({ ...it, x, mark });
+      x += w + gapOut;
+    }
+    g.textBaseline = "middle"; g.textAlign = "left";
+    rows.forEach((row, r) => {
+      const cy = top0 + r * rowH + rowH / 2;
+      for (const it of row) {
+        if (it.kind === "box") { g.fillStyle = it.color; g.fillRect(it.x, cy - sh / 2, sw, sh); }
+        else { g.strokeStyle = it.color; g.lineWidth = 1.5 * pt; g.beginPath(); g.moveTo(it.x, cy); g.lineTo(it.x + lineW, cy); g.stroke(); }
+        g.fillStyle = INK; g.font = legendFont;
+        g.fillText(it.name, it.x + it.mark + gapIn, cy);
+      }
+    });
+
+    // 座標範圍（與網頁圖表相同的刻度規則）
+    let lo = 0, hi = 0;
+    for (const p of series) {
+      let ps = 0, ng = 0;
+      p.vals.forEach(v => v >= 0 ? ps += v : ng += v);
+      hi = Math.max(hi, ps, p.total); lo = Math.min(lo, ng, p.total);
+    }
+    const step = niceStep(hi - lo || 0.01);
+    lo = Math.floor(lo / step - 1e-6) * step; hi = Math.ceil(hi / step + 1e-6) * step;
+    if (lo > -step * 0.5) lo = lo < 0 ? -step : 0;
+    const tickDec = Math.max(0, -Math.floor(Math.log10(step) + 1e-9));
+    const fmtY = v => (Math.abs(v) < step * 1e-6 ? 0 : v).toFixed(tickDec) + "%";
+    const numFont = `${7.5 * pt}px ${NUM}`;
+    g.font = numFont;
+    let yLabelW = 0;
+    for (let v = lo; v <= hi + step * 1e-6; v += step) yLabelW = Math.max(yLabelW, g.measureText(fmtY(v)).width);
+
+    const plot = {
+      l: padX + yLabelW + 3 * pt,
+      r: pxW - 4 * pt,
+      t: top0 + rows.length * rowH + 4 * pt,
+      b: pxH - 12 * pt,
+    };
+    const pw = plot.r - plot.l, ph = plot.b - plot.t;
+    const Y = v => plot.t + (hi - v) / (hi - lo) * ph;
+    const band = pw / series.length, bw = Math.max(1, band * 0.6);
+    const cx = i => plot.l + band * i + band / 2;
+
+    // y 軸刻度
+    g.fillStyle = TEXT2; g.textAlign = "right"; g.textBaseline = "middle";
+    for (let v = lo; v <= hi + step * 1e-6; v += step) g.fillText(fmtY(v), plot.l - 3 * pt, Y(v));
+
+    // 堆疊柱（正值往上、負值往下；色塊之間留一條細白線）
+    const gap = Math.max(1, Math.round(0.4 * pt));
+    series.forEach((p, i) => {
+      const x0 = cx(i) - bw / 2;
+      let up = 0, down = 0;
+      for (const s of segMeta) {
+        const v = p.vals.get(s.key) || 0;
+        if (!v) continue;
+        const a = v > 0 ? up : down, b = a + v;
+        let y0 = Y(Math.max(a, b)), y1 = Y(Math.min(a, b));
+        if (v > 0 ? up > 0 : down < 0) { if (v > 0) y1 -= gap; else y0 += gap; }
+        if (y1 > y0) { g.fillStyle = s.hex; g.fillRect(x0, y0, bw, y1 - y0); }
+        if (v > 0) up = b; else down = b;
+      }
+    });
+
+    // 零線
+    g.strokeStyle = AXIS; g.lineWidth = 0.75 * pt;
+    g.beginPath(); g.moveTo(plot.l, Math.round(Y(0)) + 0.5); g.lineTo(plot.r, Math.round(Y(0)) + 0.5); g.stroke();
+
+    // 總計折線
+    g.strokeStyle = INK; g.lineWidth = 1.5 * pt; g.lineJoin = "round"; g.lineCap = "round";
+    g.beginPath();
+    series.forEach((p, i) => { const yy = Y(p.total); if (i) g.lineTo(cx(i), yy); else g.moveTo(cx(i), yy); });
+    g.stroke();
+
+    // x 軸月份（YYYY/M），自動挑選間隔避免重疊
+    g.font = numFont; g.fillStyle = TEXT2; g.textBaseline = "top";
+    const lab = t => { const [yy, mm] = DATA.months[t].split("-"); return `${yy}/${+mm}`; };
+    const need = g.measureText("2026/12").width + 6 * pt;
+    const every = [1, 2, 3, 4, 6, 8, 12, 24, 36, 60].find(k => k * band >= need) || 120;
+    for (let i = 0; i < series.length; i += every) {
+      const text = lab(series[i].t), w = g.measureText(text).width;
+      let xx = cx(i), align = "center";
+      if (xx - w / 2 < 0) { xx = 0; align = "left"; }
+      else if (xx + w / 2 > pxW) { xx = pxW; align = "right"; }
+      g.textAlign = align;
+      g.fillText(text, xx, plot.b + 3 * pt);
+    }
+    return cv;
+  }
+  async function downloadChart() {
+    const btn = $("download");
+    btn.disabled = true; btn.textContent = "產生中…";
+    try {
+      try { await document.fonts.ready; } catch (e) {}
+      const cv = drawExport();
+      const blob = await new Promise((res, rej) => cv.toBlob(b => b ? res(b) : rej(new Error("瀏覽器無法產生圖檔")), "image/png"));
+      const png = withDpi(new Uint8Array(await blob.arrayBuffer()), EXPORT.dpi);
+      const url = URL.createObjectURL(new Blob([png], { type: "image/png" }));
+      const a = document.createElement("a");
+      a.href = url; a.download = exportFileName();
+      document.body.appendChild(a); a.click(); a.remove();
+      setTimeout(() => URL.revokeObjectURL(url), 4000);
+      btn.textContent = "已下載";
+    } catch (e) {
+      btn.textContent = "下載失敗，請再試一次";
+    } finally {
+      setTimeout(() => { btn.disabled = false; btn.textContent = "下載圖表"; }, 1600);
+    }
+  }
+  $("download").addEventListener("click", downloadChart);
 
   // ---------- 排行表 ----------
   function renderLedger(snap, plan) {
