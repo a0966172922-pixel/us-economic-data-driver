@@ -120,10 +120,40 @@ h2 em { font-style: normal; color: var(--muted); font-weight: 500; font-size: 15
 .dl-btn { font: inherit; font-size: 13px; padding: 5px 12px; border-radius: 8px; border: 1px solid var(--rule); background: var(--surface); color: var(--ink); cursor: pointer; white-space: nowrap; }
 .dl-btn:hover { border-color: var(--axis); background: var(--chip); }
 .dl-btn:disabled { opacity: 0.6; cursor: progress; }
+.dl-btn.primary { background: var(--ink); color: var(--surface); border-color: var(--ink); }
+.dl-btn.primary:hover { background: var(--ink-2); border-color: var(--ink-2); }
+.dl-btn[aria-expanded="true"] { background: var(--chip); }
+.export-panel { margin-top: 14px; padding-top: 14px; border-top: 1px solid var(--rule); display: grid; gap: 12px; }
+.ex-head { display: grid; gap: 2px; }
+.ex-head h3 { font-family: var(--f-display); font-size: 16px; font-weight: 600; margin: 0; }
+.ex-body { display: grid; grid-template-columns: minmax(0, 1.25fr) minmax(0, 1fr); gap: 16px 22px; align-items: start; }
+.ex-preview { display: grid; gap: 6px; min-width: 0; }
+.ex-preview img { width: 100%; height: auto; border-radius: 6px; box-shadow: 0 0 0 1px var(--rule); background: #FFFFFF; }
+.ex-form { display: grid; gap: 10px; min-width: 0; }
+.ex-field { display: flex; align-items: center; gap: 10px; font-size: 13.5px; color: var(--ink-2); }
+.ex-field select { font: inherit; font-size: 13.5px; padding: 4px 8px; border-radius: 8px; border: 1px solid var(--rule); background: var(--surface); color: var(--ink); }
+.ex-warn { margin: 0; font-size: 13px; color: var(--ink); background: var(--chip); border-radius: 8px; padding: 6px 10px; }
+.ex-label { margin: 0; font-size: 12px; color: var(--muted); }
+.ex-items { display: grid; gap: 6px; max-height: 320px; overflow-y: auto; padding-right: 4px; }
+.ex-row { display: grid; grid-template-columns: 18px 12px minmax(0, 1fr); gap: 8px; align-items: center; }
+.ex-row i { width: 12px; height: 12px; border-radius: 3px; display: block; }
+.ex-row i.line-key { height: 2px; border-radius: 1px; background: var(--ink); }
+.ex-row input[type="text"] { font: inherit; font-size: 13.5px; min-width: 0; padding: 4px 8px; border-radius: 6px; border: 1px solid var(--rule); background: var(--surface); color: var(--ink); }
+.ex-row input[type="text"]:disabled { opacity: 0.5; }
+.ex-row.off i { opacity: 0.45; }
+.ex-spacer { width: 18px; }
+.ex-actions { display: flex; flex-wrap: wrap; gap: 8px; }
+@media (max-width: 760px) { .ex-body { grid-template-columns: minmax(0, 1fr); } }
 .legend { display: flex; flex-wrap: wrap; gap: 6px 16px; font-size: 13px; color: var(--ink-2); margin-bottom: 6px; }
 .legend span { display: inline-flex; align-items: center; gap: 6px; }
 .legend i { width: 10px; height: 10px; border-radius: 3px; display: inline-block; flex: none; }
 .legend .line-key { width: 16px; height: 2px; border-radius: 1px; background: var(--ink); }
+.legend .lg, .legend .lg-static { font: inherit; display: inline-flex; align-items: center; gap: 6px; border: 0; background: transparent; color: var(--ink-2); padding: 2px 5px; margin: -2px -5px; border-radius: 6px; }
+.legend .lg { cursor: pointer; }
+.legend .lg:hover { background: var(--chip); color: var(--ink); }
+.legend .lg[aria-pressed="false"] { opacity: 0.45; text-decoration: line-through; }
+.legend .lg-reset { font: inherit; font-size: 12.5px; border: 1px solid var(--rule); background: var(--surface); color: var(--ink); border-radius: 999px; padding: 1px 10px; cursor: pointer; }
+.legend .lg-reset:hover { border-color: var(--axis); }
 
 .chart { position: relative; width: 100%; }
 .chart svg { display: block; width: 100%; overflow: visible; outline: none; }
@@ -158,6 +188,7 @@ h2 em { font-style: normal; color: var(--muted); font-weight: 500; font-size: 15
 .row.drillable:hover { background: var(--hover); }
 .row.total { border-bottom: 0; border-top: 1px solid var(--axis); font-weight: 700; border-radius: 0; }
 .row.resid { color: var(--ink-2); }
+.row.muted { opacity: 0.5; }
 .name { display: flex; align-items: center; gap: 8px; min-width: 0; }
 .name i { flex: none; width: 10px; height: 10px; border-radius: 3px; }
 .name i.ring { box-shadow: inset 0 0 0 1px var(--axis); }
@@ -266,11 +297,45 @@ h2 em { font-style: normal; color: var(--muted); font-weight: 500; font-size: 15
       <h2 id="chart-title"></h2>
       <div class="head-tools">
         <p class="hint" id="chart-hint"></p>
-        <button type="button" class="dl-btn" id="download" title="PNG 圖檔，8.5 × 5.2 公分、300 dpi，剛好放進報告左右並排的圖框">下載圖表</button>
+        <button type="button" class="dl-btn" id="download" aria-controls="export-panel" aria-expanded="false" title="設定圖例文字與字體大小後下載 PNG（8.5 × 5.2 公分、300 dpi）">下載圖表</button>
       </div>
     </div>
     <div class="legend" id="legend"></div>
     <div class="chart" id="chart"><div class="tip" id="tip" hidden></div></div>
+    <div class="export-panel" id="export-panel" hidden>
+      <div class="ex-head">
+        <h3>下載設定</h3>
+        <p class="hint">這裡改的名稱只用在下載的圖片，網站上的名稱不會變。改過的名稱會記在這台電腦的瀏覽器裡。</p>
+      </div>
+      <div class="ex-body">
+        <div class="ex-preview">
+          <img id="ex-img" alt="下載圖片預覽">
+          <p class="hint" id="ex-size"></p>
+        </div>
+        <div class="ex-form">
+          <label class="ex-field" for="ex-font">字體大小
+            <select id="ex-font">
+              <option value="auto">自動</option>
+              <option value="6">6 點</option>
+              <option value="7">7 點</option>
+              <option value="8">8 點</option>
+              <option value="9">9 點</option>
+              <option value="10">10 點</option>
+              <option value="11">11 點</option>
+              <option value="12">12 點</option>
+            </select>
+          </label>
+          <p class="ex-warn" id="ex-warn" hidden></p>
+          <p class="ex-label">圖例（勾選＝顯示；文字框＝下載圖上的名稱）</p>
+          <div class="ex-items" id="ex-items"></div>
+          <div class="ex-actions">
+            <button type="button" class="dl-btn primary" id="ex-download">下載 PNG</button>
+            <button type="button" class="dl-btn" id="ex-reset">還原預設名稱</button>
+            <button type="button" class="dl-btn" id="ex-close">關閉</button>
+          </div>
+        </div>
+      </div>
+    </div>
   </section>
 
   <section class="panel">
@@ -350,6 +415,15 @@ const DATA = /*DATA*/null;
   }
 
   const state = { index: "pce", mode: "yoy", range: "24", from: null, to: null, sort: "contrib", t: T - 1, node: ROOT };
+  // 每一層各自記住哪些項目被隱藏；重新整理網頁後恢復全部顯示
+  const hiddenByLevel = new Map(), lineOffByLevel = new Set();
+  const levelKey = () => `${state.index}|${state.node}`;
+  function hiddenSet() {
+    const k = levelKey();
+    if (!hiddenByLevel.has(k)) hiddenByLevel.set(k, new Set());
+    return hiddenByLevel.get(k);
+  }
+  const lineShown = () => !lineOffByLevel.has(levelKey());
 
   const $ = id => document.getElementById(id);
   const esc = s => String(s).replace(/[&<>"]/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
@@ -665,8 +739,11 @@ const DATA = /*DATA*/null;
     const [start, end] = rangeBounds();
     const kids = kidsOf(state.node);
     const R = rootId(), atRoot = state.node === R;
-    segMeta = kids.filter(k => !plan.folded.has(k)).map(k => ({ key: k, name: label(k), color: plan.map.get(k), hex: plan.hex.get(k), drill: !isLeaf(k) }));
-    if (plan.folded.size) segMeta.push({ key: "other", name: `其他 ${plan.folded.size} 項`, color: "var(--other)", hex: OTHER_HEX, drill: false });
+    const hid = hiddenSet();
+    const grouped = k => plan.folded.has(k) || hid.has(k);
+    const nGrouped = kids.filter(grouped).length;
+    segMeta = kids.filter(k => !grouped(k)).map(k => ({ key: k, id: k, def: label(k), name: label(k), color: plan.map.get(k), hex: plan.hex.get(k), drill: !isLeaf(k) }));
+    if (nGrouped) segMeta.push({ key: "other", id: "other", def: "其他", name: `其他（${nGrouped} 項）`, color: "var(--other)", hex: OTHER_HEX, drill: false });
     series = [];
     for (let t = start; t <= end; t++) {
       const lc = leafContrib(t);
@@ -674,9 +751,9 @@ const DATA = /*DATA*/null;
       let other = 0, sum = 0;
       for (const k of kids) {
         const v = nodeContrib(k, lc); sum += v;
-        if (plan.folded.has(k)) other += v; else vals.set(k, v);
+        if (grouped(k)) other += v; else vals.set(k, v);
       }
-      if (plan.folded.size) vals.set("other", other);
+      if (nGrouped) vals.set("other", other);
       const headline = pctChange(DATA.official[offKey()], t, state.mode);
       const allSum = atRoot ? sum : nodeContrib(R, lc);
       series.push({ t, vals, total: atRoot ? headline : sum, residual: headline - allSum });
@@ -737,8 +814,8 @@ const DATA = /*DATA*/null;
       });
     });
     const pts = series.map((p, i) => `${cx(i).toFixed(1)},${y(p.total).toFixed(1)}`).join(" ");
-    out += `<polyline points="${pts}" fill="none" style="stroke:var(--ink);pointer-events:none" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"/>`;
-    if (si >= 0) {
+    if (lineShown()) out += `<polyline points="${pts}" fill="none" style="stroke:var(--ink);pointer-events:none" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"/>`;
+    if (si >= 0 && lineShown()) {
       const d = atRoot ? 2 : decFor([series[si].total]);
       out += `<circle cx="${cx(si)}" cy="${y(series[si].total)}" r="4.5" style="fill:var(--ink);stroke:var(--surface);pointer-events:none" stroke-width="2"/>`;
       const anchor = si > series.length - 3 ? "end" : si < 2 ? "start" : "middle";
@@ -775,7 +852,7 @@ const DATA = /*DATA*/null;
     const head = atRoot ? `${p.total.toFixed(2)}%` : signed(p.total, d);
     const resid = atRoot ? `<div><i class="ring"></i><span>殘差</span><b>${signed(p.residual, d)}</b></div>` : "";
     const meta = segMeta.find(s => String(s.key) === on);
-    const foot = meta ? (meta.drill ? "點一下展開這一項" : meta.key === "other" ? "併入「其他」的項目請從下方列表展開" : "這是最細項目") : "點一下切換到這個月";
+    const foot = meta ? (meta.drill ? "點一下展開這一項" : meta.key === "other" ? "「其他」是被隱藏項目的合計，點圖例可以重新顯示" : "這是最細項目") : "點一下切換到這個月";
     tip.innerHTML = `<h3><span>${monthLabel(p.t)}</span><b>${head}</b></h3>${rows}${resid}<p>${foot}</p>`;
     tip.hidden = false;
     const g = svg._geom, scale = svg.clientWidth / g.W, x = g.cx(i) * scale, tw = tip.offsetWidth;
@@ -841,76 +918,120 @@ const DATA = /*DATA*/null;
     const raw = `PCE_Driver_${view}_${label(state.node)}_${modeWord()}_${DATA.months[a]}_${DATA.months[z]}.png`;
     return raw.replace(/[\\/:*?"<>|]/g, "_").replace(/\s+/g, "");
   }
+  // ---------- 下載設定：只改下載圖片上的文字，網站上的名稱不變 ----------
+  const CJK = '"Microsoft JhengHei", "微軟正黑體", "PingFang TC", "Noto Sans TC", sans-serif';
+  const NUM = '"Times New Roman", Times, "Noto Serif", serif';
+  const INK = "#1A1A1A", AXIS = "#7F7F7F", TEXT2 = "#404040";
+  const AUTO_SIZES = [9, 8.5, 8, 7.5, 7, 6.5, 6];   // 「自動」由大到小試，圖例不超過圖高 28% 就採用
+  const NAMES_KEY = "pce-driver-export-names", FONT_KEY = "pce-driver-export-font";
+  let customNames = {};
+  try { customNames = JSON.parse(localStorage.getItem(NAMES_KEY) || "{}") || {}; } catch (e) { customNames = {}; }
+  let fontChoice = "auto";
+  try { fontChoice = localStorage.getItem(FONT_KEY) || "auto"; } catch (e) {}
+  const saveNames = () => { try { localStorage.setItem(NAMES_KEY, JSON.stringify(customNames)); } catch (e) {} };
+  const nameKey = (id, def) => `${id}|${def}`;
+  function exportName(id, def) {
+    const v = customNames[nameKey(id, def)];
+    return v && v.trim() ? v.trim() : def;
+  }
+  const lineDefault = () => state.node === rootId() ? `${indexWord()}${modeWord()}` : `${label(state.node)}合計`;
+
+  // 依字體大小排出圖例（自動換行），回傳各列位置與總高度
+  function layoutLegend(g, items, fpt, pxW, pt) {
+    const fs = fpt * pt;
+    const L = {
+      fpt, font: `700 ${fs}px ${CJK}`,
+      sw: fpt * 0.85 * pt, sh: fpt * 0.6 * pt, lineW: fpt * 1.5 * pt,
+      gapIn: fpt * 0.3 * pt, gapOut: fpt * 0.85 * pt, rowH: fpt * 1.35 * pt,
+      padX: 2 * pt, top0: 1.5 * pt, rows: [[]],
+    };
+    g.font = L.font;
+    let x = L.padX;
+    for (const it of items) {
+      const mark = it.kind === "line" ? L.lineW : L.sw;
+      const w = mark + L.gapIn + g.measureText(it.name).width;
+      if (L.rows[L.rows.length - 1].length && x + w > pxW - L.padX) { L.rows.push([]); x = L.padX; }
+      L.rows[L.rows.length - 1].push({ ...it, x, mark });
+      x += w + L.gapOut;
+    }
+    L.height = L.top0 + L.rows.length * L.rowH;
+    return L;
+  }
+
   function drawExport() {
     const pxW = Math.round(EXPORT.wcm / 2.54 * EXPORT.dpi), pxH = Math.round(EXPORT.hcm / 2.54 * EXPORT.dpi);
     const pt = EXPORT.dpi / 72;                                   // 1 點 = 4.17 像素
-    const CJK = '"Microsoft JhengHei", "微軟正黑體", "PingFang TC", "Noto Sans TC", sans-serif';
-    const NUM = '"Times New Roman", Times, "Noto Serif", serif';
-    const INK = "#1A1A1A", AXIS = "#7F7F7F", TEXT2 = "#404040";
-    const atRoot = state.node === rootId();
     const cv = document.createElement("canvas");
     cv.width = pxW; cv.height = pxH;
     const g = cv.getContext("2d");
     g.fillStyle = "#FFFFFF"; g.fillRect(0, 0, pxW, pxH);
 
-    // 圖例（圖片上方，自動換行）
-    const items = segMeta.map(s => ({ name: s.name, color: s.hex, kind: "box" }));
-    items.push({ name: atRoot ? `${indexWord()}${modeWord()}` : `${label(state.node)}合計`, color: INK, kind: "line" });
-    const legendFont = `700 ${8 * pt}px ${CJK}`;
-    g.font = legendFont;
-    const sw = 7 * pt, sh = 5 * pt, lineW = 12 * pt, gapIn = 2.5 * pt, gapOut = 7 * pt, rowH = 11 * pt;
-    const padX = 2 * pt, top0 = 1.5 * pt;
-    const rows = [[]];
-    let x = padX;
-    for (const it of items) {
-      const mark = it.kind === "line" ? lineW : sw;
-      const w = mark + gapIn + g.measureText(it.name).width;
-      if (rows[rows.length - 1].length && x + w > pxW - padX) { rows.push([]); x = padX; }
-      rows[rows.length - 1].push({ ...it, x, mark });
-      x += w + gapOut;
+    // 圖例項目：顯示中的項目＋灰色「其他」＋總計線，文字用下載專用的名稱
+    const items = segMeta.map(s => ({ name: exportName(s.id, s.def), color: s.hex, kind: "box" }));
+    if (lineShown()) items.push({ name: exportName("line", lineDefault()), color: INK, kind: "line" });
+
+    // 字體：自動時挑最大、且圖例不超過圖高 28% 的大小；手動時照選擇
+    let L;
+    if (fontChoice === "auto") {
+      for (const f of AUTO_SIZES) { L = layoutLegend(g, items, f, pxW, pt); if (L.height <= pxH * 0.28) break; }
+    } else {
+      L = layoutLegend(g, items, +fontChoice, pxW, pt);
     }
+    const axisPt = Math.max(6, L.fpt - 0.5);
+
     g.textBaseline = "middle"; g.textAlign = "left";
-    rows.forEach((row, r) => {
-      const cy = top0 + r * rowH + rowH / 2;
+    L.rows.forEach((row, r) => {
+      const cy = L.top0 + r * L.rowH + L.rowH / 2;
       for (const it of row) {
-        if (it.kind === "box") { g.fillStyle = it.color; g.fillRect(it.x, cy - sh / 2, sw, sh); }
-        else { g.strokeStyle = it.color; g.lineWidth = 1.5 * pt; g.beginPath(); g.moveTo(it.x, cy); g.lineTo(it.x + lineW, cy); g.stroke(); }
-        g.fillStyle = INK; g.font = legendFont;
-        g.fillText(it.name, it.x + it.mark + gapIn, cy);
+        if (it.kind === "box") { g.fillStyle = it.color; g.fillRect(it.x, cy - L.sh / 2, L.sw, L.sh); }
+        else { g.strokeStyle = it.color; g.lineWidth = 1.5 * pt; g.beginPath(); g.moveTo(it.x, cy); g.lineTo(it.x + L.lineW, cy); g.stroke(); }
+        g.fillStyle = INK; g.font = L.font;
+        g.fillText(it.name, it.x + it.mark + L.gapIn, cy);
       }
     });
 
-    // 座標範圍（與網頁圖表相同的刻度規則）
-    let lo = 0, hi = 0;
+    // 版面：圖例下方留空，再放柱狀圖；底部留給月份文字（依字體大小自動調整）
+    const top = L.height + Math.max(0.45 * L.fpt, 0.6 * axisPt) * pt;
+    const bottom = pxH - 1 * pt - 1.7 * axisPt * pt;
+    const ph = bottom - top;
+
+    // 座標範圍；刻度數量依圖高與字體大小決定，避免數字疊在一起
+    let dlo = 0, dhi = 0;
     for (const p of series) {
       let ps = 0, ng = 0;
       p.vals.forEach(v => v >= 0 ? ps += v : ng += v);
-      hi = Math.max(hi, ps, p.total); lo = Math.min(lo, ng, p.total);
+      dhi = Math.max(dhi, ps); dlo = Math.min(dlo, ng);
+      if (lineShown()) { dhi = Math.max(dhi, p.total); dlo = Math.min(dlo, p.total); }
     }
-    const step = niceStep(hi - lo || 0.01);
-    lo = Math.floor(lo / step - 1e-6) * step; hi = Math.ceil(hi / step + 1e-6) * step;
-    if (lo > -step * 0.5) lo = lo < 0 ? -step : 0;
+    const maxTicks = Math.max(2, Math.floor(ph / (axisPt * pt * 1.5)) + 1);
+    const nextNice = st => { const mag = Math.pow(10, Math.floor(Math.log10(st) + 1e-9)), n = Math.round(st / mag); return (n < 2 ? 2 : n < 5 ? 5 : 10) * mag; };
+    const pad = (dhi - dlo || 0.01) * 0.04;
+    let lo = dlo < 0 ? dlo - pad : 0, hi = dhi + pad;
+    const tickCount = st => Math.floor(hi / st + 1e-6) - Math.ceil(lo / st - 1e-6) + 1;
+    let step = niceStep(hi - lo);
+    for (let guard = 0; guard < 12 && tickCount(step) > maxTicks; guard++) step = nextNice(step);
+    // 兩端對齊到整數刻度；若會浪費太多高度（超過 12%），就停在資料邊緣
+    const span = hi - lo, loT = Math.floor(lo / step - 1e-6) * step, hiT = Math.ceil(hi / step - 1e-6) * step;
+    if (lo - loT <= span * 0.12) lo = loT;
+    if (hiT - hi <= span * 0.12) hi = hiT;
+    const ticks = [];
+    for (let v = Math.ceil(lo / step - 1e-6) * step; v <= hi + step * 1e-6; v += step) ticks.push(Math.abs(v) < step * 1e-6 ? 0 : v);
     const tickDec = Math.max(0, -Math.floor(Math.log10(step) + 1e-9));
-    const fmtY = v => (Math.abs(v) < step * 1e-6 ? 0 : v).toFixed(tickDec) + "%";
-    const numFont = `${7.5 * pt}px ${NUM}`;
+    const fmtY = v => v.toFixed(tickDec) + "%";
+    const numFont = `${axisPt * pt}px ${NUM}`;
     g.font = numFont;
     let yLabelW = 0;
-    for (let v = lo; v <= hi + step * 1e-6; v += step) yLabelW = Math.max(yLabelW, g.measureText(fmtY(v)).width);
+    for (const v of ticks) yLabelW = Math.max(yLabelW, g.measureText(fmtY(v)).width);
 
-    const plot = {
-      l: padX + yLabelW + 3 * pt,
-      r: pxW - 4 * pt,
-      t: top0 + rows.length * rowH + 4 * pt,
-      b: pxH - 12 * pt,
-    };
-    const pw = plot.r - plot.l, ph = plot.b - plot.t;
+    const plot = { l: L.padX + yLabelW + 0.4 * axisPt * pt, r: pxW - 4 * pt, t: top, b: bottom };
+    const pw = plot.r - plot.l;
     const Y = v => plot.t + (hi - v) / (hi - lo) * ph;
     const band = pw / series.length, bw = Math.max(1, band * 0.6);
     const cx = i => plot.l + band * i + band / 2;
 
     // y 軸刻度
     g.fillStyle = TEXT2; g.textAlign = "right"; g.textBaseline = "middle";
-    for (let v = lo; v <= hi + step * 1e-6; v += step) g.fillText(fmtY(v), plot.l - 3 * pt, Y(v));
+    for (const v of ticks) g.fillText(fmtY(v), plot.l - 0.4 * axisPt * pt, Y(v));
 
     // 堆疊柱（正值往上、負值往下；色塊之間留一條細白線）
     const gap = Math.max(1, Math.round(0.4 * pt));
@@ -933,15 +1054,17 @@ const DATA = /*DATA*/null;
     g.beginPath(); g.moveTo(plot.l, Math.round(Y(0)) + 0.5); g.lineTo(plot.r, Math.round(Y(0)) + 0.5); g.stroke();
 
     // 總計折線
-    g.strokeStyle = INK; g.lineWidth = 1.5 * pt; g.lineJoin = "round"; g.lineCap = "round";
-    g.beginPath();
-    series.forEach((p, i) => { const yy = Y(p.total); if (i) g.lineTo(cx(i), yy); else g.moveTo(cx(i), yy); });
-    g.stroke();
+    if (lineShown()) {
+      g.strokeStyle = INK; g.lineWidth = 1.5 * pt; g.lineJoin = "round"; g.lineCap = "round";
+      g.beginPath();
+      series.forEach((p, i) => { const yy = Y(p.total); if (i) g.lineTo(cx(i), yy); else g.moveTo(cx(i), yy); });
+      g.stroke();
+    }
 
-    // x 軸月份（YYYY/M），自動挑選間隔避免重疊
+    // x 軸月份（YYYY/M），依字體大小自動挑選間隔避免重疊
     g.font = numFont; g.fillStyle = TEXT2; g.textBaseline = "top";
     const lab = t => { const [yy, mm] = DATA.months[t].split("-"); return `${yy}/${+mm}`; };
-    const need = g.measureText("2026/12").width + 6 * pt;
+    const need = g.measureText("2026/12").width + 0.8 * axisPt * pt;
     const every = [1, 2, 3, 4, 6, 8, 12, 24, 36, 60].find(k => k * band >= need) || 120;
     for (let i = 0; i < series.length; i += every) {
       const text = lab(series[i].t), w = g.measureText(text).width;
@@ -949,16 +1072,92 @@ const DATA = /*DATA*/null;
       if (xx - w / 2 < 0) { xx = 0; align = "left"; }
       else if (xx + w / 2 > pxW) { xx = pxW; align = "right"; }
       g.textAlign = align;
-      g.fillText(text, xx, plot.b + 3 * pt);
+      g.fillText(text, xx, plot.b + 0.65 * axisPt * pt);   // 留空間給最下面的 y 軸數字
     }
-    return cv;
+    return { cv, legendPt: L.fpt, axisPt, share: L.height / pxH, plotShare: ph / pxH, pxW, pxH };
   }
+
+  // ---------- 下載設定面板 ----------
+  const panel = $("export-panel");
+  let previewTimer = 0;
+  function schedulePreview() { clearTimeout(previewTimer); previewTimer = setTimeout(updatePreview, 120); }
+  function updatePreview() {
+    const r = drawExport();
+    $("ex-img").src = r.cv.toDataURL("image/png");
+    $("ex-size").textContent = `實際尺寸 ${EXPORT.wcm} × ${EXPORT.hcm} 公分（${r.pxW} × ${r.pxH} 像素，${EXPORT.dpi} dpi）· 圖例 ${r.legendPt} 點、座標 ${r.axisPt} 點 · 圖例佔圖高 ${Math.round(r.share * 100)}%`;
+    const autoOpt = $("ex-font").querySelector('option[value="auto"]');
+    if (autoOpt) autoOpt.textContent = fontChoice === "auto" ? `自動（目前 ${r.legendPt} 點）` : "自動";
+    const warn = $("ex-warn");
+    if (r.share > 0.4 || r.plotShare < 0.4) {
+      warn.textContent = `圖例佔了圖片高度的 ${Math.round(r.share * 100)}%，柱狀圖會變得很小。建議改小字體，或縮短圖例名稱。`;
+      warn.hidden = false;
+    } else warn.hidden = true;
+  }
+  function renderExportPanel() {
+    const focusId = document.activeElement && panel.contains(document.activeElement) ? document.activeElement.id : null;
+    const plan = colorPlan(state.node), hid = hiddenSet();
+    const rows = [];
+    for (const k of kidsOf(state.node)) {
+      if (plan.folded.has(k)) continue;
+      const on = !hid.has(k), def = label(k);
+      rows.push(`<div class="ex-row${on ? "" : " off"}">
+        <input type="checkbox" id="ex-show-${k}" data-key="${k}" ${on ? "checked" : ""} aria-label="在圖上顯示 ${esc(def)}">
+        <i style="background:${plan.map.get(k)}"></i>
+        <input type="text" id="ex-name-${k}" data-id="${k}" data-def="${esc(def)}" value="${esc(exportName(k, def))}" ${on ? "" : "disabled"} aria-label="${esc(def)} 在下載圖上的名稱">
+      </div>`);
+    }
+    const other = segMeta.find(s => s.key === "other");
+    if (other) rows.push(`<div class="ex-row">
+        <span class="ex-spacer"></span><i style="background:var(--other)"></i>
+        <input type="text" id="ex-name-other" data-id="other" data-def="其他" value="${esc(exportName("other", "其他"))}" aria-label="「其他」在下載圖上的名稱">
+      </div>`);
+    const ld = lineDefault();
+    rows.push(`<div class="ex-row${lineShown() ? "" : " off"}">
+        <input type="checkbox" id="ex-show-line" data-key="line" ${lineShown() ? "checked" : ""} aria-label="在圖上顯示總計線">
+        <i class="line-key"></i>
+        <input type="text" id="ex-name-line" data-id="line" data-def="${esc(ld)}" value="${esc(exportName("line", ld))}" ${lineShown() ? "" : "disabled"} aria-label="總計線在下載圖上的名稱">
+      </div>`);
+    $("ex-items").innerHTML = rows.join("");
+    $("ex-font").value = String(fontChoice);
+    if (focusId && $(focusId)) $(focusId).focus();
+    updatePreview();
+  }
+  panel.addEventListener("change", e => {
+    const cb = e.target.closest('input[type="checkbox"][data-key]');
+    if (cb) { toggleItem(cb.dataset.key); return; }
+    if (e.target.id === "ex-font") {
+      fontChoice = e.target.value;
+      try { localStorage.setItem(FONT_KEY, fontChoice); } catch (err) {}
+      updatePreview();
+    }
+  });
+  panel.addEventListener("input", e => {
+    const t = e.target.closest('input[type="text"][data-id]');
+    if (!t) return;
+    const key = nameKey(t.dataset.id, t.dataset.def), v = t.value.trim();
+    if (!v || v === t.dataset.def) delete customNames[key]; else customNames[key] = v;
+    saveNames();
+    schedulePreview();
+  });
+  $("ex-reset").addEventListener("click", () => {
+    panel.querySelectorAll('input[type="text"][data-id]').forEach(t => delete customNames[nameKey(t.dataset.id, t.dataset.def)]);
+    saveNames();
+    renderExportPanel();
+  });
+  $("ex-close").addEventListener("click", () => { panel.hidden = true; $("download").setAttribute("aria-expanded", "false"); $("download").focus(); });
+  $("download").addEventListener("click", () => {
+    const open = panel.hidden;
+    panel.hidden = !open;
+    $("download").setAttribute("aria-expanded", String(open));
+    if (open) { renderExportPanel(); panel.scrollIntoView({ block: "nearest", behavior: "smooth" }); }
+  });
+
   async function downloadChart() {
-    const btn = $("download");
+    const btn = $("ex-download");
     btn.disabled = true; btn.textContent = "產生中…";
     try {
       try { await document.fonts.ready; } catch (e) {}
-      const cv = drawExport();
+      const { cv } = drawExport();
       const blob = await new Promise((res, rej) => cv.toBlob(b => b ? res(b) : rej(new Error("瀏覽器無法產生圖檔")), "image/png"));
       const png = withDpi(new Uint8Array(await blob.arrayBuffer()), EXPORT.dpi);
       const url = URL.createObjectURL(new Blob([png], { type: "image/png" }));
@@ -970,10 +1169,11 @@ const DATA = /*DATA*/null;
     } catch (e) {
       btn.textContent = "下載失敗，請再試一次";
     } finally {
-      setTimeout(() => { btn.disabled = false; btn.textContent = "下載圖表"; }, 1600);
+      setTimeout(() => { btn.disabled = false; btn.textContent = "下載 PNG"; }, 1600);
     }
   }
-  $("download").addEventListener("click", downloadChart);
+  $("ex-download").addEventListener("click", downloadChart);
+
 
   // ---------- 排行表 ----------
   function renderLedger(snap, plan) {
@@ -989,8 +1189,9 @@ const DATA = /*DATA*/null;
         ? `<i class="pos" style="left:50%;width:${half}%;background:${color}"></i>`
         : `<i class="neg" style="left:${50 - half}%;width:${half}%;background:${color}"></i>`;
       const rk = removedKind(r.id);
-      const sub = `<span class="en">${esc(r.en)}</span>${rk ? `<span class="en"> · </span>已剔除${rk}` : ""}${r.drill ? `<span class="en"> · </span>${kidsOf(r.id).length} 個子項` : ""}`;
-      return `<div class="row${r.drill ? " drillable" : ""}" role="row" ${r.drill ? `tabindex="0" data-id="${r.id}" aria-label="展開 ${esc(r.name)}"` : ""}>
+      const off = hiddenSet().has(r.id);
+      const sub = `<span class="en">${esc(r.en)}</span>${rk ? `<span class="en"> · </span>已剔除${rk}` : ""}${r.drill ? `<span class="en"> · </span>${kidsOf(r.id).length} 個子項` : ""}${off ? " · 圖上已併入「其他」" : ""}`;
+      return `<div class="row${r.drill ? " drillable" : ""}${off ? " muted" : ""}" role="row" ${r.drill ? `tabindex="0" data-id="${r.id}" aria-label="展開 ${esc(r.name)}"` : ""}>
         <span class="name" role="cell"><i style="background:${color}"></i><span>${esc(r.name)}<small>${sub}</small></span>${r.drill ? '<span class="chev" aria-hidden="true">›</span>' : ""}</span>
         <span class="num dim c-w" role="cell">${r.weight.toFixed(Math.abs(r.weight) < 1 ? 2 : 1)}%</span>
         <span class="num dim c-chg" role="cell">${r.change === null ? "—" : signed(r.change, state.mode === "yoy" ? 1 : 2) + "%"}</span>
@@ -1013,17 +1214,43 @@ const DATA = /*DATA*/null;
     if (r && (e.key === "Enter" || e.key === " ")) { e.preventDefault(); drillTo(+r.dataset.id); }
   });
 
-  function renderChrome() {
+  function renderChrome(plan) {
     const path = pathTo(state.node);
     $("crumbs").innerHTML = path.map((id, k) => k === path.length - 1
       ? `<span class="here" aria-current="page">${esc(crumbLabel(id))}</span>`
       : `<button type="button" data-id="${id}">${esc(crumbLabel(id))}</button><span class="sep" aria-hidden="true">›</span>`).join("");
     $("chart-title").innerHTML = `${esc(label(state.node))} 底下各項目的貢獻<em>對${indexWord()}${modeWord()}，百分點</em>`;
     const anyDrill = segMeta.some(s => s.drill);
-    $("chart-hint").textContent = anyDrill ? "點色塊往下展開，點空白處切換月份" : "這一層都是最細項目，點柱子切換月份";
-    $("legend").innerHTML = [...segMeta].reverse().map(s => `<span><i style="background:${s.color}"></i>${esc(s.name)}</span>`).join("") +
-      `<span><i class="line-key"></i>${state.node === rootId() ? `${indexWord()} ${modeWord()}（BEA 官方）` : `${esc(label(state.node))}的貢獻合計`}</span>`;
+    $("chart-hint").textContent = anyDrill ? "點色塊往下展開，點空白處切換月份，點圖例可隱藏項目" : "這一層都是最細項目；點柱子切換月份，點圖例可隱藏項目";
+    const kids = kidsOf(state.node), hid = hiddenSet();
+    const other = segMeta.find(s => s.key === "other");
+    const parts = [];
+    if (other) parts.push(`<span class="lg-static"><i style="background:var(--other)"></i>${esc(other.name)}</span>`);
+    for (const k of [...kids].reverse()) {
+      if (plan.folded.has(k)) continue;
+      const on = !hid.has(k);
+      parts.push(`<button type="button" class="lg" data-key="${k}" aria-pressed="${on}" title="${on ? "點一下隱藏，併入「其他」" : "點一下重新顯示"}"><i style="background:${plan.map.get(k)}"></i>${esc(label(k))}</button>`);
+    }
+    const lineName = state.node === rootId() ? `${indexWord()} ${modeWord()}（BEA 官方）` : `${label(state.node)}的貢獻合計`;
+    parts.push(`<button type="button" class="lg" data-key="line" aria-pressed="${lineShown()}" title="點一下隱藏或顯示總計線"><i class="line-key"></i>${esc(lineName)}</button>`);
+    if (hid.size || !lineShown()) parts.push(`<button type="button" class="lg-reset" id="lg-reset">全部顯示</button>`);
+    $("legend").innerHTML = parts.join("");
   }
+  function toggleItem(key) {
+    if (key === "line") {
+      const k = levelKey();
+      if (lineOffByLevel.has(k)) lineOffByLevel.delete(k); else lineOffByLevel.add(k);
+    } else {
+      const hid = hiddenSet(), id = +key;
+      if (hid.has(id)) hid.delete(id); else hid.add(id);
+    }
+    render();
+  }
+  $("legend").addEventListener("click", e => {
+    if (e.target.closest("#lg-reset")) { hiddenSet().clear(); lineOffByLevel.delete(levelKey()); render(); return; }
+    const b = e.target.closest("button.lg");
+    if (b) toggleItem(b.dataset.key);
+  });
 
   function render() {
     syncControls();
@@ -1031,9 +1258,10 @@ const DATA = /*DATA*/null;
     const snap = snapshot(state.t);
     chartSeries(plan);
     renderReading(snap);
-    renderChrome();
+    renderChrome(plan);
     drawChart();
     renderLedger(snap, plan);
+    if (!$("export-panel").hidden) renderExportPanel();
   }
 
   $("vintage").textContent = DATA.vintage;
