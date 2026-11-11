@@ -123,6 +123,34 @@ h2 em { font-style: normal; color: var(--muted); font-weight: 500; font-size: 15
 .dl-btn.primary { background: var(--ink); color: var(--surface); border-color: var(--ink); }
 .dl-btn.primary:hover { background: var(--ink-2); border-color: var(--ink-2); }
 .dl-btn[aria-expanded="true"] { background: var(--chip); }
+.custom-panel { display: grid; gap: 12px; }
+.cp-head { display: grid; gap: 4px; }
+.cp-body { display: grid; grid-template-columns: minmax(0, 1.4fr) minmax(0, 1fr); gap: 16px 22px; align-items: start; }
+.cp-tree-wrap { display: grid; gap: 8px; min-width: 0; }
+.cp-tree-wrap input[type="search"] { font: inherit; font-size: 13.5px; padding: 6px 10px; border-radius: 8px; border: 1px solid var(--rule); background: var(--surface); color: var(--ink); min-width: 0; }
+.cp-tree { max-height: 340px; overflow-y: auto; border: 1px solid var(--rule); border-radius: 8px; padding: 6px 8px; display: grid; gap: 1px; }
+.cp-node { display: flex; align-items: center; gap: 4px; font-size: 13.5px; min-width: 0; }
+.cp-node label { display: flex; align-items: center; gap: 6px; padding: 3px 4px; border-radius: 6px; cursor: pointer; min-width: 0; }
+.cp-node label:hover { background: var(--hover); }
+.cp-node label span { overflow-wrap: anywhere; }
+.cp-node small { color: var(--muted); font-size: 11.5px; white-space: nowrap; }
+.cp-node label.blocked { cursor: not-allowed; color: var(--muted); }
+.cp-tog { font: inherit; width: 22px; height: 22px; border: 0; background: transparent; color: var(--ink-2); cursor: pointer; border-radius: 4px; flex: none; padding: 0; }
+.cp-tog:hover { background: var(--chip); }
+.cp-tog-sp { width: 22px; flex: none; }
+.cp-side { display: grid; gap: 10px; min-width: 0; }
+.cp-count { margin: 0; font-size: 12.5px; color: var(--muted); }
+.cp-list { list-style: none; margin: 0; padding: 0; display: grid; gap: 6px; }
+.cp-list li { display: grid; grid-template-columns: 12px minmax(0, 1fr) auto; gap: 8px; align-items: center; font-size: 13.5px; }
+.cp-list li i { width: 12px; height: 12px; border-radius: 3px; display: block; }
+.cp-list small { color: var(--muted); font-size: 11.5px; margin-left: 6px; }
+.cp-btns { display: inline-flex; gap: 2px; }
+.cp-btns button { font: inherit; font-size: 13px; width: 26px; height: 26px; padding: 0; border: 1px solid var(--rule); background: var(--surface); color: var(--ink); border-radius: 6px; cursor: pointer; }
+.cp-btns button:disabled { opacity: 0.35; cursor: default; }
+.cp-empty { margin: 0; font-size: 13.5px; color: var(--ink-2); }
+.cp-only { display: flex; gap: 8px; align-items: flex-start; font-size: 13.5px; color: var(--ink); cursor: pointer; }
+.cp-only input { margin-top: 3px; }
+@media (max-width: 760px) { .cp-body { grid-template-columns: minmax(0, 1fr); } }
 .export-panel { margin-top: 14px; padding-top: 14px; border-top: 1px solid var(--rule); display: grid; gap: 12px; }
 .ex-head { display: grid; gap: 2px; }
 .ex-head h3 { font-family: var(--f-display); font-size: 16px; font-weight: 600; margin: 0; }
@@ -135,7 +163,12 @@ h2 em { font-style: normal; color: var(--muted); font-weight: 500; font-size: 15
 .ex-warn { margin: 0; font-size: 13px; color: var(--ink); background: var(--chip); border-radius: 8px; padding: 6px 10px; }
 .ex-label { margin: 0; font-size: 12px; color: var(--muted); }
 .ex-items { display: grid; gap: 6px; max-height: 320px; overflow-y: auto; padding-right: 4px; }
-.ex-row { display: grid; grid-template-columns: 18px 12px minmax(0, 1fr); gap: 8px; align-items: center; }
+.ex-row { display: grid; grid-template-columns: 18px 28px minmax(0, 1fr); gap: 8px; align-items: center; }
+.ex-row input[type="color"] { width: 28px; height: 24px; padding: 2px; border: 1px solid var(--rule); border-radius: 6px; background: var(--surface); cursor: pointer; }
+.ex-row input[type="color"]::-webkit-color-swatch-wrapper { padding: 0; }
+.ex-row input[type="color"]::-webkit-color-swatch { border: 0; border-radius: 3px; }
+.ex-row input[type="color"]::-moz-color-swatch { border: 0; border-radius: 3px; }
+.ex-row input[type="color"]:disabled { opacity: 0.45; cursor: default; }
 .ex-row i { width: 12px; height: 12px; border-radius: 3px; display: block; }
 .ex-row i.line-key { height: 2px; border-radius: 1px; background: var(--ink); }
 .ex-row input[type="text"] { font: inherit; font-size: 13.5px; min-width: 0; padding: 4px 8px; border-radius: 6px; border: 1px solid var(--rule); background: var(--surface); color: var(--ink); }
@@ -250,6 +283,7 @@ h2 em { font-style: normal; color: var(--muted); font-weight: 500; font-size: 15
         <button type="button" id="ix-pce" data-v="pce">PCE</button>
         <button type="button" id="ix-core" data-v="core">核心 PCE</button>
         <button type="button" id="ix-general" data-v="general">通用分類</button>
+        <button type="button" id="ix-custom" data-v="custom">自訂</button>
       </div></div>
     <div class="ctl"><span class="ctl-label">變動</span>
       <div class="seg" data-key="mode">
@@ -269,6 +303,25 @@ h2 em { font-style: normal; color: var(--muted); font-weight: 500; font-size: 15
         <select id="to" aria-label="結束月份"></select>
       </span></div>
   </nav>
+
+  <section class="panel custom-panel" id="custom-panel" hidden aria-label="自訂組合">
+    <div class="cp-head">
+      <h2>自訂組合</h2>
+      <p class="hint">勾選想看的細項（最多 9 項），柱子依右邊清單的順序由下往上疊。選了某一項之後，它的上層和下層會暫時不能選，避免重複計算。以整體 PCE 為基準。</p>
+    </div>
+    <div class="cp-body">
+      <div class="cp-tree-wrap">
+        <input type="search" id="cp-search" placeholder="搜尋項目（中文、英文或 line 編號）" aria-label="搜尋項目">
+        <div class="cp-tree" id="cp-tree" role="tree" aria-label="BEA 項目"></div>
+      </div>
+      <div class="cp-side">
+        <p class="cp-count" id="cp-count"></p>
+        <ol class="cp-list" id="cp-list"></ol>
+        <label class="cp-only" for="cp-only"><input type="checkbox" id="cp-only"> <span>只看所選項目：不畫「其他」，總計線改為所選項目合計</span></label>
+        <div><button type="button" class="dl-btn" id="cp-clear">清除全部</button></div>
+      </div>
+    </div>
+  </section>
 
   <section class="reading" aria-live="polite">
     <div>
@@ -305,7 +358,7 @@ h2 em { font-style: normal; color: var(--muted); font-weight: 500; font-size: 15
     <div class="export-panel" id="export-panel" hidden>
       <div class="ex-head">
         <h3>下載設定</h3>
-        <p class="hint">這裡改的名稱只用在下載的圖片，網站上的名稱不會變。改過的名稱會記在這台電腦的瀏覽器裡。</p>
+        <p class="hint">這裡改的名稱與顏色只用在下載的圖片，網站上的名稱與顏色不會變。改過的設定會記在這台電腦的瀏覽器裡；顏色依位置記住，例如第 1 色改了，所有圖的第 1 色都會換。</p>
       </div>
       <div class="ex-body">
         <div class="ex-preview">
@@ -326,11 +379,12 @@ h2 em { font-style: normal; color: var(--muted); font-weight: 500; font-size: 15
             </select>
           </label>
           <p class="ex-warn" id="ex-warn" hidden></p>
-          <p class="ex-label">圖例（勾選＝顯示；文字框＝下載圖上的名稱）</p>
+          <p class="ex-label">圖例（勾選＝顯示；色塊＝點一下改下載圖上的顏色；文字框＝下載圖上的名稱）</p>
           <div class="ex-items" id="ex-items"></div>
           <div class="ex-actions">
             <button type="button" class="dl-btn primary" id="ex-download">下載 PNG</button>
             <button type="button" class="dl-btn" id="ex-reset">還原預設名稱</button>
+            <button type="button" class="dl-btn" id="ex-reset-colors">還原預設顏色</button>
             <button type="button" class="dl-btn" id="ex-close">關閉</button>
           </div>
         </div>
@@ -414,7 +468,25 @@ const DATA = /*DATA*/null;
     pos[k] = new Map(items.map((it, i) => [it.id, i]));
   }
 
-  const state = { index: "pce", mode: "yoy", range: "24", from: null, to: null, sort: "contrib", t: T - 1, node: ROOT };
+  const state = { index: "pce", mode: "yoy", range: "24", from: null, to: null, sort: "contrib", t: T - 1, node: ROOT, customOnly: false };
+  // ---------- 自訂組合：使用者挑選的細項（記在瀏覽器裡） ----------
+  const CUSTOM = -20, CUSTOM_KEY = "pce-driver-custom", MAX_PICK = 9;
+  let customSel = [];
+  const ancestorsOf = id => { const a = []; for (let x = N.get(id).p; x != null; x = N.get(x).p) a.push(x); return a; };
+  function setSelection(ids) {
+    const clean = [];
+    for (const id of ids) {
+      if (!N.has(id) || id === ROOT || clean.includes(id)) continue;
+      if (clean.some(s => ancestorsOf(id).includes(s) || ancestorsOf(s).includes(id))) continue;   // 上下層不能同時選
+      if (clean.length >= MAX_PICK) break;
+      clean.push(id);
+    }
+    customSel = clean;
+    leafIds.set(CUSTOM, clean.flatMap(id => leafIds.get(id)));
+    const hid = hiddenByLevel.get(`custom|${CUSTOM}`);
+    if (hid) for (const h of [...hid]) if (!clean.includes(h)) hid.delete(h);
+    try { localStorage.setItem(CUSTOM_KEY, JSON.stringify({ ids: clean, only: state.customOnly })); } catch (e) {}
+  }
   // 每一層各自記住哪些項目被隱藏；重新整理網頁後恢復全部顯示
   const hiddenByLevel = new Map(), lineOffByLevel = new Set();
   const levelKey = () => `${state.index}|${state.node}`;
@@ -424,6 +496,11 @@ const DATA = /*DATA*/null;
     return hiddenByLevel.get(k);
   }
   const lineShown = () => !lineOffByLevel.has(levelKey());
+  try {
+    const saved = JSON.parse(localStorage.getItem(CUSTOM_KEY) || "null");
+    if (saved) { state.customOnly = !!saved.only; setSelection(Array.isArray(saved.ids) ? saved.ids.map(Number) : []); }
+    else setSelection([]);
+  } catch (e) { setSelection([]); }
 
   const $ = id => document.getElementById(id);
   const esc = s => String(s).replace(/[&<>"]/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
@@ -443,13 +520,14 @@ const DATA = /*DATA*/null;
   const view = () => state.index;
   const modelKey = () => view() === "core" ? "core" : "pce";   // 通用分類和 PCE 用同一組貢獻
   const offKey = () => view() === "core" ? "core" : "pce";
-  const rootId = () => view() === "general" ? G : ROOT;
+  const rootId = () => view() === "general" ? G : view() === "custom" ? CUSTOM : ROOT;
   const indexWord = () => view() === "core" ? "核心 PCE" : "PCE";
   const leafInScope = l => view() !== "core" || LEAF.get(l).core;
-  const known = id => N.has(id) || V.has(id);
-  const isLeaf = id => !V.has(id) && N.get(id).lf;
+  const known = id => N.has(id) || V.has(id) || id === CUSTOM;
+  const isLeaf = id => !V.has(id) && id !== CUSTOM && N.get(id).lf;
 
   function parentOf(id) {
+    if (id === CUSTOM) return null;
     if (view() === "general") {
       if (id === G) return null;
       if (GPARENT.has(id)) return GPARENT.get(id);
@@ -458,6 +536,8 @@ const DATA = /*DATA*/null;
   }
   function reachable(id) {
     if (!known(id)) return false;
+    if (view() === "custom") return id === CUSTOM;
+    if (id === CUSTOM) return false;
     if (view() === "general") {
       for (let x = id; x != null; x = N.has(x) ? N.get(x).p : null) if (V.has(x) || GPARENT.has(x)) return true;
       return false;
@@ -466,6 +546,7 @@ const DATA = /*DATA*/null;
     return view() === "pce" || N.get(id).core;
   }
   function kidsOf(id) {
+    if (id === CUSTOM) return customSel;
     if (V.has(id)) return V.get(id).kids;
     const k = N.get(id).kids;
     return view() === "core" ? k.filter(c => N.get(c).core) : k;
@@ -473,21 +554,23 @@ const DATA = /*DATA*/null;
 
   // 核心模式下，節點被剔除了哪些項目（用來改名）
   function removedKind(id) {
-    if (view() !== "core" || V.has(id)) return "";
+    if (view() !== "core" || V.has(id) || id === CUSTOM) return "";
     const ls = leafIds.get(id);
     const f = ls.some(l => FOOD.has(l)), e = ls.some(l => ENERGY.has(l));
     return f && e ? "食品與能源" : f ? "食品" : e ? "能源" : "";
   }
   const RENAME = { 2: "核心商品", 150: "服務排除能源" };
   function label(id) {
+    if (id === CUSTOM) return "自訂組合";
     if (V.has(id)) return V.get(id).zh;
     if (id === ROOT) return view() === "core" ? "核心 PCE（不含食品與能源）" : "個人消費支出（PCE）";
     const rk = removedKind(id);
     return rk ? (RENAME[id] || `${N.get(id).zh}（排除${rk}）`) : N.get(id).zh;
   }
-  const crumbLabel = id => id === G ? "通用分類" : id === ROOT ? indexWord() : label(id);
-  const enOf = id => V.has(id) ? V.get(id).en : N.get(id).en;
+  const crumbLabel = id => id === CUSTOM ? "自訂" : id === G ? "通用分類" : id === ROOT ? indexWord() : label(id);
+  const enOf = id => id === CUSTOM ? "Custom selection" : V.has(id) ? V.get(id).en : N.get(id).en;
   function sourceNote(id) {
+    if (id === CUSTOM) return `${customSel.length} 個項目 · 以整體 PCE 為基準${state.customOnly ? " · 只看所選項目" : ""}`;
     if (id === G) return "核心商品、服務排除能源、食品與能源 · BEA line 375、376、370";
     if (V.has(id)) return `${V.get(id).en} · BEA 彙總序列 line ${V.get(id).line}`;
     const rk = removedKind(id);
@@ -516,7 +599,15 @@ const DATA = /*DATA*/null;
     return s;
   }
   const subModels = new Map();
+  // 一組最細項目重新合成的指數變動（自訂組合、未選項目用）
+  function comboChange(ids, t) {
+    if (!ids.length) return null;
+    const key = `combo|${ids.join(",")}`;
+    if (!subModels.has(key)) subModels.set(key, buildModel(ids.map(l => ({ price: N.get(l).price, spend: LEAF.get(l).spend })), T));
+    return pctChange(subModels.get(key).idx, t, state.mode);
+  }
   function ownChange(id, t) {
+    if (id === CUSTOM) return comboChange(leafIds.get(CUSTOM), t);
     if (id === rootId()) return pctChange(DATA.official[offKey()], t, state.mode);
     if (V.has(id)) {
       const off = DATA.official[V.get(id).off];
@@ -545,35 +636,43 @@ const DATA = /*DATA*/null;
       folded = new Set(ranked.slice(CORP.length - 1));
     }
     let slot = 0;
+    const slots = new Map();
     for (const k of kids) {
-      if (folded.has(k)) { map.set(k, "var(--other)"); hex.set(k, OTHER_HEX); }
-      else { slot++; map.set(k, `var(--s${slot})`); hex.set(k, CORP[slot - 1]); }
+      if (folded.has(k)) { map.set(k, "var(--other)"); hex.set(k, OTHER_HEX); slots.set(k, "other"); }
+      else { slot++; map.set(k, `var(--s${slot})`); hex.set(k, CORP[slot - 1]); slots.set(k, slot); }
     }
-    return { map, hex, folded };
+    return { map, hex, folded, slot: slots };
   }
 
   function snapshot(t) {
     const lc = leafContrib(t);
     if (!lc) return null;
     const wb = state.mode === "mom" ? t - 1 : t;
-    const R = rootId();
-    const tot = nodeSpend(R, wb);
+    const R = rootId(), custom = view() === "custom";
+    const tot = nodeSpend(ROOT, wb);
     const rows = kidsOf(state.node).map((id, k) => ({
       id, order: k, name: label(id), en: enOf(id),
       contrib: nodeContrib(id, lc),
       weight: nodeSpend(id, wb) / tot * 100,
       change: ownChange(id, t),
-      drill: !isLeaf(id),
+      drill: custom || !isLeaf(id),
     }));
     const nodeTotal = rows.reduce((a, r) => a + r.contrib, 0);
     const headline = pctChange(DATA.official[offKey()], t, state.mode);
     const isRoot = state.node === R;
-    const allSum = isRoot ? nodeTotal : nodeContrib(R, lc);
-    return {
-      rows, nodeTotal, headline, isRoot, residual: headline - allSum,
+    const allSum = isRoot && !custom ? nodeTotal : nodeContrib(ROOT, lc);
+    const out = {
+      rows, nodeTotal, headline, isRoot, custom, residual: headline - allSum,
       nodeWeight: nodeSpend(state.node, wb) / tot * 100,
       nodeChange: ownChange(state.node, t),
     };
+    if (custom) {   // 未選項目：其餘所有最細項目
+      const picked = new Set(leafIds.get(CUSTOM));
+      out.restContrib = allSum - nodeTotal;
+      out.restWeight = 100 - out.nodeWeight;
+      out.restChange = comboChange(leafIds.get(ROOT).filter(l => !picked.has(l)), t);
+    }
+    return out;
   }
 
   // ---------- 期間 ----------
@@ -597,17 +696,20 @@ const DATA = /*DATA*/null;
   // ---------- 導覽 ----------
   function pathTo(id) { const p = []; while (id != null) { p.unshift(id); id = parentOf(id); } return p; }
   function normalize(id) {
-    if (!known(id)) return rootId();
+    if (view() === "custom") return CUSTOM;
+    if (!known(id) || id === CUSTOM) return rootId();
     if (isLeaf(id)) id = parentOf(id);
     while (id != null && !reachable(id)) id = V.has(id) ? null : N.get(id).p;
     return id == null ? rootId() : id;
   }
   function syncHash() {
     try {
-      const h = state.node === rootId() ? "" : "n" + state.node;
+      const h = view() === "custom" ? "n" + CUSTOM : state.node === rootId() ? "" : "n" + state.node;
       if (location.hash.replace("#", "") !== h) location.hash = h;
     } catch (e) {}
   }
+  // 自訂模式裡點某一項：切回 PCE 模式並展開它
+  function openInPce(id) { state.index = "pce"; drillTo(id); }
   function drillTo(id, fromHash) {
     state.node = normalize(id);
     if (!fromHash) syncHash();
@@ -617,7 +719,8 @@ const DATA = /*DATA*/null;
   const TO_GENERAL = { 1: G, 2: CG, 72: CG, 150: SX, 151: SX, 152: SX, 165: SX };
   const FROM_GENERAL = { [G]: ROOT, [CG]: 2, [SX]: 150, [FE]: ROOT };
   function remapNode(prevView) {
-    let id = state.node;
+    if (view() === "custom") { state.node = CUSTOM; return; }
+    let id = prevView === "custom" ? rootId() : state.node;
     if (view() === "general" && prevView !== "general" && TO_GENERAL[id] !== undefined) id = TO_GENERAL[id];
     if (view() !== "general" && V.has(id)) id = FROM_GENERAL[id];
     state.node = normalize(id);
@@ -626,6 +729,8 @@ const DATA = /*DATA*/null;
     const m = /^#n(-?\d+)$/.exec(location.hash);
     const id = m ? +m[1] : rootId();
     if (V.has(id) && view() !== "general") state.index = "general";
+    if (id === CUSTOM) state.index = "custom";
+    else if (view() === "custom") state.index = "pce";
     if (id !== state.node) drillTo(id, true);
   });
 
@@ -693,18 +798,20 @@ const DATA = /*DATA*/null;
     $("focus-name").innerHTML = `${esc(label(state.node))}<small>${esc(sourceNote(state.node))}</small>`;
     const d = decFor([snap.nodeTotal]);
     const ch = snap.nodeChange;
+    const whole = snap.isRoot && !snap.custom, none = snap.custom && !snap.rows.length;
     $("stats").innerHTML = [
-      [`對${indexWord()}${modeWord()}的貢獻`, signed(snap.isRoot ? snap.headline : snap.nodeTotal, snap.isRoot ? 2 : d), "個百分點"],
+      [`對${indexWord()}${modeWord()}的貢獻`, none ? "—" : signed(whole ? snap.headline : snap.nodeTotal, whole ? 2 : d), "個百分點"],
       [`自身${modeWord()}`, ch === null ? "—" : signed(ch, 2) + "%", ""],
-      [`占${indexWord()}支出`, (snap.isRoot ? 100 : snap.nodeWeight).toFixed(snap.nodeWeight < 1 ? 2 : 1) + "%", ""],
+      [`占${indexWord()}支出`, none ? "—" : (whole ? 100 : snap.nodeWeight).toFixed(snap.nodeWeight < 1 ? 2 : 1) + "%", ""],
     ].map(([k, v, u]) => `<div class="stat"><span>${k}</span><b>${v}</b>${u ? `<small>${u}</small>` : ""}</div>`).join("");
 
     const rows = snap.rows;
+    if (none) { $("story").innerHTML = "還沒有選擇項目，請在上方「自訂組合」勾選想看的細項。"; return; }
     const dd = decFor(rows.map(r => r.contrib));
     const sorted = [...rows].sort((a, b) => b.contrib - a.contrib);
     const top = sorted[0], bottom = sorted[sorted.length - 1];
-    let s = `底下推升最多的是<b>${esc(top.name)}</b>（${signed(top.contrib, dd)}）`;
-    s += bottom.contrib < 0 ? `，拖累最多的是<b>${esc(bottom.name)}</b>（${signed(bottom.contrib, dd)}）。` : `，${rows.length} 個子項都在推升。`;
+    let s = `${snap.custom ? "所選項目中" : "底下"}推升最多的是<b>${esc(top.name)}</b>（${signed(top.contrib, dd)}）`;
+    s += bottom.contrib < 0 ? `，拖累最多的是<b>${esc(bottom.name)}</b>（${signed(bottom.contrib, dd)}）。` : `，${rows.length} ${snap.custom ? "項" : "個子項"}都在推升。`;
     $("story").innerHTML = s;
   }
 
@@ -739,11 +846,15 @@ const DATA = /*DATA*/null;
     const [start, end] = rangeBounds();
     const kids = kidsOf(state.node);
     const R = rootId(), atRoot = state.node === R;
+    const custom = view() === "custom", rest = custom && !state.customOnly;   // 自訂模式：未選項目併入「其他」
     const hid = hiddenSet();
     const grouped = k => plan.folded.has(k) || hid.has(k);
     const nGrouped = kids.filter(grouped).length;
-    segMeta = kids.filter(k => !grouped(k)).map(k => ({ key: k, id: k, def: label(k), name: label(k), color: plan.map.get(k), hex: plan.hex.get(k), drill: !isLeaf(k) }));
-    if (nGrouped) segMeta.push({ key: "other", id: "other", def: "其他", name: `其他（${nGrouped} 項）`, color: "var(--other)", hex: OTHER_HEX, drill: false });
+    segMeta = kids.filter(k => !grouped(k)).map(k => ({ key: k, id: k, slot: plan.slot.get(k), def: label(k), name: label(k), color: plan.map.get(k), hex: plan.hex.get(k), drill: custom || !isLeaf(k) }));
+    if (nGrouped || rest) {
+      const name = !custom ? `其他（${nGrouped} 項）` : rest ? (nGrouped ? `其他（未選項目與隱藏的 ${nGrouped} 項）` : "其他（未選項目）") : `其他（隱藏的 ${nGrouped} 項）`;
+      segMeta.push({ key: "other", id: "other", slot: "other", def: "其他", name, color: "var(--other)", hex: OTHER_HEX, drill: false });
+    }
     series = [];
     for (let t = start; t <= end; t++) {
       const lc = leafContrib(t);
@@ -753,10 +864,13 @@ const DATA = /*DATA*/null;
         const v = nodeContrib(k, lc); sum += v;
         if (grouped(k)) other += v; else vals.set(k, v);
       }
-      if (nGrouped) vals.set("other", other);
+      const all = nodeContrib(ROOT, lc);
+      if (rest) other += all - sum;
+      if (nGrouped || rest) vals.set("other", other);
       const headline = pctChange(DATA.official[offKey()], t, state.mode);
-      const allSum = atRoot ? sum : nodeContrib(R, lc);
-      series.push({ t, vals, total: atRoot ? headline : sum, residual: headline - allSum });
+      const allSum = atRoot && !custom ? sum : all;
+      const total = !atRoot ? sum : custom && state.customOnly ? sum : headline;
+      series.push({ t, vals, total, residual: headline - allSum });
     }
   }
 
@@ -815,11 +929,12 @@ const DATA = /*DATA*/null;
     });
     const pts = series.map((p, i) => `${cx(i).toFixed(1)},${y(p.total).toFixed(1)}`).join(" ");
     if (lineShown()) out += `<polyline points="${pts}" fill="none" style="stroke:var(--ink);pointer-events:none" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"/>`;
+    const pctTotal = atRoot && !(view() === "custom" && state.customOnly);
     if (si >= 0 && lineShown()) {
-      const d = atRoot ? 2 : decFor([series[si].total]);
+      const d = pctTotal ? 2 : decFor([series[si].total]);
       out += `<circle cx="${cx(si)}" cy="${y(series[si].total)}" r="4.5" style="fill:var(--ink);stroke:var(--surface);pointer-events:none" stroke-width="2"/>`;
       const anchor = si > series.length - 3 ? "end" : si < 2 ? "start" : "middle";
-      out += `<text x="${cx(si)}" y="${Math.max(11, y(series[si].total) - 12)}" text-anchor="${anchor}" style="fill:var(--ink);font-weight:500;font-size:12px;pointer-events:none">${atRoot ? series[si].total.toFixed(2) + "%" : signed(series[si].total, d)}</text>`;
+      out += `<text x="${cx(si)}" y="${Math.max(11, y(series[si].total) - 12)}" text-anchor="${anchor}" style="fill:var(--ink);font-weight:500;font-size:12px;pointer-events:none">${pctTotal ? series[si].total.toFixed(2) + "%" : signed(series[si].total, d)}</text>`;
     }
     const every = band < 9 ? 12 : band < 16 ? 6 : band < 28 ? 3 : 1;
     series.forEach((p, i) => {
@@ -845,14 +960,14 @@ const DATA = /*DATA*/null;
     const el = e.target.closest(".seg, .hit");
     if (!el) { tip.hidden = true; return; }
     const i = +el.dataset.i, p = series[i], on = el.dataset.key;
-    const atRoot = state.node === rootId();
+    const atRoot = state.node === rootId() && !(view() === "custom" && state.customOnly);
     const d = decFor([...p.vals.values()]);
     const rows = [...segMeta].reverse().map(s =>
       `<div class="${String(s.key) === on ? "on" : ""}"><i style="background:${s.color}"></i><span>${esc(s.name)}</span><b>${signed(p.vals.get(s.key) || 0, d)}</b></div>`).join("");
     const head = atRoot ? `${p.total.toFixed(2)}%` : signed(p.total, d);
     const resid = atRoot ? `<div><i class="ring"></i><span>殘差</span><b>${signed(p.residual, d)}</b></div>` : "";
     const meta = segMeta.find(s => String(s.key) === on);
-    const foot = meta ? (meta.drill ? "點一下展開這一項" : meta.key === "other" ? "「其他」是被隱藏項目的合計，點圖例可以重新顯示" : "這是最細項目") : "點一下切換到這個月";
+    const foot = meta ? (meta.drill ? (view() === "custom" ? "點一下切到 PCE 模式查看這一項" : "點一下展開這一項") : meta.key === "other" ? "「其他」是被隱藏項目的合計，點圖例可以重新顯示" : "這是最細項目") : "點一下切換到這個月";
     tip.innerHTML = `<h3><span>${monthLabel(p.t)}</span><b>${head}</b></h3>${rows}${resid}<p>${foot}</p>`;
     tip.hidden = false;
     const g = svg._geom, scale = svg.clientWidth / g.W, x = g.cx(i) * scale, tw = tip.offsetWidth;
@@ -868,7 +983,7 @@ const DATA = /*DATA*/null;
     state.t = series[+el.dataset.i].t;
     const meta = el.classList.contains("seg") ? segMeta.find(s => String(s.key) === el.dataset.key) : null;
     tip.hidden = true;
-    if (meta && meta.drill) drillTo(meta.key); else render();
+    if (meta && meta.drill) { if (view() === "custom") openInPce(meta.key); else drillTo(meta.key); } else render();
   });
 
   // ---------- 下載圖表：PNG，8.5 × 5.2 公分、300 dpi，對應報告左右並排的圖框 ----------
@@ -913,7 +1028,7 @@ const DATA = /*DATA*/null;
     return out;
   }
   function exportFileName() {
-    const view = { pce: "PCE", core: "核心PCE", general: "通用分類" }[state.index];
+    const view = { pce: "PCE", core: "核心PCE", general: "通用分類", custom: "自訂" }[state.index];
     const [a, z] = rangeBounds();
     const raw = `PCE_Driver_${view}_${label(state.node)}_${modeWord()}_${DATA.months[a]}_${DATA.months[z]}.png`;
     return raw.replace(/[\\/:*?"<>|]/g, "_").replace(/\s+/g, "");
@@ -923,7 +1038,13 @@ const DATA = /*DATA*/null;
   const NUM = '"Times New Roman", Times, "Noto Serif", serif';
   const INK = "#1A1A1A", AXIS = "#7F7F7F", TEXT2 = "#404040";
   const AUTO_SIZES = [9, 8.5, 8, 7.5, 7, 6.5, 6];   // 「自動」由大到小試，圖例不超過圖高 28% 就採用
-  const NAMES_KEY = "pce-driver-export-names", FONT_KEY = "pce-driver-export-font";
+  const NAMES_KEY = "pce-driver-export-names", FONT_KEY = "pce-driver-export-font", COLORS_KEY = "pce-driver-export-colors";
+  const GRID = "#D9D9D9";                                     // 與 Excel 預設格線相同的淡灰色
+  let customColors = {};
+  try { customColors = JSON.parse(localStorage.getItem(COLORS_KEY) || "{}") || {}; } catch (e) { customColors = {}; }
+  const saveColors = () => { try { localStorage.setItem(COLORS_KEY, JSON.stringify(customColors)); } catch (e) {} };
+  const defaultColor = slot => slot === "line" ? INK : slot === "other" ? OTHER_HEX : CORP[slot - 1] || OTHER_HEX;
+  const exportColor = slot => customColors[slot] || defaultColor(slot);
   let customNames = {};
   try { customNames = JSON.parse(localStorage.getItem(NAMES_KEY) || "{}") || {}; } catch (e) { customNames = {}; }
   let fontChoice = "auto";
@@ -934,7 +1055,7 @@ const DATA = /*DATA*/null;
     const v = customNames[nameKey(id, def)];
     return v && v.trim() ? v.trim() : def;
   }
-  const lineDefault = () => state.node === rootId() ? `${indexWord()}${modeWord()}` : `${label(state.node)}合計`;
+  const lineDefault = () => view() === "custom" && state.customOnly ? "所選項目合計" : state.node === rootId() ? `${indexWord()}${modeWord()}` : `${label(state.node)}合計`;
 
   // 依字體大小排出圖例（自動換行），回傳各列位置與總高度
   function layoutLegend(g, items, fpt, pxW, pt) {
@@ -967,8 +1088,8 @@ const DATA = /*DATA*/null;
     g.fillStyle = "#FFFFFF"; g.fillRect(0, 0, pxW, pxH);
 
     // 圖例項目：顯示中的項目＋灰色「其他」＋總計線，文字用下載專用的名稱
-    const items = segMeta.map(s => ({ name: exportName(s.id, s.def), color: s.hex, kind: "box" }));
-    if (lineShown()) items.push({ name: exportName("line", lineDefault()), color: INK, kind: "line" });
+    const items = segMeta.map(s => ({ name: exportName(s.id, s.def), color: exportColor(s.slot), kind: "box" }));
+    if (lineShown()) items.push({ name: exportName("line", lineDefault()), color: exportColor("line"), kind: "line" });
 
     // 字體：自動時挑最大、且圖例不超過圖高 28% 的大小；手動時照選擇
     let L;
@@ -1033,6 +1154,14 @@ const DATA = /*DATA*/null;
     g.fillStyle = TEXT2; g.textAlign = "right"; g.textBaseline = "middle";
     for (const v of ticks) g.fillText(fmtY(v), plot.l - 0.4 * axisPt * pt, Y(v));
 
+    // 淡灰色橫向格線（仿 Excel，畫在柱子後面；0% 另畫較深的基準線）
+    g.strokeStyle = GRID; g.lineWidth = 0.75 * pt;
+    for (const v of ticks) {
+      if (v === 0) continue;
+      const yy = Math.round(Y(v)) + 0.5;
+      g.beginPath(); g.moveTo(plot.l, yy); g.lineTo(plot.r, yy); g.stroke();
+    }
+
     // 堆疊柱（正值往上、負值往下；色塊之間留一條細白線）
     const gap = Math.max(1, Math.round(0.4 * pt));
     series.forEach((p, i) => {
@@ -1044,7 +1173,7 @@ const DATA = /*DATA*/null;
         const a = v > 0 ? up : down, b = a + v;
         let y0 = Y(Math.max(a, b)), y1 = Y(Math.min(a, b));
         if (v > 0 ? up > 0 : down < 0) { if (v > 0) y1 -= gap; else y0 += gap; }
-        if (y1 > y0) { g.fillStyle = s.hex; g.fillRect(x0, y0, bw, y1 - y0); }
+        if (y1 > y0) { g.fillStyle = exportColor(s.slot); g.fillRect(x0, y0, bw, y1 - y0); }
         if (v > 0) up = b; else down = b;
       }
     });
@@ -1055,7 +1184,7 @@ const DATA = /*DATA*/null;
 
     // 總計折線
     if (lineShown()) {
-      g.strokeStyle = INK; g.lineWidth = 1.5 * pt; g.lineJoin = "round"; g.lineCap = "round";
+      g.strokeStyle = exportColor("line"); g.lineWidth = 1.5 * pt; g.lineJoin = "round"; g.lineCap = "round";
       g.beginPath();
       series.forEach((p, i) => { const yy = Y(p.total); if (i) g.lineTo(cx(i), yy); else g.moveTo(cx(i), yy); });
       g.stroke();
@@ -1102,19 +1231,19 @@ const DATA = /*DATA*/null;
       const on = !hid.has(k), def = label(k);
       rows.push(`<div class="ex-row${on ? "" : " off"}">
         <input type="checkbox" id="ex-show-${k}" data-key="${k}" ${on ? "checked" : ""} aria-label="在圖上顯示 ${esc(def)}">
-        <i style="background:${plan.map.get(k)}"></i>
+        <input type="color" class="ex-color" id="ex-color-${k}" data-slot="${plan.slot.get(k)}" value="${exportColor(plan.slot.get(k))}" ${on ? "" : "disabled"} aria-label="${esc(def)} 在下載圖上的顏色（第 ${plan.slot.get(k)} 色）">
         <input type="text" id="ex-name-${k}" data-id="${k}" data-def="${esc(def)}" value="${esc(exportName(k, def))}" ${on ? "" : "disabled"} aria-label="${esc(def)} 在下載圖上的名稱">
       </div>`);
     }
     const other = segMeta.find(s => s.key === "other");
     if (other) rows.push(`<div class="ex-row">
-        <span class="ex-spacer"></span><i style="background:var(--other)"></i>
+        <span class="ex-spacer"></span><input type="color" class="ex-color" id="ex-color-other" data-slot="other" value="${exportColor("other")}" aria-label="「其他」在下載圖上的顏色">
         <input type="text" id="ex-name-other" data-id="other" data-def="其他" value="${esc(exportName("other", "其他"))}" aria-label="「其他」在下載圖上的名稱">
       </div>`);
     const ld = lineDefault();
     rows.push(`<div class="ex-row${lineShown() ? "" : " off"}">
         <input type="checkbox" id="ex-show-line" data-key="line" ${lineShown() ? "checked" : ""} aria-label="在圖上顯示總計線">
-        <i class="line-key"></i>
+        <input type="color" class="ex-color" id="ex-color-line" data-slot="line" value="${exportColor("line")}" ${lineShown() ? "" : "disabled"} aria-label="總計線在下載圖上的顏色">
         <input type="text" id="ex-name-line" data-id="line" data-def="${esc(ld)}" value="${esc(exportName("line", ld))}" ${lineShown() ? "" : "disabled"} aria-label="總計線在下載圖上的名稱">
       </div>`);
     $("ex-items").innerHTML = rows.join("");
@@ -1132,6 +1261,15 @@ const DATA = /*DATA*/null;
     }
   });
   panel.addEventListener("input", e => {
+    const c = e.target.closest('input[type="color"][data-slot]');
+    if (c) {
+      const slot = c.dataset.slot;
+      if (c.value.toLowerCase() === defaultColor(isNaN(+slot) ? slot : +slot).toLowerCase()) delete customColors[slot];
+      else customColors[slot] = c.value;
+      saveColors();
+      schedulePreview();
+      return;
+    }
     const t = e.target.closest('input[type="text"][data-id]');
     if (!t) return;
     const key = nameKey(t.dataset.id, t.dataset.def), v = t.value.trim();
@@ -1144,6 +1282,7 @@ const DATA = /*DATA*/null;
     saveNames();
     renderExportPanel();
   });
+  $("ex-reset-colors").addEventListener("click", () => { customColors = {}; saveColors(); renderExportPanel(); });
   $("ex-close").addEventListener("click", () => { panel.hidden = true; $("download").setAttribute("aria-expanded", "false"); $("download").focus(); });
   $("download").addEventListener("click", () => {
     const open = panel.hidden;
@@ -1175,12 +1314,104 @@ const DATA = /*DATA*/null;
   $("ex-download").addEventListener("click", downloadChart);
 
 
+  // ---------- 自訂組合面板：樹狀清單、已選清單 ----------
+  const cpExpanded = new Set();
+  function blockReason(id) {
+    if (customSel.includes(id)) return "";
+    if (ancestorsOf(id).some(a => customSel.includes(a))) return "已選上層";
+    if (customSel.some(s => ancestorsOf(s).includes(id))) return "已選子項";
+    if (customSel.length >= MAX_PICK) return `最多 ${MAX_PICK} 項`;
+    return "";
+  }
+  function renderTree() {
+    const box = $("cp-tree"), scroll = box.scrollTop;
+    const q = $("cp-search").value.trim().toLowerCase();
+    let show = null;                                   // 搜尋時：符合的項目與它們的上層
+    if (q) {
+      show = new Set();
+      for (const n of DATA.nodes) {
+        if (n.id === ROOT) continue;
+        if (n.zh.toLowerCase().includes(q) || n.en.toLowerCase().includes(q) || String(n.id) === q) {
+          show.add(n.id);
+          ancestorsOf(n.id).forEach(a => show.add(a));
+        }
+      }
+    }
+    const rows = [];
+    (function walk(id, depth) {
+      for (const k of N.get(id).kids) {
+        if (show && !show.has(k)) continue;
+        const n = N.get(k), hasKids = n.kids.length > 0;
+        const open = hasKids && (show ? true : cpExpanded.has(k));
+        const sel = customSel.includes(k), why = blockReason(k);
+        rows.push(`<div class="cp-node" role="treeitem"${hasKids ? ` aria-expanded="${open}"` : ""} style="padding-left:${depth * 18}px">` +
+          (hasKids ? `<button type="button" class="cp-tog" id="cp-tog-${k}" data-tog="${k}" aria-label="${open ? "收合" : "展開"} ${esc(n.zh)}">${open ? "▾" : "▸"}</button>` : `<span class="cp-tog-sp"></span>`) +
+          `<label class="${why ? "blocked" : ""}" for="cp-cb-${k}"><input type="checkbox" id="cp-cb-${k}" data-id="${k}" ${sel ? "checked" : ""} ${why ? "disabled" : ""}><span>${esc(n.zh)}</span><small>${why ? why + " · " : ""}line ${k}</small></label></div>`);
+        if (open) walk(k, depth + 1);
+      }
+    })(ROOT, 0);
+    box.innerHTML = rows.length ? rows.join("") : `<p class="hint">找不到符合「${esc(q)}」的項目</p>`;
+    box.scrollTop = scroll;
+  }
+  function renderCustomPanel(plan) {
+    const focusId = document.activeElement && $("custom-panel").contains(document.activeElement) ? document.activeElement.id : null;
+    renderTree();
+    $("cp-count").textContent = `已選 ${customSel.length} / ${MAX_PICK} 項 · 清單第一項疊在最底層`;
+    $("cp-list").innerHTML = customSel.length ? customSel.map((id, i) => `<li>
+        <i style="background:${plan.map.get(id)}"></i>
+        <span>${esc(N.get(id).zh)}<small>line ${id}</small></span>
+        <span class="cp-btns">
+          <button type="button" id="cp-up-${id}" data-move="${id}" data-dir="-1" ${i === 0 ? "disabled" : ""} aria-label="${esc(N.get(id).zh)} 往前移（疊得更低）">↑</button>
+          <button type="button" id="cp-down-${id}" data-move="${id}" data-dir="1" ${i === customSel.length - 1 ? "disabled" : ""} aria-label="${esc(N.get(id).zh)} 往後移（疊得更高）">↓</button>
+          <button type="button" id="cp-del-${id}" data-del="${id}" aria-label="移除 ${esc(N.get(id).zh)}">✕</button>
+        </span>
+      </li>`).join("") : `<li><p class="cp-empty">還沒有選擇項目。從左邊勾選，或用搜尋找項目。</p></li>`;
+    $("cp-only").checked = state.customOnly;
+    $("cp-clear").disabled = !customSel.length;
+    if (focusId && $(focusId)) $(focusId).focus();
+  }
+  $("cp-tree").addEventListener("click", e => {
+    const t = e.target.closest("[data-tog]");
+    if (!t) return;
+    const id = +t.dataset.tog;
+    if (cpExpanded.has(id)) cpExpanded.delete(id); else cpExpanded.add(id);
+    renderTree();
+    if ($(`cp-tog-${id}`)) $(`cp-tog-${id}`).focus();
+  });
+  $("cp-tree").addEventListener("change", e => {
+    const cb = e.target.closest("input[data-id]");
+    if (!cb) return;
+    const id = +cb.dataset.id;
+    setSelection(cb.checked ? [...customSel, id] : customSel.filter(x => x !== id));
+    render();
+  });
+  let searchTimer = 0;
+  $("cp-search").addEventListener("input", () => { clearTimeout(searchTimer); searchTimer = setTimeout(renderTree, 150); });
+  $("cp-list").addEventListener("click", e => {
+    const mv = e.target.closest("[data-move]"), del = e.target.closest("[data-del]");
+    if (mv) {
+      const id = +mv.dataset.move, i = customSel.indexOf(id), j = i + +mv.dataset.dir;
+      if (j < 0 || j >= customSel.length) return;
+      const next = [...customSel]; [next[i], next[j]] = [next[j], next[i]];
+      setSelection(next); render();
+    } else if (del) {
+      setSelection(customSel.filter(x => x !== +del.dataset.del)); render();
+    }
+  });
+  $("cp-only").addEventListener("change", e => {
+    state.customOnly = e.target.checked;
+    setSelection(customSel);                           // 一併存下開關狀態
+    render();
+  });
+  $("cp-clear").addEventListener("click", () => { setSelection([]); render(); });
+
   // ---------- 排行表 ----------
   function renderLedger(snap, plan) {
-    const d = decFor(snap.rows.map(r => r.contrib));
+    const restOn = snap.custom && !state.customOnly;
+    const d = decFor(snap.rows.map(r => r.contrib).concat(restOn ? [snap.restContrib] : []));
     const list = [...snap.rows].sort(state.sort === "contrib" ? (a, b) => b.contrib - a.contrib : (a, b) => a.order - b.order);
-    const max = Math.max(...list.map(r => Math.abs(r.contrib)), 1e-12);
-    $("ledger-title").innerHTML = `${monthLabel(state.t)} · ${esc(label(state.node))} 底下各項目<em>對${indexWord()}${modeWord()}的貢獻，百分點</em>`;
+    const max = Math.max(...list.map(r => Math.abs(r.contrib)), restOn ? Math.abs(snap.restContrib) : 0, 1e-12);
+    $("ledger-title").innerHTML = `${monthLabel(state.t)} · ${esc(label(state.node))}${snap.custom ? "各項目" : " 底下各項目"}<em>對${indexWord()}${modeWord()}的貢獻，百分點</em>`;
     const head = `<div class="row head" role="row"><span role="columnheader">項目</span><span class="num c-w" role="columnheader">支出權重</span><span class="num c-chg" role="columnheader">${modeWord()}</span><span role="columnheader" aria-hidden="true"></span><span class="num" role="columnheader">貢獻</span></div>`;
     const body = list.map(r => {
       const color = plan.map.get(r.id);
@@ -1191,7 +1422,7 @@ const DATA = /*DATA*/null;
       const rk = removedKind(r.id);
       const off = hiddenSet().has(r.id);
       const sub = `<span class="en">${esc(r.en)}</span>${rk ? `<span class="en"> · </span>已剔除${rk}` : ""}${r.drill ? `<span class="en"> · </span>${kidsOf(r.id).length} 個子項` : ""}${off ? " · 圖上已併入「其他」" : ""}`;
-      return `<div class="row${r.drill ? " drillable" : ""}${off ? " muted" : ""}" role="row" ${r.drill ? `tabindex="0" data-id="${r.id}" aria-label="展開 ${esc(r.name)}"` : ""}>
+      return `<div class="row${r.drill ? " drillable" : ""}${off ? " muted" : ""}" role="row" ${r.drill ? `tabindex="0" data-id="${r.id}" aria-label="${snap.custom ? "到 PCE 模式查看" : "展開"} ${esc(r.name)}"` : ""}>
         <span class="name" role="cell"><i style="background:${color}"></i><span>${esc(r.name)}<small>${sub}</small></span>${r.drill ? '<span class="chev" aria-hidden="true">›</span>' : ""}</span>
         <span class="num dim c-w" role="cell">${r.weight.toFixed(Math.abs(r.weight) < 1 ? 2 : 1)}%</span>
         <span class="num dim c-chg" role="cell">${r.change === null ? "—" : signed(r.change, state.mode === "yoy" ? 1 : 2) + "%"}</span>
@@ -1200,7 +1431,19 @@ const DATA = /*DATA*/null;
       </div>`;
     }).join("");
     let foot;
-    if (snap.isRoot) {
+    const fmtW = w => `${w.toFixed(Math.abs(w) < 1 ? 2 : 1)}%`;
+    const fmtC = c => c === null || c === undefined ? "—" : signed(c, state.mode === "yoy" ? 1 : 2) + "%";
+    if (snap.custom) {
+      const half = Math.abs(snap.restContrib) / max * 50;
+      const restBar = snap.restContrib >= 0
+        ? `<i class="pos" style="left:50%;width:${half}%;background:var(--other)"></i>`
+        : `<i class="neg" style="left:${50 - half}%;width:${half}%;background:var(--other)"></i>`;
+      const restRow = `<div class="row" role="row"><span class="name" role="cell"><i style="background:var(--other)"></i><span>其他（未選項目）<small>PCE 裡其餘所有項目</small></span></span><span class="num dim c-w" role="cell">${fmtW(snap.restWeight)}</span><span class="num dim c-chg" role="cell">${fmtC(snap.restChange)}</span><span class="bar" role="cell" aria-hidden="true">${restBar}</span><span class="num" role="cell">${signed(snap.restContrib, d)}</span></div>`;
+      const residRow = `<div class="row resid" role="row"><span class="name" role="cell"><i class="ring"></i><span>殘差<small>BEA 官方數字與細項合成的差異</small></span></span><span class="num c-w" role="cell"></span><span class="num c-chg" role="cell"></span><span role="cell"></span><span class="num dim" role="cell">${signed(snap.residual, d)}</span></div>`;
+      const pceRow = `<div class="row total" role="row"><span class="name" role="cell"><span>${indexWord()}（BEA 官方）</span></span><span class="num c-w" role="cell">100%</span><span class="num c-chg" role="cell">${signed(snap.headline, 2)}%</span><span role="cell"></span><span class="num" role="cell">${signed(snap.headline, d)}</span></div>`;
+      const selRow = `<div class="row total" role="row"><span class="name" role="cell"><span>所選項目合計</span></span><span class="num c-w" role="cell">${fmtW(snap.nodeWeight)}</span><span class="num c-chg" role="cell">${fmtC(snap.nodeChange)}</span><span role="cell"></span><span class="num" role="cell">${signed(snap.nodeTotal, d)}</span></div>`;
+      foot = state.customOnly ? selRow : restRow + residRow + pceRow;
+    } else if (snap.isRoot) {
       foot = `<div class="row resid" role="row"><span class="name" role="cell"><i class="ring"></i><span>殘差<small>BEA 官方數字與細項合成的差異</small></span></span><span class="num c-w" role="cell"></span><span class="num c-chg" role="cell"></span><span role="cell"></span><span class="num dim" role="cell">${signed(snap.residual, d)}</span></div>` +
         `<div class="row total" role="row"><span class="name" role="cell"><span>${indexWord()}（BEA 官方）</span></span><span class="num c-w" role="cell">100%</span><span class="num c-chg" role="cell">${signed(snap.headline, 2)}%</span><span role="cell"></span><span class="num" role="cell">${signed(snap.headline, d)}</span></div>`;
     } else {
@@ -1208,10 +1451,11 @@ const DATA = /*DATA*/null;
     }
     $("ledger").innerHTML = head + body + foot;
   }
-  $("ledger").addEventListener("click", e => { const r = e.target.closest(".row.drillable"); if (r) drillTo(+r.dataset.id); });
+  const openRow = id => view() === "custom" ? openInPce(id) : drillTo(id);
+  $("ledger").addEventListener("click", e => { const r = e.target.closest(".row.drillable"); if (r) openRow(+r.dataset.id); });
   $("ledger").addEventListener("keydown", e => {
     const r = e.target.closest(".row.drillable");
-    if (r && (e.key === "Enter" || e.key === " ")) { e.preventDefault(); drillTo(+r.dataset.id); }
+    if (r && (e.key === "Enter" || e.key === " ")) { e.preventDefault(); openRow(+r.dataset.id); }
   });
 
   function renderChrome(plan) {
@@ -1219,9 +1463,9 @@ const DATA = /*DATA*/null;
     $("crumbs").innerHTML = path.map((id, k) => k === path.length - 1
       ? `<span class="here" aria-current="page">${esc(crumbLabel(id))}</span>`
       : `<button type="button" data-id="${id}">${esc(crumbLabel(id))}</button><span class="sep" aria-hidden="true">›</span>`).join("");
-    $("chart-title").innerHTML = `${esc(label(state.node))} 底下各項目的貢獻<em>對${indexWord()}${modeWord()}，百分點</em>`;
+    $("chart-title").innerHTML = `${esc(label(state.node))}${view() === "custom" ? "各項目的貢獻" : " 底下各項目的貢獻"}<em>對${indexWord()}${modeWord()}，百分點</em>`;
     const anyDrill = segMeta.some(s => s.drill);
-    $("chart-hint").textContent = anyDrill ? "點色塊往下展開，點空白處切換月份，點圖例可隱藏項目" : "這一層都是最細項目；點柱子切換月份，點圖例可隱藏項目";
+    $("chart-hint").textContent = view() === "custom" ? "點色塊會切到 PCE 模式查看該項，點圖例可隱藏項目" : anyDrill ? "點色塊往下展開，點空白處切換月份，點圖例可隱藏項目" : "這一層都是最細項目；點柱子切換月份，點圖例可隱藏項目";
     const kids = kidsOf(state.node), hid = hiddenSet();
     const other = segMeta.find(s => s.key === "other");
     const parts = [];
@@ -1231,7 +1475,7 @@ const DATA = /*DATA*/null;
       const on = !hid.has(k);
       parts.push(`<button type="button" class="lg" data-key="${k}" aria-pressed="${on}" title="${on ? "點一下隱藏，併入「其他」" : "點一下重新顯示"}"><i style="background:${plan.map.get(k)}"></i>${esc(label(k))}</button>`);
     }
-    const lineName = state.node === rootId() ? `${indexWord()} ${modeWord()}（BEA 官方）` : `${label(state.node)}的貢獻合計`;
+    const lineName = view() === "custom" && state.customOnly ? "所選項目合計" : state.node === rootId() ? `${indexWord()} ${modeWord()}（BEA 官方）` : `${label(state.node)}的貢獻合計`;
     parts.push(`<button type="button" class="lg" data-key="line" aria-pressed="${lineShown()}" title="點一下隱藏或顯示總計線"><i class="line-key"></i>${esc(lineName)}</button>`);
     if (hid.size || !lineShown()) parts.push(`<button type="button" class="lg-reset" id="lg-reset">全部顯示</button>`);
     $("legend").innerHTML = parts.join("");
@@ -1261,6 +1505,8 @@ const DATA = /*DATA*/null;
     renderChrome(plan);
     drawChart();
     renderLedger(snap, plan);
+    $("custom-panel").hidden = view() !== "custom";
+    if (view() === "custom") renderCustomPanel(plan);
     if (!$("export-panel").hidden) renderExportPanel();
   }
 
@@ -1300,6 +1546,7 @@ const DATA = /*DATA*/null;
   const m0 = /^#n(-?\d+)$/.exec(location.hash || "");
   if (m0 && known(+m0[1])) {
     if (V.has(+m0[1])) state.index = "general";
+    if (+m0[1] === CUSTOM) state.index = "custom";
     drillTo(+m0[1], true);
   } else render();
 })();
