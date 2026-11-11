@@ -138,6 +138,7 @@ h2 em { font-style: normal; color: var(--muted); font-weight: 500; font-size: 15
 .cp-tog { font: inherit; width: 22px; height: 22px; border: 0; background: transparent; color: var(--ink-2); cursor: pointer; border-radius: 4px; flex: none; padding: 0; }
 .cp-tog:hover { background: var(--chip); }
 .cp-tog-sp { width: 22px; flex: none; }
+.cp-group { font-size: 12px; color: var(--muted); padding: 8px 4px 2px; margin-top: 4px; border-top: 1px solid var(--rule); }
 .cp-side { display: grid; gap: 10px; min-width: 0; }
 .cp-count { margin: 0; font-size: 12.5px; color: var(--muted); }
 .cp-list { list-style: none; margin: 0; padding: 0; display: grid; gap: 6px; }
@@ -472,12 +473,33 @@ const DATA = /*DATA*/null;
   // ---------- 自訂組合：使用者挑選的細項（記在瀏覽器裡） ----------
   const CUSTOM = -20, CUSTOM_KEY = "pce-driver-custom", MAX_PICK = 9;
   let customSel = [];
-  const ancestorsOf = id => { const a = []; for (let x = N.get(id).p; x != null; x = N.get(x).p) a.push(x); return a; };
+  // 自訂組合可選的通用分類（BEA 彙總序列，id 用 -31 起的負數）
+  const AGG = new Map([
+    [-31, { zh: "食品與能源", en: "PCE food and energy", line: 370, off: "fe", kids: [73, 113, 169], open: ["general", FE] }],
+    [-32, { zh: "能源商品與服務", en: "PCE energy goods and services", line: 371, off: "en", kids: [113, 169], open: ["general", FE] }],
+    [-33, { zh: "核心 PCE", en: "PCE excluding food and energy", line: 374, off: "core", kids: [CG, SX], open: ["core", ROOT] }],
+    [-34, { zh: "核心商品", en: "PCE goods excluding food and energy", line: 375, off: "cg", kids: [3, 104, 120], open: ["general", CG] }],
+    [-35, { zh: "服務排除能源", en: "PCE services excluding energy", line: 376, off: "sx", kids: [153, 166, 172, 190, 209, 234, 252, 280, 342], open: ["general", SX] }],
+  ]);
+  const AGG_LEAVES = new Map();
+  for (const [id, a] of AGG) {
+    leafIds.set(id, a.kids.flatMap(k => leafIds.get(k)));
+    AGG_LEAVES.set(id, new Set(leafIds.get(id)));
+  }
+  const pickName = id => AGG.has(id) ? AGG.get(id).zh : N.get(id).zh;
+  const pickLine = id => AGG.has(id) ? AGG.get(id).line : id;
+  const ancestorsOf = id => { const a = []; if (!N.has(id)) return a; for (let x = N.get(id).p; x != null; x = N.get(x).p) a.push(x); return a; };
+  // 兩個選項是否包含相同的最細項目（BEA 項目之間就是上下層關係）
+  function overlaps(a, b) {
+    if (AGG.has(a)) return leafIds.get(b).some(l => AGG_LEAVES.get(a).has(l));
+    if (AGG.has(b)) return leafIds.get(a).some(l => AGG_LEAVES.get(b).has(l));
+    return ancestorsOf(b).includes(a) || ancestorsOf(a).includes(b);
+  }
   function setSelection(ids) {
     const clean = [];
     for (const id of ids) {
-      if (!N.has(id) || id === ROOT || clean.includes(id)) continue;
-      if (clean.some(s => ancestorsOf(id).includes(s) || ancestorsOf(s).includes(id))) continue;   // 上下層不能同時選
+      if ((!N.has(id) && !AGG.has(id)) || id === ROOT || clean.includes(id)) continue;
+      if (clean.some(s => overlaps(s, id))) continue;   // 上下層（或內容重疊的項目）不能同時選
       if (clean.length >= MAX_PICK) break;
       clean.push(id);
     }
@@ -524,7 +546,7 @@ const DATA = /*DATA*/null;
   const indexWord = () => view() === "core" ? "核心 PCE" : "PCE";
   const leafInScope = l => view() !== "core" || LEAF.get(l).core;
   const known = id => N.has(id) || V.has(id) || id === CUSTOM;
-  const isLeaf = id => !V.has(id) && id !== CUSTOM && N.get(id).lf;
+  const isLeaf = id => !V.has(id) && id !== CUSTOM && !AGG.has(id) && N.get(id).lf;
 
   function parentOf(id) {
     if (id === CUSTOM) return null;
@@ -547,6 +569,7 @@ const DATA = /*DATA*/null;
   }
   function kidsOf(id) {
     if (id === CUSTOM) return customSel;
+    if (AGG.has(id)) return AGG.get(id).kids;
     if (V.has(id)) return V.get(id).kids;
     const k = N.get(id).kids;
     return view() === "core" ? k.filter(c => N.get(c).core) : k;
@@ -562,13 +585,14 @@ const DATA = /*DATA*/null;
   const RENAME = { 2: "核心商品", 150: "服務排除能源" };
   function label(id) {
     if (id === CUSTOM) return "自訂組合";
+    if (AGG.has(id)) return AGG.get(id).zh;
     if (V.has(id)) return V.get(id).zh;
     if (id === ROOT) return view() === "core" ? "核心 PCE（不含食品與能源）" : "個人消費支出（PCE）";
     const rk = removedKind(id);
     return rk ? (RENAME[id] || `${N.get(id).zh}（排除${rk}）`) : N.get(id).zh;
   }
   const crumbLabel = id => id === CUSTOM ? "自訂" : id === G ? "通用分類" : id === ROOT ? indexWord() : label(id);
-  const enOf = id => id === CUSTOM ? "Custom selection" : V.has(id) ? V.get(id).en : N.get(id).en;
+  const enOf = id => id === CUSTOM ? "Custom selection" : AGG.has(id) ? AGG.get(id).en : V.has(id) ? V.get(id).en : N.get(id).en;
   function sourceNote(id) {
     if (id === CUSTOM) return `${customSel.length} 個項目 · 以整體 PCE 為基準${state.customOnly ? " · 只看所選項目" : ""}`;
     if (id === G) return "核心商品、服務排除能源、食品與能源 · BEA line 375、376、370";
@@ -608,6 +632,10 @@ const DATA = /*DATA*/null;
   }
   function ownChange(id, t) {
     if (id === CUSTOM) return comboChange(leafIds.get(CUSTOM), t);
+    if (AGG.has(id)) {                                                  // BEA 公布的彙總序列；資料檔沒有時用細項合成
+      const off = DATA.official[AGG.get(id).off];
+      return off ? pctChange(off, t, state.mode) : comboChange(leafIds.get(id), t);
+    }
     if (id === rootId()) return pctChange(DATA.official[offKey()], t, state.mode);
     if (V.has(id)) {
       const off = DATA.official[V.get(id).off];
@@ -709,7 +737,11 @@ const DATA = /*DATA*/null;
     } catch (e) {}
   }
   // 自訂模式裡點某一項：切回 PCE 模式並展開它
-  function openInPce(id) { state.index = "pce"; drillTo(id); }
+  function openInPce(id) {
+    if (AGG.has(id)) { const [ix, node] = AGG.get(id).open; state.index = ix; drillTo(node); return; }   // 通用分類：切到對應的檢視
+    state.index = "pce"; drillTo(id);
+  }
+  const openWhere = id => !AGG.has(id) ? " PCE 模式" :AGG.get(id).open[0] === "core" ? "核心 PCE 模式" : "通用分類";
   function drillTo(id, fromHash) {
     state.node = normalize(id);
     if (!fromHash) syncHash();
@@ -967,7 +999,7 @@ const DATA = /*DATA*/null;
     const head = atRoot ? `${p.total.toFixed(2)}%` : signed(p.total, d);
     const resid = atRoot ? `<div><i class="ring"></i><span>殘差</span><b>${signed(p.residual, d)}</b></div>` : "";
     const meta = segMeta.find(s => String(s.key) === on);
-    const foot = meta ? (meta.drill ? (view() === "custom" ? "點一下切到 PCE 模式查看這一項" : "點一下展開這一項") : meta.key === "other" ? "「其他」是被隱藏項目的合計，點圖例可以重新顯示" : "這是最細項目") : "點一下切換到這個月";
+    const foot = meta ? (meta.drill ? (view() === "custom" ? `點一下切到${openWhere(meta.key)}查看這一項` : "點一下展開這一項") : meta.key === "other" ? "「其他」是被隱藏項目的合計，點圖例可以重新顯示" : "這是最細項目") : "點一下切換到這個月";
     tip.innerHTML = `<h3><span>${monthLabel(p.t)}</span><b>${head}</b></h3>${rows}${resid}<p>${foot}</p>`;
     tip.hidden = false;
     const g = svg._geom, scale = svg.clientWidth / g.W, x = g.cx(i) * scale, tw = tip.offsetWidth;
@@ -1320,6 +1352,8 @@ const DATA = /*DATA*/null;
     if (customSel.includes(id)) return "";
     if (ancestorsOf(id).some(a => customSel.includes(a))) return "已選上層";
     if (customSel.some(s => ancestorsOf(s).includes(id))) return "已選子項";
+    const hit = customSel.find(s => (AGG.has(s) || AGG.has(id)) && overlaps(s, id));
+    if (hit !== undefined) return `與「${pickName(hit)}」重疊`;
     if (customSel.length >= MAX_PICK) return `最多 ${MAX_PICK} 項`;
     return "";
   }
@@ -1350,6 +1384,15 @@ const DATA = /*DATA*/null;
         if (open) walk(k, depth + 1);
       }
     })(ROOT, 0);
+    // 商品、服務之後：通用分類
+    const aggRows = [];
+    for (const [k, a] of AGG) {
+      if (q && !(a.zh.toLowerCase().includes(q) || a.en.toLowerCase().includes(q) || String(a.line) === q)) continue;
+      const sel = customSel.includes(k), why = blockReason(k);
+      aggRows.push(`<div class="cp-node" role="treeitem"><span class="cp-tog-sp"></span>` +
+        `<label class="${why ? "blocked" : ""}" for="cp-cb-${k}"><input type="checkbox" id="cp-cb-${k}" data-id="${k}" ${sel ? "checked" : ""} ${why ? "disabled" : ""}><span>${esc(a.zh)}</span><small>${why ? why + " · " : ""}line ${a.line}</small></label></div>`);
+    }
+    if (aggRows.length) rows.push(`<div class="cp-group" role="none">通用分類</div>`, ...aggRows);
     box.innerHTML = rows.length ? rows.join("") : `<p class="hint">找不到符合「${esc(q)}」的項目</p>`;
     box.scrollTop = scroll;
   }
@@ -1359,11 +1402,11 @@ const DATA = /*DATA*/null;
     $("cp-count").textContent = `已選 ${customSel.length} / ${MAX_PICK} 項 · 清單第一項疊在最底層`;
     $("cp-list").innerHTML = customSel.length ? customSel.map((id, i) => `<li>
         <i style="background:${plan.map.get(id)}"></i>
-        <span>${esc(N.get(id).zh)}<small>line ${id}</small></span>
+        <span>${esc(pickName(id))}<small>line ${pickLine(id)}</small></span>
         <span class="cp-btns">
-          <button type="button" id="cp-up-${id}" data-move="${id}" data-dir="-1" ${i === 0 ? "disabled" : ""} aria-label="${esc(N.get(id).zh)} 往前移（疊得更低）">↑</button>
-          <button type="button" id="cp-down-${id}" data-move="${id}" data-dir="1" ${i === customSel.length - 1 ? "disabled" : ""} aria-label="${esc(N.get(id).zh)} 往後移（疊得更高）">↓</button>
-          <button type="button" id="cp-del-${id}" data-del="${id}" aria-label="移除 ${esc(N.get(id).zh)}">✕</button>
+          <button type="button" id="cp-up-${id}" data-move="${id}" data-dir="-1" ${i === 0 ? "disabled" : ""} aria-label="${esc(pickName(id))} 往前移（疊得更低）">↑</button>
+          <button type="button" id="cp-down-${id}" data-move="${id}" data-dir="1" ${i === customSel.length - 1 ? "disabled" : ""} aria-label="${esc(pickName(id))} 往後移（疊得更高）">↓</button>
+          <button type="button" id="cp-del-${id}" data-del="${id}" aria-label="移除 ${esc(pickName(id))}">✕</button>
         </span>
       </li>`).join("") : `<li><p class="cp-empty">還沒有選擇項目。從左邊勾選，或用搜尋找項目。</p></li>`;
     $("cp-only").checked = state.customOnly;
@@ -1422,7 +1465,7 @@ const DATA = /*DATA*/null;
       const rk = removedKind(r.id);
       const off = hiddenSet().has(r.id);
       const sub = `<span class="en">${esc(r.en)}</span>${rk ? `<span class="en"> · </span>已剔除${rk}` : ""}${r.drill ? `<span class="en"> · </span>${kidsOf(r.id).length} 個子項` : ""}${off ? " · 圖上已併入「其他」" : ""}`;
-      return `<div class="row${r.drill ? " drillable" : ""}${off ? " muted" : ""}" role="row" ${r.drill ? `tabindex="0" data-id="${r.id}" aria-label="${snap.custom ? "到 PCE 模式查看" : "展開"} ${esc(r.name)}"` : ""}>
+      return `<div class="row${r.drill ? " drillable" : ""}${off ? " muted" : ""}" role="row" ${r.drill ? `tabindex="0" data-id="${r.id}" aria-label="${snap.custom ? `到${openWhere(r.id)}查看` : "展開"} ${esc(r.name)}"` : ""}>
         <span class="name" role="cell"><i style="background:${color}"></i><span>${esc(r.name)}<small>${sub}</small></span>${r.drill ? '<span class="chev" aria-hidden="true">›</span>' : ""}</span>
         <span class="num dim c-w" role="cell">${r.weight.toFixed(Math.abs(r.weight) < 1 ? 2 : 1)}%</span>
         <span class="num dim c-chg" role="cell">${r.change === null ? "—" : signed(r.change, state.mode === "yoy" ? 1 : 2) + "%"}</span>
