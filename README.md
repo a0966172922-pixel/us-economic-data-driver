@@ -1,75 +1,115 @@
-# PCE Driver
+# Retail Sales Driver
 
-美國 PCE 物價的細項貢獻度拆解。依 BEA Table 2.4.4U（價格指數）與 2.4.5U（名目支出）的樹狀結構逐層展開，每一層都顯示對 PCE 總指數年增率、月增率的貢獻。
+美國零售銷售的細項金額與貢獻度拆解。資料來自 Census 的 Advance Monthly Retail Trade Survey（MARTS），季節調整、月資料，1992 年起。
 
-GitHub Actions 每個工作日自動呼叫 BEA API，有新資料時重新計算並更新網站。
+GitHub Actions 每個工作日自動向 Census 下載最新資料，有新資料時重新產生網站。不需要自己的伺服器，也不需要 API key。
 
 ## 網站功能
 
-- **指數**：PCE、核心 PCE（不含食品與能源），以及「通用分類」：把整體 PCE 分成核心商品、服務排除能源、食品與能源三組（對應 BEA line 375、376、370），三組貢獻相加等於整體 PCE。
-- **自訂**：自己挑最多 9 個細項疊成柱狀圖（可搜尋中文、英文或 line 編號）。除了商品、服務底下的 BEA 項目，也可以選五個通用分類：食品與能源（line 370）、能源商品與服務（371）、核心 PCE（374）、核心商品（375）、服務排除能源（376），自身漲幅用 BEA 官方彙總序列；內容重疊的項目不能同時選。清單順序就是由下往上疊的順序；選了某一項後，它的上層和下層不能再選，避免重複計算。以整體 PCE 為基準，其餘項目併成灰色「其他」，總計線是 PCE 的實際漲幅；打開「只看所選項目」則不畫「其他」，總計線改為所選項目合計。點色塊會切回 PCE 模式展開那一項。選擇會記在瀏覽器裡。
-- **變動**：年增率或月增率。
-- **期間**：12 個月、24 個月、全部，或自訂起訖月份。
-- **逐層展開**：點圖上的色塊或下方列表往下展開，用麵包屑返回。核心模式下，被剔除部分子項的層級會自動改名，例如「核心商品」、「服務排除能源」。
-- **隱藏項目**：點圖例可以隱藏或重新顯示某一項；隱藏的項目會併成灰色的「其他」，柱子加總仍然等於總計線。總計線也能點圖例關閉。每一層分別記住，重新整理網頁後恢復全部顯示。下方列表保持完整，隱藏的項目以淡色顯示。
-- **下載圖表**：按「下載圖表」打開下載設定，可以改圖例文字（只用在下載的圖片，網站名稱不變，改過的名稱記在這台電腦的瀏覽器）、選字體大小（自動或 6–12 點），並即時預覽。圖片固定 8.5 × 5.2 公分、300 dpi，圖例在上方，會依字數與字體自動調整圖例與柱狀圖的比例、刻度數量與月份間隔。要改尺寸，修改 `site/template.html` 裡的 `EXPORT = { wcm: 8.5, hcm: 5.2, dpi: 300 }`。
-- **下載圖片的顏色與格線**：在下載設定裡點色塊可以改顏色（含灰色「其他」與總計線），只影響下載的圖片；顏色依位置記住，例如第 1 色改了，所有圖的第 1 色都會換，「還原預設顏色」可復原。下載的圖片固定畫上淡灰色橫向格線（#D9D9D9，與 Excel 預設相同）。
-- **配色**：依位置使用公司 9 色（#156082、#E97132、#196B24、#0F9ED5、#A02B93、#4EA72E、#00897B、#FF8080、#C8102E）；深色模式把其中 4 色稍微調亮。
+- **指標**：總計、不含汽車、不含加油站、不含汽車與加油站、控制組、自訂。
+  - 前四個是 Census 公布的序列（44X72、44Y72、44Z72、44W72）。
+  - 控制組 Census 沒有公布，依市場慣例自行計算：總計扣除汽車及零件經銷商（441）、加油站（447）、建材及園藝設備（444）、餐飲服務（722）。
+  - 所有特殊分類都由「控制組＋汽車、加油站、建材、餐飲」五塊組成（顏色固定）。點控制組可以展開成 9 個細項；汽車、食品飲料、綜合商品也能再往下展開。
+- **圖表**：
+  - 金額：季調銷售額堆疊圖，單位億美元。
+  - 年增率貢獻、月增率貢獻：一律是「對整體零售的貢獻」，單位百分點，各項加總就是整體零售的變動率。年增率用季調數字計算，和 Census 新聞稿一致。
+- **期間**：12 個月、24 個月、5 年、全部（1992 年起），或自訂起訖月份。
+- **自訂組合**：從樹狀清單挑最多 9 項疊成柱狀圖，可搜尋中文、英文或 NAICS 代碼。
+  - 內容重疊的項目不能同時選，例如控制組和它底下的家具店。
+  - 以整體零售為基準，其餘項目併成灰色「其他」。打開「只看所選項目」就不畫「其他」，總計線改為所選項目合計。
+  - 選擇會記在瀏覽器裡。
+- **組合圖**（自訂組合裡切換「貢獻拆解／組合圖」）：把不同項目的金額、年增率、月增率畫在同一張圖。
+  - 每條序列各自選項目、數值種類（金額、年增率、月增率）、畫成柱或線、放左軸或右軸，最多 9 條。
+  - 同一項目可以同時加入多種數值（例如總計的金額與年增率）。項目之間可以重疊（例如總計與控制組），因為這裡不做加總。
+  - 新增時預設：金額是左軸柱子，變動率是右軸折線。只用到一個軸時一律畫在左邊。
+  - 同一軸同時放金額與變動率時會提醒，因為單位不同。
+  - 雙軸時，右軸自動用和左軸一樣多的刻度間隔，兩軸格線重合。
+  - 多條柱子在同一個月並排，依清單順序由左到右。
+  - 有四個範例可以一鍵套用，設定會記在瀏覽器裡。
+  - 下載 PNG、CSV 都支援組合圖；PNG 的左右軸範圍可以分別手動設定。
+- **初值標示**：最新一個月是初值，圖上用較淡的顏色標示，下個月會修正。
+- **隱藏項目**：點圖例可以隱藏某一項，它會併入灰色「其他」，柱子加總不變。金額圖的總計線就是柱子頂端，預設不畫，可從圖例打開。
+- **下載圖表（PNG）**：
+  - 兩種尺寸：半欄 8.5 × 5.2 公分（報告左右並排的圖框）、整欄 16 × 9 公分（A4 版心寬度），都是 300 dpi，插入 Word 時自動是設定的尺寸。
+  - 可以改圖例文字、顏色、字體大小（自動、6–12 點或 14 點）。
+  - 顏色只能從預設色票選：公司 9 色、灰色、黑色。
+  - 圖例可以靠左或置中。
+  - 總計線（黑線）可以選實線或虛線，粗細 0.75–3 點，預設 1.5 點實線。
+  - 可以手動設 y 軸上下限，超出的部分會截掉。金額、年增、月增分開記，重新整理後恢復自動。
+  - 要改尺寸，修改 `site/app.js` 裡的 `PRESETS`。
+- **下載資料 CSV**：目前這張圖的數字，包含所有子項（不受圖例隱藏影響）、總計線，以及貢獻圖所屬項目的自身變動率。用 Excel 直接開啟即可，最新月份會在備註欄標「初值」。
+- **配色**：依位置使用公司 9 色（#156082、#E97132、#196B24、#0F9ED5、#A02B93、#4EA72E、#00897B、#FF8080、#C8102E），與 PCE Driver 相同。
 
 ## 檔案說明
 
 | 路徑 | 用途 |
 |---|---|
-| `.github/workflows/update.yml` | 排程：抓資料、計算、部署網站 |
-| `pipeline/build_data.py` | 產生資料檔的主程式（API 或 Excel 來源） |
-| `pipeline/sources.py` | 呼叫 BEA API、讀取 Excel |
-| `pipeline/tree.py` | 建立樹狀結構、整理貢獻度資料 |
-| `pipeline/structure.json` | BEA 表格的樹狀結構與中文名稱 |
-| `pipeline/make_structure.py` | BEA 改表格時，用新的 Excel 重建結構檔 |
-| `site/template.html`、`site/compute.js` | 網頁與貢獻度計算 |
-| `build_site.py` | 把資料嵌入網頁，輸出 `public/index.html` |
-| `data/pce.json` | 最新資料（排程會自動更新並 commit） |
+| `.github/workflows/update.yml` | 排程：抓資料、檢查、部署網站 |
+| `pipeline/build_data.py` | 產生資料檔的主程式（含所有檢查） |
+| `pipeline/sources.py` | 下載 Census 整包資料、API 備援、下次發布日期 |
+| `pipeline/structure.json` | 類別清單、樹狀結構、中文名稱、特殊分類 |
+| `site/template.html` | 網頁版面與樣式 |
+| `site/app.js`、`site/compute.js` | 網頁互動、下載功能與貢獻度計算 |
+| `build_site.py` | 把資料與程式嵌入網頁，輸出 `public/index.html` |
+| `data/retail.json` | 最新資料（排程會自動更新並 commit） |
 
 ## 第一次設定
 
-1. **申請 BEA API key**：到 <https://apps.bea.gov/API/signup/> 填姓名與 email，key 會寄到信箱。
-2. **建立 repository**：登入 GitHub → 右上角「+」→ New repository。名稱填 `pce-driver`，選 **Public**，其他不用勾，按 Create repository。
-   免費帳號只有公開的 repository 能架 GitHub Pages 網站。API key 放在下一步的 Secrets 裡，不會公開。
-3. **上傳檔案**：在新 repository 頁面點「uploading an existing file」，把這個資料夾裡的所有內容拖進去，按 Commit changes。
+1. **建立 repository**：登入 GitHub → 右上角「+」→ New repository。名稱填 `retail-sales-driver`，選 **Public**，其他不用勾，按 Create repository。
+   免費帳號只有公開的 repository 能架 GitHub Pages 網站。
+2. **上傳檔案**：在新 repository 頁面點「uploading an existing file」，把這個資料夾裡的所有內容拖進去，按 Commit changes。
    `.github` 是隱藏資料夾，Mac 的 Finder 預設看不到，要先按 `Cmd + Shift + .` 顯示隱藏檔再一起拖。上傳後確認 repository 裡有 `.github/workflows/update.yml`。
    如果還是漏掉，可以點 Add file → Create new file，檔名輸入 `.github/workflows/update.yml`，再把檔案內容貼上。
-4. **存入 API key**：Settings → Secrets and variables → Actions → New repository secret。Name 填 `BEA_API_KEY`，Secret 貼上 key。
-5. **開啟網站**：Settings → Pages → Build and deployment → Source 選 **GitHub Actions**。
-6. **手動跑第一次**：Actions 分頁 → 左側「更新 PCE Driver」→ Run workflow。大約一到兩分鐘，成功後網址是 `https://你的帳號.github.io/pce-driver/`。
+3. **開啟網站**：Settings → Pages → Build and deployment → Source 選 **GitHub Actions**。
+4. **手動跑第一次**：Actions 分頁 → 左側「更新 Retail Sales Driver」→ Run workflow。大約一分鐘，成功後網址是 `https://你的帳號.github.io/retail-sales-driver/`。
+5. **（選用）Census API key**：整包下載是主要來源，不需要 key。如果想多一層備援：
+   1. 到 <https://api.census.gov/data/key_signup.html> 申請 key。
+   2. Settings → Secrets and variables → Actions → New repository secret，Name 填 `CENSUS_API_KEY`。
+   3. 之後整包下載失敗時，排程會自動改用 Census Data API。
 
 ## 之後的運作
 
-- 每個週一到週五台北時間 22:07 檢查一次（BEA 在美東 8:30 發布）。有新資料才 commit 並重新部署；沒有就什麼都不做。
-- 每次都重抓 2016 年以來的完整歷史，所以 BEA 對過去幾個月的修正也會反映出來。
-- 執行失敗時 GitHub 會寄信通知，網站維持上一版。錯誤訊息會說明原因，常見的有：
-  - **key 錯誤或失效**：到 Settings → Secrets 更新 `BEA_API_KEY`。
-  - **BEA 改了表格結構**：訊息會列出哪幾列不同。下載新的 2.4.4U 月資料 Excel，執行 `python pipeline/make_structure.py 檔名.xlsx`，補上新項目的中文名稱後 commit。
-- 公開 repository 連續 60 天沒有任何活動，排程會被 GitHub 自動停用。正常情況下每月都有資料 commit，不會碰到；如果 BEA 長時間沒有發布，到 Actions 頁面按 Enable workflow 即可。
-- 修改網頁：編輯 `site/template.html` 並 commit，會自動重新部署。
+- **更新時間**：每個週一到週五台北時間 22:07 檢查一次（Census 在美東 8:30 發布）。有新資料才 commit 並重新部署，沒有就什麼都不做。
+- **重抓完整歷史**：每次都重抓 1992 年以來的完整歷史，所以前兩個月的修正和每年的年度修正都會反映出來。
+- **每次更新都會檢查**：
+  - Census 的類別清單和 `structure.json` 完全一致。
+  - 細項相加等於官方的總計、零售業、不含汽車、不含加油站、不含汽車與加油站，以及汽車、食品飲料、綜合商品。
+  - 月份連續、沒有缺值。
+  - 任何一項不符就停下來，網站維持上一版。
+- **執行失敗時**：GitHub 會寄信通知，錯誤訊息會說明原因。常見的有：
+  - **Census 改了類別**：Census 預計 2027 年底前改用 2022 年版 NAICS，屆時會取消無店面零售（454）等類別，排程會列出哪些代碼不同。到時候需要修改 `pipeline/structure.json`（類別清單、最細項目、各彙總節點的組成）後 commit。
+  - **連不上 Census 或被擋**：通常隔天會自己恢復。若持續失敗，可以設定上面的 `CENSUS_API_KEY`，或用下面的手動更新。
+- **排程被停用**：公開 repository 連續 60 天沒有任何活動，排程會被 GitHub 自動停用。正常情況下每月都有資料 commit，不會碰到；如果 Census 長時間沒有發布（例如政府停擺），到 Actions 頁面按 Enable workflow 即可。
+- **修改網頁**：編輯 `site/` 底下的檔案並 commit，會自動重新部署。
 
 ## 手動更新（備援）
 
-API 暫時不能用時，可以從 BEA iTable 下載兩張表的月資料 Excel：
+到 Census 時間序列網站（currentdata）下載 MARTS 整包資料。網址如下，會下載 `MARTS-mf.zip`：
 
 ```
-pip install openpyxl
-python pipeline/build_data.py --excel 2.4.4U.xlsx 2.4.5U.xlsx --out data/pce.json
-python build_site.py data/pce.json public/index.html
+https://www.census.gov/econ_getzippedfile/?programCode=MARTS
 ```
 
-然後 commit `data/pce.json`，排程下次執行時會部署。
+然後執行：
+
+```
+python pipeline/build_data.py --zip MARTS-mf.zip --out data/retail.json
+python build_site.py data/retail.json public/index.html
+```
+
+commit `data/retail.json` 之後，網站會在排程下次執行時更新；也可以到 Actions 頁面手動執行。
+
+zip 裡的 CSV 是「索引格式」：前面是類別、月份等代碼表，數字在檔案最後的 DATA 區段，用 Excel 直接開看不出內容，這是正常的。
 
 ## 本機測試
 
 ```
-export BEA_API_KEY=你的key      # Windows PowerShell：$env:BEA_API_KEY="你的key"
-python pipeline/build_data.py --api --out data/pce.json
+python pipeline/build_data.py --out data/retail.json
 python build_site.py
 ```
 
 用瀏覽器打開 `public/index.html`。只需要 Python 3.9 以上，不用安裝其他套件。
+
+## 資料來源
+
+U.S. Census Bureau, Advance Monthly Retail Trade Survey（Advance Monthly Sales for Retail and Food Services）。
