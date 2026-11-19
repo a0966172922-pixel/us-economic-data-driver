@@ -1,0 +1,538 @@
+<title>Retail Sales Driver</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans+Condensed:wght@500;600;700&family=Noto+Sans+TC:wght@400;500;700&display=swap">
+<style>
+/* Layout: a statistical release sheet — masthead, control rail, headline reading beside the
+   drilled node, stacked monthly contributions with a breadcrumb, then a driver ledger. */
+:root {
+  --bg: #eef1f4;
+  --surface: #fbfcfd;
+  --ink: #121820;
+  --ink-2: #465061;
+  --muted: #747d8c;
+  --rule: #dfe3e9;
+  --axis: #c3cad3;
+  --sel: #e6ebf1;
+  --chip: #e7ebf0;
+  --hover: #f0f3f6;
+  /* 公司 9 色；深色模式只把對比不足的 4 色稍微調亮 */
+  --s1: #156082; --s2: #E97132; --s3: #196B24; --s4: #0F9ED5; --s5: #A02B93;
+  --s6: #4EA72E; --s7: #00897B; --s8: #FF8080; --s9: #C8102E;
+  --other: #9aa2ae;
+  --f-display: "IBM Plex Sans Condensed", "Noto Sans TC", system-ui, -apple-system, "Segoe UI", sans-serif;
+  --f-body: "Noto Sans TC", system-ui, -apple-system, "Segoe UI", "PingFang TC", "Microsoft JhengHei", sans-serif;
+  --f-data: "IBM Plex Mono", ui-monospace, "SFMono-Regular", Menlo, Consolas, monospace;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #0e1114; --surface: #161a1f; --ink: #edf0f3; --ink-2: #b6bfca; --muted: #858e9c;
+    --rule: #252b32; --axis: #3a424c; --sel: #20262e; --chip: #20262e; --hover: #1b2026;
+    --s1: #2B7194; --s2: #E97132; --s3: #2B7A33; --s4: #0F9ED5; --s5: #AD39A0;
+    --s6: #4EA72E; --s7: #00897B; --s8: #FF8080; --s9: #CF1D34; --other: #5d6673;
+    color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #0e1114; --surface: #161a1f; --ink: #edf0f3; --ink-2: #b6bfca; --muted: #858e9c;
+  --rule: #252b32; --axis: #3a424c; --sel: #20262e; --chip: #20262e; --hover: #1b2026;
+  --s1: #2B7194; --s2: #E97132; --s3: #2B7A33; --s4: #0F9ED5; --s5: #AD39A0;
+  --s6: #4EA72E; --s7: #00897B; --s8: #FF8080; --s9: #CF1D34; --other: #5d6673;
+  color-scheme: dark;
+}
+
+* { box-sizing: border-box; }
+body {
+  background: var(--bg);
+  color: var(--ink);
+  font-family: var(--f-body);
+  font-size: 15px;
+  line-height: 1.55;
+  padding-left: max(16px, env(safe-area-inset-left, 0px));
+  padding-right: max(16px, env(safe-area-inset-right, 0px));
+  padding-block: 28px 48px;
+}
+.wrap { max-width: 1120px; margin: 0 auto; display: grid; gap: 18px; }
+
+/* Masthead */
+.masthead { display: flex; flex-wrap: wrap; align-items: flex-end; justify-content: space-between; gap: 12px 24px; }
+.eyebrow { font-size: 12px; letter-spacing: 0.12em; color: var(--muted); margin: 0 0 2px; }
+h1 { font-family: var(--f-display); font-weight: 700; font-size: clamp(34px, 6vw, 48px); line-height: 1; margin: 0; letter-spacing: -0.01em; }
+h1 span { font-weight: 500; color: var(--ink-2); }
+.meta { display: flex; flex-wrap: wrap; gap: 8px; }
+.tag { display: inline-flex; align-items: center; gap: 6px; padding: 3px 10px; border-radius: 999px; background: var(--chip); color: var(--ink-2); font-size: 12.5px; white-space: nowrap; }
+
+/* Control rail */
+.controls { display: flex; flex-wrap: wrap; gap: 10px 22px; align-items: center; padding: 12px 0; border-top: 1px solid var(--rule); border-bottom: 1px solid var(--rule); }
+.ctl { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; }
+.custom-range { display: inline-flex; align-items: center; gap: 6px; font-size: 13px; color: var(--ink-2); }
+.custom-range select { font: inherit; font-size: 13.5px; padding: 4px 6px; border-radius: 8px; border: 1px solid var(--rule); background: var(--surface); color: var(--ink); }
+.ctl-label { font-size: 12px; color: var(--muted); letter-spacing: 0.06em; }
+.seg { display: inline-flex; background: var(--chip); border-radius: 8px; padding: 2px; gap: 2px; }
+.seg button {
+  font: inherit; font-size: 13.5px; border: 0; background: transparent; color: var(--ink-2);
+  padding: 5px 12px; border-radius: 6px; cursor: pointer; white-space: nowrap;
+}
+.seg button:hover { color: var(--ink); background: var(--surface); }
+.seg button[aria-pressed="true"] { background: var(--ink); color: var(--surface); font-weight: 500; }
+button:focus-visible, select:focus-visible, [tabindex]:focus-visible { outline: 2px solid var(--s1); outline-offset: 2px; }
+
+/* Reading */
+.reading { display: grid; grid-template-columns: minmax(0, 0.9fr) minmax(0, 1.3fr); gap: 18px 36px; align-items: end; }
+.stepper { display: flex; align-items: center; gap: 6px; margin-bottom: 8px; }
+.stepper button { font: inherit; width: 30px; height: 30px; border-radius: 8px; border: 1px solid var(--rule); background: var(--surface); color: var(--ink); cursor: pointer; font-size: 16px; line-height: 1; }
+.stepper button:disabled { opacity: 0.35; cursor: default; }
+.stepper select { font: inherit; font-size: 14px; font-weight: 500; padding: 4px 8px; border-radius: 8px; border: 1px solid var(--rule); background: var(--surface); color: var(--ink); }
+.hero-label { font-size: 14px; color: var(--ink-2); margin: 0; }
+.hero { display: flex; align-items: baseline; gap: 14px; flex-wrap: wrap; }
+.hero-num { font-family: var(--f-display); font-weight: 600; font-size: clamp(52px, 9vw, 72px); line-height: 1; letter-spacing: -0.02em; }
+.hero-num small { font-size: 0.45em; font-weight: 500; color: var(--ink-2); margin-left: 2px; }
+.delta { font-size: 14px; color: var(--ink-2); white-space: nowrap; }
+.delta b { font-family: var(--f-data); font-weight: 500; color: var(--ink); }
+
+.focus { border-left: 1px solid var(--rule); padding-left: 24px; min-width: 0; }
+.focus-label { font-size: 12px; color: var(--muted); letter-spacing: 0.08em; margin: 0; }
+.focus-name { font-family: var(--f-display); font-size: 22px; font-weight: 600; margin: 0 0 10px; line-height: 1.25; text-wrap: balance; }
+.focus-name small { display: block; font-family: var(--f-body); font-size: 12.5px; font-weight: 400; color: var(--muted); }
+.stats { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px; margin-bottom: 10px; }
+.stat span { display: block; font-size: 12px; color: var(--muted); }
+.stat b { font-family: var(--f-data); font-size: 20px; font-weight: 500; }
+.stat small { font-size: 12px; color: var(--ink-2); margin-left: 3px; }
+.story { margin: 0; font-size: 14.5px; color: var(--ink-2); max-width: 62ch; }
+.story b { color: var(--ink); font-weight: 700; }
+
+/* Panels */
+.panel { background: var(--surface); border-radius: 12px; padding: 18px 20px 16px; box-shadow: 0 0 0 1px var(--rule); min-width: 0; }
+.crumbs { display: flex; flex-wrap: wrap; align-items: center; gap: 2px 4px; font-size: 13px; margin-bottom: 8px; }
+.crumbs button {
+  font: inherit; border: 0; background: transparent; color: var(--ink-2); padding: 2px 6px; border-radius: 6px; cursor: pointer;
+  text-decoration: underline; text-decoration-color: var(--axis); text-underline-offset: 3px;
+}
+.crumbs button:hover { color: var(--ink); background: var(--chip); }
+.crumbs .sep { color: var(--muted); }
+.crumbs .here { color: var(--ink); font-weight: 700; padding: 2px 6px; }
+.panel-head { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: baseline; gap: 8px 16px; margin-bottom: 10px; }
+h2 { font-family: var(--f-display); font-weight: 600; font-size: 19px; margin: 0; text-wrap: balance; }
+h2 em { font-style: normal; color: var(--muted); font-weight: 500; font-size: 15px; margin-left: 6px; }
+.hint { font-size: 12.5px; color: var(--muted); margin: 0; }
+.head-tools { display: flex; flex-wrap: wrap; align-items: center; gap: 8px 14px; }
+.dl-btn { font: inherit; font-size: 13px; padding: 5px 12px; border-radius: 8px; border: 1px solid var(--rule); background: var(--surface); color: var(--ink); cursor: pointer; white-space: nowrap; }
+.dl-btn:hover { border-color: var(--axis); background: var(--chip); }
+.dl-btn:disabled { opacity: 0.6; cursor: progress; }
+.dl-btn.primary { background: var(--ink); color: var(--surface); border-color: var(--ink); }
+.dl-btn.primary:hover { background: var(--ink-2); border-color: var(--ink-2); }
+.dl-btn[aria-expanded="true"] { background: var(--chip); }
+.custom-panel { display: grid; gap: 12px; }
+.cp-head { display: grid; gap: 4px; }
+.cp-body { display: grid; grid-template-columns: minmax(0, 1.4fr) minmax(0, 1fr); gap: 16px 22px; align-items: start; }
+.cp-tree-wrap { display: grid; gap: 8px; min-width: 0; }
+.cp-tree-wrap input[type="search"] { font: inherit; font-size: 13.5px; padding: 6px 10px; border-radius: 8px; border: 1px solid var(--rule); background: var(--surface); color: var(--ink); min-width: 0; }
+.cp-tree { max-height: 340px; overflow-y: auto; border: 1px solid var(--rule); border-radius: 8px; padding: 6px 8px; display: grid; gap: 1px; }
+.cp-node { display: flex; align-items: center; gap: 4px; font-size: 13.5px; min-width: 0; }
+.cp-node label { display: flex; align-items: center; gap: 6px; padding: 3px 4px; border-radius: 6px; cursor: pointer; min-width: 0; }
+.cp-node label:hover { background: var(--hover); }
+.cp-node label span { overflow-wrap: anywhere; }
+.cp-node small { color: var(--muted); font-size: 11.5px; white-space: nowrap; }
+.cp-node label.blocked { cursor: not-allowed; color: var(--muted); }
+.cp-tog { font: inherit; width: 22px; height: 22px; border: 0; background: transparent; color: var(--ink-2); cursor: pointer; border-radius: 4px; flex: none; padding: 0; }
+.cp-tog:hover { background: var(--chip); }
+.cp-tog-sp { width: 22px; flex: none; }
+.cp-group { font-size: 12px; color: var(--muted); padding: 8px 4px 2px; margin-top: 4px; border-top: 1px solid var(--rule); }
+.cp-side { display: grid; gap: 10px; min-width: 0; }
+.cp-count { margin: 0; font-size: 12.5px; color: var(--muted); }
+.cp-list { list-style: none; margin: 0; padding: 0; display: grid; gap: 6px; }
+.cp-list li { display: grid; grid-template-columns: 12px minmax(0, 1fr) auto; gap: 8px; align-items: center; font-size: 13.5px; }
+.cp-list li i { width: 12px; height: 12px; border-radius: 3px; display: block; }
+.cp-list small { color: var(--muted); font-size: 11.5px; margin-left: 6px; }
+.cp-btns { display: inline-flex; gap: 2px; }
+.cp-btns button { font: inherit; font-size: 13px; width: 26px; height: 26px; padding: 0; border: 1px solid var(--rule); background: var(--surface); color: var(--ink); border-radius: 6px; cursor: pointer; }
+.cp-btns button:disabled { opacity: 0.35; cursor: default; }
+.cp-empty { margin: 0; font-size: 13.5px; color: var(--ink-2); }
+.cp-only { display: flex; gap: 8px; align-items: flex-start; font-size: 13.5px; color: var(--ink); cursor: pointer; }
+.cp-only input { margin-top: 3px; }
+@media (max-width: 760px) { .cp-body { grid-template-columns: minmax(0, 1fr); } }
+.export-panel { margin-top: 14px; padding-top: 14px; border-top: 1px solid var(--rule); display: grid; gap: 12px; }
+.ex-head { display: grid; gap: 2px; }
+.ex-head h3 { font-family: var(--f-display); font-size: 16px; font-weight: 600; margin: 0; }
+.ex-body { display: grid; grid-template-columns: minmax(0, 1.25fr) minmax(0, 1fr); gap: 16px 22px; align-items: start; }
+.ex-preview { display: grid; gap: 6px; min-width: 0; }
+.ex-preview img { width: 100%; height: auto; border-radius: 6px; box-shadow: 0 0 0 1px var(--rule); background: #FFFFFF; }
+.ex-form { display: grid; gap: 10px; min-width: 0; }
+.ex-field { display: flex; align-items: center; gap: 10px; font-size: 13.5px; color: var(--ink-2); }
+.ex-field select { font: inherit; font-size: 13.5px; padding: 4px 8px; border-radius: 8px; border: 1px solid var(--rule); background: var(--surface); color: var(--ink); }
+.ex-warn { margin: 0; font-size: 13px; color: var(--ink); background: var(--chip); border-radius: 8px; padding: 6px 10px; }
+.ex-label { margin: 0; font-size: 12px; color: var(--muted); }
+.ex-items { display: grid; gap: 6px; max-height: 320px; overflow-y: auto; padding-right: 4px; }
+.ex-row { display: grid; grid-template-columns: 18px 28px minmax(0, 1fr); gap: 8px; align-items: center; }
+.ex-row input[type="color"] { width: 28px; height: 24px; padding: 2px; border: 1px solid var(--rule); border-radius: 6px; background: var(--surface); cursor: pointer; }
+.ex-row input[type="color"]::-webkit-color-swatch-wrapper { padding: 0; }
+.ex-row input[type="color"]::-webkit-color-swatch { border: 0; border-radius: 3px; }
+.ex-row input[type="color"]::-moz-color-swatch { border: 0; border-radius: 3px; }
+.ex-row input[type="color"]:disabled { opacity: 0.45; cursor: default; }
+.ex-row button.ex-color { width: 28px; height: 24px; padding: 0; border: 1px solid var(--rule); border-radius: 6px; cursor: pointer; box-shadow: inset 0 0 0 2px var(--surface); }
+.ex-row button.ex-color:disabled { opacity: 0.45; cursor: default; }
+.ex-form { position: relative; }
+.ex-palette { position: absolute; z-index: 60; display: grid; grid-template-columns: repeat(6, 28px); gap: 6px; padding: 10px; background: var(--surface); border: 1px solid var(--rule); border-radius: 10px; box-shadow: 0 8px 28px rgba(0, 0, 0, 0.18); }
+.ex-palette .ex-sw { width: 28px; height: 28px; padding: 0; border: 1px solid rgba(0, 0, 0, 0.15); border-radius: 6px; cursor: pointer; }
+.ex-palette .ex-sw[aria-pressed="true"] { outline: 2px solid var(--ink); outline-offset: 2px; }
+.ex-palette .ex-sw-reset { grid-column: 1 / -1; font-size: 12.5px; padding: 3px 10px; }
+.ex-row i { width: 12px; height: 12px; border-radius: 3px; display: block; }
+.ex-row i.line-key { height: 2px; border-radius: 1px; background: var(--ink); }
+.ex-row input[type="text"] { font: inherit; font-size: 13.5px; min-width: 0; padding: 4px 8px; border-radius: 6px; border: 1px solid var(--rule); background: var(--surface); color: var(--ink); }
+.ex-row input[type="text"]:disabled { opacity: 0.5; }
+.ex-row.off i { opacity: 0.45; }
+.ex-spacer { width: 18px; }
+.ex-actions { display: flex; flex-wrap: wrap; gap: 8px; }
+@media (max-width: 760px) { .ex-body { grid-template-columns: minmax(0, 1fr); } }
+.legend { display: flex; flex-wrap: wrap; gap: 6px 16px; font-size: 13px; color: var(--ink-2); margin-bottom: 6px; }
+.legend span { display: inline-flex; align-items: center; gap: 6px; }
+.legend i { width: 10px; height: 10px; border-radius: 3px; display: inline-block; flex: none; }
+.legend .line-key { width: 16px; height: 2px; border-radius: 1px; background: var(--ink); }
+.legend .lg, .legend .lg-static { font: inherit; display: inline-flex; align-items: center; gap: 6px; border: 0; background: transparent; color: var(--ink-2); padding: 2px 5px; margin: -2px -5px; border-radius: 6px; }
+.legend .lg { cursor: pointer; }
+.legend .lg:hover { background: var(--chip); color: var(--ink); }
+.legend .lg[aria-pressed="false"] { opacity: 0.45; text-decoration: line-through; }
+.legend .lg-reset { font: inherit; font-size: 12.5px; border: 1px solid var(--rule); background: var(--surface); color: var(--ink); border-radius: 999px; padding: 1px 10px; cursor: pointer; }
+.legend .lg-reset:hover { border-color: var(--axis); }
+
+.chart { position: relative; width: 100%; }
+.chart svg { display: block; width: 100%; overflow: visible; outline: none; }
+.chart text { font-family: var(--f-data); font-size: 11px; fill: var(--muted); }
+.chart .yr { fill: var(--ink-2); font-weight: 500; }
+.chart .seg.drill { cursor: pointer; }
+.chart .seg.drill:hover { opacity: 0.82; }
+.tip {
+  position: absolute; pointer-events: none; min-width: 230px; max-width: 320px; background: var(--surface); color: var(--ink);
+  border-radius: 10px; box-shadow: 0 0 0 1px var(--rule), 0 8px 24px rgba(10, 20, 30, 0.14);
+  padding: 10px 12px; font-size: 12.5px; z-index: 2;
+}
+.tip h3 { margin: 0 0 6px; font-size: 13px; font-weight: 700; display: flex; justify-content: space-between; gap: 12px; }
+.tip h3 b { font-family: var(--f-data); font-weight: 500; }
+.tip div { display: grid; grid-template-columns: 10px 1fr auto; gap: 8px; align-items: center; padding: 2px 0; color: var(--ink-2); }
+.tip div.on { color: var(--ink); font-weight: 700; }
+.tip div i { width: 10px; height: 10px; border-radius: 3px; }
+.tip div i.ring { box-shadow: inset 0 0 0 1px var(--axis); }
+.tip div b { font-family: var(--f-data); font-weight: 400; color: var(--ink); font-variant-numeric: tabular-nums; }
+.tip p { margin: 6px 0 0; color: var(--muted); font-size: 11.5px; }
+
+/* Driver ledger */
+.ledger { display: grid; }
+.row {
+  display: grid; grid-template-columns: minmax(0, 1.7fr) 66px 76px minmax(110px, 1.8fr) 78px;
+  gap: 12px; align-items: center; padding: 7px 6px; border-bottom: 1px solid var(--rule); font-size: 14px;
+  border-radius: 6px;
+}
+.row.head { font-size: 12px; color: var(--muted); letter-spacing: 0.04em; padding-top: 0; }
+.row.head .num { text-align: right; }
+.row.drillable { cursor: pointer; }
+.row.drillable:hover { background: var(--hover); }
+.row.total { border-bottom: 0; border-top: 1px solid var(--axis); font-weight: 700; border-radius: 0; }
+.row.resid { color: var(--ink-2); }
+.row.muted { opacity: 0.5; }
+.name { display: flex; align-items: center; gap: 8px; min-width: 0; }
+.name i { flex: none; width: 10px; height: 10px; border-radius: 3px; }
+.name i.ring { box-shadow: inset 0 0 0 1px var(--axis); }
+.name > span { overflow-wrap: anywhere; min-width: 0; }
+.name small { color: var(--muted); font-size: 11.5px; display: block; line-height: 1.35; font-weight: 400; }
+.chev { flex: none; margin-left: auto; color: var(--muted); font-family: var(--f-data); font-size: 16px; padding-left: 6px; }
+.row.drillable:hover .chev { color: var(--ink); }
+.num { font-family: var(--f-data); font-variant-numeric: tabular-nums; text-align: right; font-size: 13.5px; }
+.num.dim { color: var(--ink-2); }
+.bar { position: relative; height: 14px; }
+.bar::before { content: ""; position: absolute; left: 50%; top: -6px; bottom: -6px; width: 1px; background: var(--axis); }
+.bar i { position: absolute; top: 1px; height: 12px; }
+.bar i.pos { border-radius: 0 4px 4px 0; }
+.bar i.neg { border-radius: 4px 0 0 4px; }
+.sortbar { display: flex; align-items: center; gap: 8px; }
+
+/* Notes */
+.notes { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 14px 28px; font-size: 13.5px; color: var(--ink-2); }
+.notes h3 { font-family: var(--f-display); font-size: 15px; font-weight: 600; color: var(--ink); margin: 0 0 4px; }
+.notes p, .notes ol { margin: 0; max-width: 62ch; }
+.notes ol { padding-left: 1.2em; }
+.notes code { font-family: var(--f-data); font-size: 12.5px; background: var(--chip); padding: 1px 5px; border-radius: 4px; }
+
+@media (max-width: 820px) {
+  .reading { grid-template-columns: minmax(0, 1fr); }
+  .focus { border-left: 0; padding-left: 0; border-top: 1px solid var(--rule); padding-top: 14px; }
+}
+@media (max-width: 600px) {
+  body { padding-block: 18px 36px; }
+  .panel { padding: 14px 12px 12px; }
+  .row { grid-template-columns: minmax(0, 1.5fr) minmax(64px, 1.1fr) 66px; gap: 8px; }
+  .row .c-w, .row .c-chg { display: none; }
+  .row .name small .en { display: none; }
+  .controls { gap: 10px 14px; }
+  .ctl-label { display: none; }
+  .stat b { font-size: 17px; }
+}
+@media (prefers-reduced-motion: no-preference) {
+  .bar i { transition: left 220ms ease, width 220ms ease; }
+}
+/* ---- Retail Sales Driver 追加 ---- */
+.ex-range input[type="number"] { font: inherit; font-size: 13.5px; width: 92px; padding: 4px 8px; border-radius: 8px; border: 1px solid var(--rule); background: var(--surface); color: var(--ink); }
+.ex-field .seg button { font-size: 13px; padding: 4px 10px; }
+.ex-range { display: flex; flex-wrap: wrap; align-items: center; gap: 6px 8px; font-size: 13.5px; color: var(--ink-2); }
+.ex-range .dl-btn { padding: 3px 10px; }
+.chart .adv { opacity: 0.55; }
+.chart .adv-label { fill: var(--muted); font-size: 10px; }
+.tip .adv-note { color: var(--ink-2); }
+.row.ref { color: var(--ink-2); border-bottom: 0; }
+#view-seg { flex-wrap: wrap; }
+.delta { white-space: normal; }
+.tag { white-space: normal; }
+.cp-title { display: flex; flex-wrap: wrap; align-items: center; gap: 8px 16px; }
+.cc-add { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; }
+.cc-add .seg button { font-size: 13px; padding: 4px 10px; }
+.cc-add-btn { font: inherit; font-size: 13.5px; display: flex; align-items: center; gap: 6px; padding: 3px 6px; border: 0; background: transparent; color: var(--ink); border-radius: 6px; cursor: pointer; text-align: left; min-width: 0; }
+.cc-add-btn:hover { background: var(--hover); }
+.cc-add-btn:disabled { color: var(--muted); cursor: not-allowed; background: transparent; }
+.cc-add-btn .plus { color: var(--muted); font-family: var(--f-data); width: 12px; flex: none; }
+.cc-add-btn span { overflow-wrap: anywhere; }
+.cc-add-btn small { color: var(--muted); font-size: 11.5px; white-space: nowrap; }
+.cc-list li { grid-template-columns: 14px minmax(0, 1fr) auto; row-gap: 4px; padding-bottom: 6px; border-bottom: 1px solid var(--rule); }
+.cc-list li i.ln { height: 3px; border-radius: 2px; width: 14px; }
+.cc-opts { grid-column: 2 / 4; display: flex; flex-wrap: wrap; gap: 6px; }
+.cc-opts select { font: inherit; font-size: 13px; padding: 3px 6px; border-radius: 6px; border: 1px solid var(--rule); background: var(--surface); color: var(--ink); }
+.cc-examples { display: flex; flex-wrap: wrap; align-items: center; gap: 6px; }
+.cc-examples .dl-btn { font-size: 12.5px; padding: 3px 10px; }
+.legend .lg-static i.ln { height: 3px; width: 16px; border-radius: 2px; }
+.ledger.combo .row { grid-template-columns: minmax(0, 1.8fr) 104px 104px 104px 120px; }
+@media (max-width: 600px) { .ledger.combo .row { grid-template-columns: minmax(0, 1.4fr) 92px 96px; } .ledger.combo .row .c-w { display: none; } }
+.head-tools .dl-group { display: inline-flex; gap: 6px; flex-wrap: wrap; }
+.bar.lv::before { display: none; }
+.ledger .row { grid-template-columns: minmax(0, 1.7fr) 84px 84px minmax(110px, 1.8fr) 84px; }
+@media (max-width: 600px) { .ledger .row { grid-template-columns: minmax(0, 1.5fr) minmax(64px, 1.1fr) 72px; } }
+.bar.lv i.pos { border-radius: 0 4px 4px 0; }
+</style>
+
+<div class="wrap">
+  <header class="masthead">
+    <div>
+      <p class="eyebrow">美國零售銷售 · 細項金額與貢獻度拆解</p>
+      <h1>Retail Sales Driver</h1>
+    </div>
+    <div class="meta">
+      <span class="tag" id="vintage"></span>
+      <span class="tag">Census MARTS · 季節調整 · 月資料</span>
+      <span class="tag" id="next-release" hidden></span>
+    </div>
+  </header>
+
+  <nav class="controls" aria-label="檢視設定">
+    <div class="ctl"><span class="ctl-label">指標</span>
+      <div class="seg" data-key="view" id="view-seg"></div></div>
+    <div class="ctl" id="mode-ctl"><span class="ctl-label">圖表</span>
+      <div class="seg" data-key="mode">
+        <button type="button" id="md-level" data-v="level">金額</button>
+        <button type="button" id="md-yoy" data-v="yoy">年增率貢獻</button>
+        <button type="button" id="md-mom" data-v="mom">月增率貢獻</button>
+      </div></div>
+    <div class="ctl"><span class="ctl-label">期間</span>
+      <div class="seg" data-key="range">
+        <button type="button" id="rg-12" data-v="12">12 個月</button>
+        <button type="button" id="rg-24" data-v="24">24 個月</button>
+        <button type="button" id="rg-60" data-v="60">5 年</button>
+        <button type="button" id="rg-all" data-v="all">全部</button>
+        <button type="button" id="rg-custom" data-v="custom">自訂</button>
+      </div>
+      <span class="custom-range" id="custom-range" hidden>
+        <select id="from" aria-label="起始月份"></select>
+        <span>至</span>
+        <select id="to" aria-label="結束月份"></select>
+      </span></div>
+  </nav>
+
+  <section class="panel custom-panel" id="custom-panel" hidden aria-label="自訂組合">
+    <div class="cp-head">
+      <div class="cp-title"><h2>自訂組合</h2>
+        <div class="seg" id="cp-kind" role="group" aria-label="自訂圖表類型">
+          <button type="button" id="ck-contrib" data-kind="contrib">貢獻拆解</button>
+          <button type="button" id="ck-combo" data-kind="combo">組合圖</button>
+        </div></div>
+      <p class="hint" id="cp-hint"></p>
+    </div>
+    <div class="cp-body" id="cp-contrib">
+      <div class="cp-tree-wrap">
+        <input type="search" id="cp-search" placeholder="搜尋項目（中文、英文或 NAICS 代碼）" aria-label="搜尋項目">
+        <div class="cp-tree" id="cp-tree" role="tree" aria-label="零售項目"></div>
+      </div>
+      <div class="cp-side">
+        <p class="cp-count" id="cp-count"></p>
+        <ol class="cp-list" id="cp-list"></ol>
+        <label class="cp-only" for="cp-only"><input type="checkbox" id="cp-only"> <span>只看所選項目：不畫「其他」，總計線改為所選項目合計</span></label>
+        <div><button type="button" class="dl-btn" id="cp-clear">清除全部</button></div>
+      </div>
+    </div>
+    <div class="cp-body" id="cp-combo" hidden>
+      <div class="cp-tree-wrap">
+        <div class="cc-add"><span class="ctl-label">新增時使用</span>
+          <div class="seg" id="cc-measure" role="group" aria-label="新增序列時的數值種類">
+            <button type="button" id="cm-level" data-m="level">金額</button>
+            <button type="button" id="cm-yoy" data-m="yoy">年增率</button>
+            <button type="button" id="cm-mom" data-m="mom">月增率</button>
+          </div></div>
+        <input type="search" id="cc-search" placeholder="搜尋項目（中文、英文或 NAICS 代碼）" aria-label="搜尋項目">
+        <div class="cp-tree" id="cc-tree" role="tree" aria-label="可加入的項目"></div>
+      </div>
+      <div class="cp-side">
+        <p class="cp-count" id="cc-count"></p>
+        <ol class="cp-list cc-list" id="cc-list"></ol>
+        <p class="ex-warn" id="cc-warn" hidden></p>
+        <div class="cc-examples"><span class="ctl-label">範例</span><span id="cc-examples"></span></div>
+        <div><button type="button" class="dl-btn" id="cc-clear">清除全部</button></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="reading" aria-live="polite">
+    <div>
+      <div class="stepper">
+        <button type="button" id="prev" aria-label="上一個月">‹</button>
+        <select id="month" aria-label="選擇月份"></select>
+        <button type="button" id="next" aria-label="下一個月">›</button>
+      </div>
+      <p class="hero-label" id="hero-label"></p>
+      <div class="hero">
+        <div class="hero-num" id="hero-num">–</div>
+        <div class="delta" id="hero-delta"></div>
+      </div>
+    </div>
+    <div class="focus">
+      <p class="focus-label">目前展開</p>
+      <h2 class="focus-name" id="focus-name"></h2>
+      <div class="stats" id="stats"></div>
+      <p class="story" id="story"></p>
+    </div>
+  </section>
+
+  <section class="panel">
+    <nav class="crumbs" id="crumbs" aria-label="展開路徑"></nav>
+    <div class="panel-head">
+      <h2 id="chart-title"></h2>
+      <div class="head-tools">
+        <p class="hint" id="chart-hint"></p>
+        <span class="dl-group">
+          <button type="button" class="dl-btn" id="download" aria-controls="export-panel" aria-expanded="false" title="設定尺寸、圖例文字與字體大小後下載 PNG（300 dpi）">下載圖表</button>
+          <button type="button" class="dl-btn" id="download-csv" title="下載這張圖的數字（CSV，可用 Excel 開啟）">下載資料 CSV</button>
+        </span>
+      </div>
+    </div>
+    <div class="legend" id="legend"></div>
+    <div class="chart" id="chart"><div class="tip" id="tip" hidden></div></div>
+    <div class="export-panel" id="export-panel" hidden>
+      <div class="ex-head">
+        <h3>下載設定</h3>
+        <p class="hint">這裡改的名稱與顏色只用在下載的圖片，網站上的名稱與顏色不會變。改過的設定會記在這台電腦的瀏覽器裡；顏色依位置記住，例如第 1 色改了，所有圖的第 1 色都會換。</p>
+      </div>
+      <div class="ex-body">
+        <div class="ex-preview">
+          <img id="ex-img" alt="下載圖片預覽">
+          <p class="hint" id="ex-size"></p>
+        </div>
+        <div class="ex-form">
+          <div class="ex-field"><span>尺寸</span>
+            <div class="seg" id="ex-preset" role="group" aria-label="圖片尺寸"></div>
+          </div>
+          <label class="ex-field" for="ex-font">字體大小
+            <select id="ex-font">
+              <option value="auto">自動</option>
+              <option value="6">6 點</option>
+              <option value="7">7 點</option>
+              <option value="8">8 點</option>
+              <option value="9">9 點</option>
+              <option value="10">10 點</option>
+              <option value="11">11 點</option>
+              <option value="12">12 點</option>
+              <option value="14">14 點</option>
+            </select>
+          </label>
+          <div class="ex-field"><span>圖例位置</span>
+            <div class="seg" id="ex-legend-align" role="group" aria-label="圖例位置">
+              <button type="button" id="ex-la-left" data-align="left">靠左</button>
+              <button type="button" id="ex-la-center" data-align="center">置中</button>
+            </div>
+          </div>
+          <div class="ex-field" id="ex-line-field"><span>總計線</span>
+            <div class="seg" id="ex-line-dash" role="group" aria-label="總計線樣式">
+              <button type="button" id="ex-ld-solid" data-dash="0">實線</button>
+              <button type="button" id="ex-ld-dash" data-dash="1">虛線</button>
+            </div>
+            <select id="ex-line-width" aria-label="總計線粗細">
+              <option value="0.75">0.75 點</option>
+              <option value="1">1 點</option>
+              <option value="1.5">1.5 點</option>
+              <option value="2">2 點</option>
+              <option value="2.5">2.5 點</option>
+              <option value="3">3 點</option>
+            </select>
+          </div>
+          <div class="ex-range"><span id="ex-ylabel">y 軸範圍</span>
+            <input type="number" id="ex-ymin" step="any" placeholder="自動" aria-label="y 軸下限">
+            <span>至</span>
+            <input type="number" id="ex-ymax" step="any" placeholder="自動" aria-label="y 軸上限">
+            <button type="button" class="dl-btn" id="ex-yauto">自動</button>
+          </div>
+          <div class="ex-range" id="ex-range2" hidden><span>右軸範圍</span>
+            <input type="number" id="ex-y2min" step="any" placeholder="自動" aria-label="右軸下限">
+            <span>至</span>
+            <input type="number" id="ex-y2max" step="any" placeholder="自動" aria-label="右軸上限">
+          </div>
+          <p class="hint" id="ex-yhint"></p>
+          <p class="ex-warn" id="ex-warn" hidden></p>
+          <p class="ex-label">圖例（勾選＝顯示；色塊＝點一下從預設色票選顏色；文字框＝下載圖上的名稱）</p>
+          <div class="ex-items" id="ex-items"></div>
+          <div class="ex-palette" id="ex-palette" role="dialog" aria-label="選擇顏色" hidden></div>
+          <div class="ex-actions">
+            <button type="button" class="dl-btn primary" id="ex-download">下載 PNG</button>
+            <button type="button" class="dl-btn" id="ex-reset">還原預設名稱</button>
+            <button type="button" class="dl-btn" id="ex-reset-colors">還原預設顏色</button>
+            <button type="button" class="dl-btn" id="ex-close">關閉</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="panel">
+    <div class="panel-head">
+      <h2 id="ledger-title"></h2>
+      <div class="sortbar" id="sortbar"><span class="ctl-label">排序</span>
+        <div class="seg" data-key="sort">
+          <button type="button" id="st-contrib" data-v="contrib">依數值</button>
+          <button type="button" id="st-table" data-v="table">依分類順序</button>
+        </div></div>
+    </div>
+    <div class="ledger" id="ledger" role="table" aria-label="細項明細表"></div>
+  </section>
+
+  <section class="notes">
+    <div>
+      <h3>計算方法</h3>
+      <p>所有數字都是 Census 的季節調整名目銷售額（百萬美元，網站上換算成億美元）。Census 的季調彙總本來就是細項直接相加，所以子項一定加總成父項。貢獻度＝（項目本期金額 − 基期金額）÷ 整體零售基期金額，基期是上個月（月增率）或去年同月（年增率）；每一層、每一個特殊分類都是「對整體零售的貢獻」，單位相同，加總就是整體零售的變動率。年增率也用季調數字計算，和 Census 新聞稿一致。</p>
+    </div>
+    <div>
+      <h3>特殊分類</h3>
+      <p>總計、不含汽車、不含加油站、不含汽車與加油站都是 Census 公布的序列（44X72、44Y72、44Z72、44W72），網站上用細項相加，每次更新都會核對與官方數字一致。控制組 Census 沒有公布，依市場慣例自行計算：總計扣除汽車及零件經銷商（441）、加油站（447）、建材及園藝設備（444）、餐飲服務（722），剩下 9 個細項。所有特殊分類都由「控制組＋汽車、加油站、建材、餐飲」這五塊組成，點控制組可以展開成 9 項。</p>
+    </div>
+    <div>
+      <h3>細項</h3>
+      <p>MARTS 公布 13 個三位數產業與 3 個四位數子項。汽車零件及輪胎店（441 扣除 441X）、其他食品及飲料店（445 扣除 4451）、倉儲量販與超級中心等（452 扣除 4522）是相減得到的差額，金額與 Census 完整月報的對應項目相同。產業分類是 2017 年版 NAICS；無店面零售（454）以電商與郵購業者為主。Census 預計 2027 年底前改用 2022 年版 NAICS（會取消無店面零售這一類），屆時排程會停下來提示需要更新結構檔。</p>
+    </div>
+    <div>
+      <h3>資料來源與更新</h3>
+      <ol>
+        <li id="source-note">資料來自 Census 時間序列網站的 MARTS 整包下載（Advance Monthly Sales for Retail and Food Services）。排程每個工作日台北時間 22:07 檢查一次，Census 發布新數字後自動更新。</li>
+        <li>最新一個月是初值（圖上以較淡的顏色標示），只根據部分樣本估計，下個月會修正；每次發布也會修正前兩個月，每年還有一次年度修正。本頁每次都重抓 1992 年以來的完整歷史。</li>
+        <li>這是名目金額，沒有扣除物價變動；加油站營收會隨油價變動。</li>
+      </ol>
+    </div>
+  </section>
+</div>
+
+<script>
+const DATA = /*DATA*/null;
+/*COMPUTE*/
+/*APP*/
+</script>
