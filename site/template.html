@@ -152,6 +152,17 @@ h2 em { font-style: normal; color: var(--muted); font-weight: 500; font-size: 15
 .cp-only { display: flex; gap: 8px; align-items: flex-start; font-size: 13.5px; color: var(--ink); cursor: pointer; }
 .cp-only input { margin-top: 3px; }
 @media (max-width: 760px) { .cp-body { grid-template-columns: minmax(0, 1fr); } }
+/* 漲幅走勢：每個指標的折線／柱狀切換、漲幅表 */
+.gp-tools { display: inline-flex; align-items: center; gap: 6px; }
+.gp-type { display: inline-flex; background: var(--chip); border-radius: 6px; padding: 2px; gap: 2px; }
+.gp-type button { font: inherit; font-size: 12px; border: 0; background: transparent; color: var(--ink-2); padding: 2px 8px; border-radius: 4px; cursor: pointer; white-space: nowrap; }
+.gp-type button:hover { color: var(--ink); background: var(--surface); }
+.gp-type button[aria-pressed="true"] { background: var(--ink); color: var(--surface); }
+.cp-list li i.gp-line { height: 3px; border-radius: 2px; }
+.legend .gp-key-line { width: 16px; height: 3px; border-radius: 2px; }
+.grow-row { display: grid; grid-template-columns: minmax(0, 1.6fr) repeat(4, minmax(64px, 96px)); gap: 12px; align-items: center; padding: 7px 6px; border-bottom: 1px solid var(--rule); font-size: 14px; }
+.grow-row.head { font-size: 12px; color: var(--muted); letter-spacing: 0.04em; padding-top: 0; }
+@media (max-width: 600px) { .grow-row { grid-template-columns: minmax(0, 1fr) repeat(4, 48px); gap: 6px; font-size: 13px; } .grow-row .num { font-size: 12px; } .grow-row .name small .en { display: none; } }
 .export-panel { margin-top: 14px; padding-top: 14px; border-top: 1px solid var(--rule); display: grid; gap: 12px; }
 .ex-head { display: grid; gap: 2px; }
 .ex-head h3 { font-family: var(--f-display); font-size: 16px; font-weight: 600; margin: 0; }
@@ -285,6 +296,7 @@ h2 em { font-style: normal; color: var(--muted); font-weight: 500; font-size: 15
         <button type="button" id="ix-core" data-v="core">核心 PCE</button>
         <button type="button" id="ix-general" data-v="general">通用分類</button>
         <button type="button" id="ix-custom" data-v="custom">自訂</button>
+        <button type="button" id="ix-growth" data-v="growth">漲幅走勢</button>
       </div></div>
     <div class="ctl"><span class="ctl-label">變動</span>
       <div class="seg" data-key="mode">
@@ -324,6 +336,24 @@ h2 em { font-style: normal; color: var(--muted); font-weight: 500; font-size: 15
     </div>
   </section>
 
+  <section class="panel custom-panel" id="growth-panel" hidden aria-label="漲幅走勢">
+    <div class="cp-head">
+      <h2>漲幅走勢</h2>
+      <p class="hint">勾選想看的指標（最多 4 個），畫出各指標自己的漲幅；可以同時選上下層，例如 PCE 和核心 PCE。每個指標可以選折線或柱狀。年增率、月增率依上方「變動」切換；年化指標只提供 PCE 與核心 PCE。所有數字都由 BEA 官方價格指數計算。</p>
+    </div>
+    <div class="cp-body">
+      <div class="cp-tree-wrap">
+        <input type="search" id="gp-search" placeholder="搜尋指標（中文、英文或 line 編號）" aria-label="搜尋指標">
+        <div class="cp-tree" id="gp-tree" role="tree" aria-label="可選的指標"></div>
+      </div>
+      <div class="cp-side">
+        <p class="cp-count" id="gp-count"></p>
+        <ol class="cp-list" id="gp-list"></ol>
+        <div><button type="button" class="dl-btn" id="gp-clear">清除全部</button></div>
+      </div>
+    </div>
+  </section>
+
   <section class="reading" aria-live="polite">
     <div>
       <div class="stepper">
@@ -338,7 +368,7 @@ h2 em { font-style: normal; color: var(--muted); font-weight: 500; font-size: 15
       </div>
     </div>
     <div class="focus">
-      <p class="focus-label">目前展開</p>
+      <p class="focus-label" id="focus-label">目前展開</p>
       <h2 class="focus-name" id="focus-name"></h2>
       <div class="stats" id="stats"></div>
       <p class="story" id="story"></p>
@@ -396,7 +426,7 @@ h2 em { font-style: normal; color: var(--muted); font-weight: 500; font-size: 15
   <section class="panel">
     <div class="panel-head">
       <h2 id="ledger-title"></h2>
-      <div class="sortbar"><span class="ctl-label">排序</span>
+      <div class="sortbar" id="sortbar"><span class="ctl-label">排序</span>
         <div class="seg" data-key="sort">
           <button type="button" id="st-contrib" data-v="contrib">依貢獻</button>
           <button type="button" id="st-table" data-v="table">依 BEA 表格順序</button>
@@ -417,6 +447,10 @@ h2 em { font-style: normal; color: var(--muted); font-weight: 500; font-size: 15
     <div>
       <h3>通用分類</h3>
       <p>把整體 PCE 分成核心商品、服務排除能源、食品與能源三組，分別對應 BEA 的彙總序列 line 375、376、370。三組涵蓋全部 221 個最細項目、彼此不重複，所以三組的貢獻相加就是整體 PCE 的漲幅。各組往下展開後，依照 BEA 表格原本的層級。</p>
+    </div>
+    <div>
+      <h3>漲幅走勢與年化</h3>
+      <p>各指標的漲幅直接由 BEA 官方價格指數計算：年增率＝本月指數 ÷ 去年同月指數 − 1，月增率＝本月指數 ÷ 上月指數 − 1，四捨五入後與 BEA 公布的數字一致。年化指標以複利換算成一整年：3 個月年化＝（本月指數 ÷ 3 個月前指數）⁴ − 1，6 個月年化＝（本月指數 ÷ 6 個月前指數）² − 1，目前只提供 PCE 與核心 PCE。</p>
     </div>
     <div>
       <h3>資料來源與更新</h3>
@@ -524,6 +558,35 @@ const DATA = /*DATA*/null;
     else setSelection([]);
   } catch (e) { setSelection([]); }
 
+  // ---------- 漲幅走勢：使用者挑選的指標（最多 4 個，記在瀏覽器裡） ----------
+  const GROWTH = -40, GROWTH_KEY = "pce-driver-growth", MAX_GROW = 4;
+  // 年化指標：只提供 PCE 與核心 PCE；k = 幾個月
+  const ANN = new Map([
+    ["a3pce", { zh: "PCE 3 個月年化", base: ROOT, off: "pce", k: 3, line: 1 }],
+    ["a6pce", { zh: "PCE 6 個月年化", base: ROOT, off: "pce", k: 6, line: 1 }],
+    ["a3core", { zh: "核心 PCE 3 個月年化", base: -33, off: "core", k: 3, line: 374 }],
+    ["a6core", { zh: "核心 PCE 6 個月年化", base: -33, off: "core", k: 6, line: 374 }],
+  ]);
+  const GROWTH_DEFAULT = [{ key: "1", type: "line" }, { key: "-33", type: "line" }];
+  let growthSel = [];
+  // 指標代號：BEA 項目或通用分類用數字（例如 "1"、"-33"），年化指標用 ANN 的代號
+  const gValid = key => ANN.has(key) || (/^-?\d+$/.test(key) && (AGG.has(+key) || (N.has(+key) && !!N.get(+key).price)));
+  function setGrowth(list) {
+    const clean = [];
+    for (const s of list) {
+      const key = String(s && s.key);
+      if (!gValid(key) || clean.some(c => c.key === key)) continue;
+      if (clean.length >= MAX_GROW) break;
+      clean.push({ key, type: s.type === "bar" ? "bar" : "line" });
+    }
+    growthSel = clean;
+    try { localStorage.setItem(GROWTH_KEY, JSON.stringify(clean)); } catch (e) {}
+  }
+  try {
+    const saved = JSON.parse(localStorage.getItem(GROWTH_KEY) || "null");
+    setGrowth(Array.isArray(saved) ? saved : GROWTH_DEFAULT);
+  } catch (e) { setGrowth(GROWTH_DEFAULT); }
+
   const $ = id => document.getElementById(id);
   const esc = s => String(s).replace(/[&<>"]/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
   const monthLabel = t => { const [y, m] = DATA.months[t].split("-"); return `${y} 年 ${+m} 月`; };
@@ -542,14 +605,14 @@ const DATA = /*DATA*/null;
   const view = () => state.index;
   const modelKey = () => view() === "core" ? "core" : "pce";   // 通用分類和 PCE 用同一組貢獻
   const offKey = () => view() === "core" ? "core" : "pce";
-  const rootId = () => view() === "general" ? G : view() === "custom" ? CUSTOM : ROOT;
+  const rootId = () => view() === "general" ? G : view() === "custom" ? CUSTOM : view() === "growth" ? GROWTH : ROOT;
   const indexWord = () => view() === "core" ? "核心 PCE" : "PCE";
   const leafInScope = l => view() !== "core" || LEAF.get(l).core;
-  const known = id => N.has(id) || V.has(id) || id === CUSTOM;
-  const isLeaf = id => !V.has(id) && id !== CUSTOM && !AGG.has(id) && N.get(id).lf;
+  const known = id => N.has(id) || V.has(id) || id === CUSTOM || id === GROWTH;
+  const isLeaf = id => !V.has(id) && id !== CUSTOM && id !== GROWTH && !AGG.has(id) && N.get(id).lf;
 
   function parentOf(id) {
-    if (id === CUSTOM) return null;
+    if (id === CUSTOM || id === GROWTH) return null;
     if (view() === "general") {
       if (id === G) return null;
       if (GPARENT.has(id)) return GPARENT.get(id);
@@ -559,7 +622,8 @@ const DATA = /*DATA*/null;
   function reachable(id) {
     if (!known(id)) return false;
     if (view() === "custom") return id === CUSTOM;
-    if (id === CUSTOM) return false;
+    if (view() === "growth") return id === GROWTH;
+    if (id === CUSTOM || id === GROWTH) return false;
     if (view() === "general") {
       for (let x = id; x != null; x = N.has(x) ? N.get(x).p : null) if (V.has(x) || GPARENT.has(x)) return true;
       return false;
@@ -585,6 +649,7 @@ const DATA = /*DATA*/null;
   const RENAME = { 2: "核心商品", 150: "服務排除能源" };
   function label(id) {
     if (id === CUSTOM) return "自訂組合";
+    if (id === GROWTH) return "漲幅走勢";
     if (AGG.has(id)) return AGG.get(id).zh;
     if (V.has(id)) return V.get(id).zh;
     if (id === ROOT) return view() === "core" ? "核心 PCE（不含食品與能源）" : "個人消費支出（PCE）";
@@ -725,14 +790,15 @@ const DATA = /*DATA*/null;
   function pathTo(id) { const p = []; while (id != null) { p.unshift(id); id = parentOf(id); } return p; }
   function normalize(id) {
     if (view() === "custom") return CUSTOM;
-    if (!known(id) || id === CUSTOM) return rootId();
+    if (view() === "growth") return GROWTH;
+    if (!known(id) || id === CUSTOM || id === GROWTH) return rootId();
     if (isLeaf(id)) id = parentOf(id);
     while (id != null && !reachable(id)) id = V.has(id) ? null : N.get(id).p;
     return id == null ? rootId() : id;
   }
   function syncHash() {
     try {
-      const h = view() === "custom" ? "n" + CUSTOM : state.node === rootId() ? "" : "n" + state.node;
+      const h = view() === "custom" ? "n" + CUSTOM : view() === "growth" ? "n" + GROWTH : state.node === rootId() ? "" : "n" + state.node;
       if (location.hash.replace("#", "") !== h) location.hash = h;
     } catch (e) {}
   }
@@ -752,7 +818,8 @@ const DATA = /*DATA*/null;
   const FROM_GENERAL = { [G]: ROOT, [CG]: 2, [SX]: 150, [FE]: ROOT };
   function remapNode(prevView) {
     if (view() === "custom") { state.node = CUSTOM; return; }
-    let id = prevView === "custom" ? rootId() : state.node;
+    if (view() === "growth") { state.node = GROWTH; return; }
+    let id = prevView === "custom" || prevView === "growth" ? rootId() : state.node;
     if (view() === "general" && prevView !== "general" && TO_GENERAL[id] !== undefined) id = TO_GENERAL[id];
     if (view() !== "general" && V.has(id)) id = FROM_GENERAL[id];
     state.node = normalize(id);
@@ -762,7 +829,8 @@ const DATA = /*DATA*/null;
     const id = m ? +m[1] : rootId();
     if (V.has(id) && view() !== "general") state.index = "general";
     if (id === CUSTOM) state.index = "custom";
-    else if (view() === "custom") state.index = "pce";
+    else if (id === GROWTH) state.index = "growth";
+    else if (view() === "custom" || view() === "growth") state.index = "pce";
     if (id !== state.node) drillTo(id, true);
   });
 
@@ -907,6 +975,7 @@ const DATA = /*DATA*/null;
   }
 
   function drawChart() {
+    if (view() === "growth") return drawGrowthChart();
     const box = $("chart");
     const W = box.clientWidth;
     if (!W || !series.length) return;
@@ -989,6 +1058,7 @@ const DATA = /*DATA*/null;
 
   const tip = $("tip");
   svg.addEventListener("pointermove", e => {
+    if (view() === "growth") return growthTip(e);
     const el = e.target.closest(".seg, .hit");
     if (!el) { tip.hidden = true; return; }
     const i = +el.dataset.i, p = series[i], on = el.dataset.key;
@@ -1010,6 +1080,11 @@ const DATA = /*DATA*/null;
   });
   svg.addEventListener("pointerleave", () => { tip.hidden = true; });
   svg.addEventListener("click", e => {
+    if (view() === "growth") {                       // 漲幅走勢：點哪裡都只切換月份
+      const g = e.target.closest(".gbar, .hit");
+      if (g && gData[+g.dataset.i]) { state.t = gData[+g.dataset.i].t; tip.hidden = true; render(); }
+      return;
+    }
     const el = e.target.closest(".seg, .hit");
     if (!el) return;
     state.t = series[+el.dataset.i].t;
@@ -1060,7 +1135,11 @@ const DATA = /*DATA*/null;
     return out;
   }
   function exportFileName() {
-    const view = { pce: "PCE", core: "核心PCE", general: "通用分類", custom: "自訂" }[state.index];
+    if (state.index === "growth") {
+      const [ga, gz] = rangeBounds();
+      return `PCE_Driver_漲幅走勢_${gMeasureWord()}_${DATA.months[ga]}_${DATA.months[gz]}.png`.replace(/[\\/:*?"<>|]/g, "_").replace(/\s+/g, "");
+    }
+    const view ={ pce: "PCE", core: "核心PCE", general: "通用分類", custom: "自訂" }[state.index];
     const [a, z] = rangeBounds();
     const raw = `PCE_Driver_${view}_${label(state.node)}_${modeWord()}_${DATA.months[a]}_${DATA.months[z]}.png`;
     return raw.replace(/[\\/:*?"<>|]/g, "_").replace(/\s+/g, "");
@@ -1112,6 +1191,7 @@ const DATA = /*DATA*/null;
   }
 
   function drawExport() {
+    if (view() === "growth") return drawGrowthExport();
     const pxW = Math.round(EXPORT.wcm / 2.54 * EXPORT.dpi), pxH = Math.round(EXPORT.hcm / 2.54 * EXPORT.dpi);
     const pt = EXPORT.dpi / 72;                                   // 1 點 = 4.17 像素
     const cv = document.createElement("canvas");
@@ -1255,6 +1335,7 @@ const DATA = /*DATA*/null;
     } else warn.hidden = true;
   }
   function renderExportPanel() {
+    if (view() === "growth") return renderGrowthExportPanel();
     const focusId = document.activeElement && panel.contains(document.activeElement) ? document.activeElement.id : null;
     const plan = colorPlan(state.node), hid = hiddenSet();
     const rows = [];
@@ -1539,7 +1620,440 @@ const DATA = /*DATA*/null;
     if (b) toggleItem(b.dataset.key);
   });
 
+  // ---------- 漲幅走勢：各指標自己的漲幅（折線或柱狀，最多 4 個） ----------
+  const gName = key => ANN.has(key) ? ANN.get(key).zh : +key === ROOT ? "PCE" : pickName(+key);
+  const gBase = key => ANN.has(key) ? ANN.get(key).base : +key;          // 漲幅表裡對應的項目
+  const gLine = key => ANN.has(key) ? ANN.get(key).line : pickLine(+key);
+  const gMeasure = key => ANN.has(key) ? "年化指標" : modeWord();
+  const gLabel = key => ANN.has(key) ? ANN.get(key).zh : `${gName(key)} ${modeWord()}`;
+  const gDec = key => ANN.has(key) || state.mode === "mom" ? 2 : 1;
+  function gMeasureWord() {
+    const ann = growthSel.some(s => ANN.has(s.key)), reg = growthSel.some(s => !ANN.has(s.key));
+    return ann && reg ? `${modeWord()}與年化` : ann ? "年化漲幅" : modeWord();
+  }
+  // 指標的價格指數：BEA 項目用表上的指數，通用分類與年化用 BEA 彙總序列（資料檔沒有時用細項合成）
+  function gIndex(id) {
+    if (id === ROOT) return DATA.official.pce;
+    if (AGG.has(id)) {
+      const off = DATA.official[AGG.get(id).off];
+      if (off) return off;
+      const ids = leafIds.get(id), ck = `combo|${ids.join(",")}`;
+      if (!subModels.has(ck)) subModels.set(ck, buildModel(ids.map(l => ({ price: N.get(l).price, spend: LEAF.get(l).spend })), T));
+      return subModels.get(ck).idx;
+    }
+    return N.has(id) ? N.get(id).price : null;
+  }
+  // kind："yoy"、"mom"，或數字 k＝k 個月年化（複利：(I_t / I_{t-k})^(12/k) − 1）
+  function rateAt(I, t, kind) {
+    if (!I) return null;
+    const lag = kind === "yoy" ? 12 : kind === "mom" ? 1 : kind;
+    if (t - lag < 0 || !I[t] || !I[t - lag]) return null;
+    const r = I[t] / I[t - lag];
+    return (typeof kind === "number" ? Math.pow(r, 12 / kind) - 1 : r - 1) * 100;
+  }
+  const gValue = (key, t) => ANN.has(key)
+    ? rateAt(DATA.official[ANN.get(key).off], t, ANN.get(key).k)
+    : rateAt(gIndex(+key), t, state.mode);
+
+  let gData = [];
+  function growthSeries() {
+    const [a, z] = rangeBounds();
+    gData = [];
+    for (let t = a; t <= z; t++) gData.push({ t, vals: growthSel.map(s => gValue(s.key, t)) });
+  }
+
+  function drawGrowthChart() {
+    const W = $("chart").clientWidth;
+    if (!W) return;
+    const H = W < 520 ? 260 : 320;
+    const m = { l: 50, r: 10, t: 16, b: 40 };
+    svg.setAttribute("viewBox", `0 0 ${W} ${H}`);
+    svg.setAttribute("height", H);
+    if (!growthSel.length || !gData.length) {
+      svg.innerHTML = `<text x="${W / 2}" y="${H / 2}" text-anchor="middle">請在上方清單勾選指標</text>`;
+      svg.setAttribute("aria-label", "漲幅走勢：尚未選擇指標");
+      svg._geom = null;
+      return;
+    }
+    let lo = 0, hi = 0;
+    for (const p of gData) for (const v of p.vals) if (v !== null) { hi = Math.max(hi, v); lo = Math.min(lo, v); }
+    const step = niceStep(hi - lo || 0.01);
+    lo = lo < 0 ? Math.floor(lo / step - 1e-6) * step : 0;          // 全部為正時從 0 開始
+    hi = Math.ceil(hi / step + 1e-6) * step;
+    const tickDec = Math.max(0, -Math.floor(Math.log10(step) + 1e-9));
+    const pw = W - m.l - m.r, ph = H - m.t - m.b;
+    const y = v => m.t + (hi - v) / (hi - lo) * ph;
+    const band = pw / gData.length;
+    const cx = i => m.l + band * i + band / 2;
+    const bars = growthSel.map((s, k) => s.type === "bar" ? k : -1).filter(k => k >= 0);
+    const gw = bars.length ? Math.max(3, Math.min(bars.length * 16, band * 0.72)) : 0;
+    const bw = bars.length ? gw / bars.length : 0;
+
+    let out = "";
+    for (let v = lo; v <= hi + step * 1e-6; v += step) {
+      const yy = Math.round(y(v)) + 0.5;
+      const zero = Math.abs(v) < step * 1e-6;
+      out += `<line x1="${m.l}" x2="${W - m.r}" y1="${yy}" y2="${yy}" style="stroke:var(${zero ? "--axis" : "--rule"})" stroke-width="1"/>`;
+      out += `<text x="${m.l - 8}" y="${yy + 4}" text-anchor="end">${(zero ? 0 : v).toFixed(tickDec)}</text>`;
+    }
+    const sel = gData.findIndex(p => p.t === state.t);
+    if (sel >= 0) out += `<rect x="${m.l + band * sel}" y="${m.t}" width="${band}" height="${ph}" rx="4" style="fill:var(--sel)"/>`;
+    gData.forEach((p, i) => {
+      out += `<rect class="hit" data-i="${i}" x="${m.l + band * i}" y="${m.t}" width="${band}" height="${ph + 22}" fill="transparent" style="cursor:pointer"/>`;
+    });
+    // 柱狀指標並排
+    gData.forEach((p, i) => bars.forEach((k, j) => {
+      const v = p.vals[k];
+      if (v === null) return;
+      const x = cx(i) - gw / 2 + j * bw + (bars.length > 1 ? 0.5 : 0);
+      const w = Math.max(1, bw - (bars.length > 1 ? 1 : 0));
+      const y0 = y(Math.max(v, 0)), y1 = y(Math.min(v, 0));
+      out += `<path class="gbar" data-i="${i}" data-s="${k}" d="${roundedRect(x, y0, w, Math.max(0.5, y1 - y0), 3, v >= 0 ? "top" : "bottom")}" style="fill:var(--s${k + 1});cursor:pointer"/>`;
+    }));
+    // 折線指標（沒有數字的月份斷開）
+    growthSel.forEach((s, k) => {
+      if (s.type !== "line") return;
+      let d = "", pen = false;
+      gData.forEach((p, i) => {
+        const v = p.vals[k];
+        if (v === null) { pen = false; return; }
+        d += `${pen ? "L" : "M"}${cx(i).toFixed(1)},${y(v).toFixed(1)}`;
+        pen = true;
+      });
+      if (d) out += `<path d="${d}" fill="none" style="stroke:var(--s${k + 1});pointer-events:none" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"/>`;
+    });
+    if (sel >= 0) growthSel.forEach((s, k) => {
+      const v = gData[sel].vals[k];
+      if (s.type !== "line" || v === null) return;
+      out += `<circle cx="${cx(sel)}" cy="${y(v)}" r="4" style="fill:var(--s${k + 1});stroke:var(--surface);pointer-events:none" stroke-width="2"/>`;
+    });
+    const every = band < 9 ? 12 : band < 16 ? 6 : band < 28 ? 3 : 1;
+    gData.forEach((p, i) => {
+      const mm = +DATA.months[p.t].slice(5);
+      const janSoon = i === 0 && gData.slice(1, 5).some(q => DATA.months[q.t].endsWith("-01"));
+      if (mm === 1 || (i === 0 && !janSoon)) {
+        out += `<text class="yr" x="${cx(i)}" y="${H - 6}" text-anchor="${i === 0 ? "start" : "middle"}">${DATA.months[p.t].slice(0, 4)}</text>`;
+      }
+      const nearSel = every > 1 && Math.abs(p.t - state.t) <= 1 && p.t !== state.t;
+      if (((mm - 1) % every === 0 && every < 12 && !nearSel) || p.t === state.t) {
+        out += `<text x="${cx(i)}" y="${m.t + ph + 16}" text-anchor="middle" ${p.t === state.t ? 'style="fill:var(--ink);font-weight:500"' : ""}>${mm}</text>`;
+      }
+    });
+    svg.setAttribute("aria-label", `漲幅走勢：${growthSel.map(s => gLabel(s.key)).join("、")}，${monthLabel(gData[0].t)} 至 ${monthLabel(gData[gData.length - 1].t)}`);
+    svg.innerHTML = out;
+    svg._geom = { cx, W };
+  }
+
+  function growthTip(e) {
+    const el = e.target.closest(".gbar, .hit");
+    if (!el || !svg._geom || !gData[+el.dataset.i]) { tip.hidden = true; return; }
+    const i = +el.dataset.i, p = gData[i];
+    const rows = growthSel.map((s, k) => {
+      const v = p.vals[k];
+      return `<div class="${el.dataset.s === String(k) ? "on" : ""}"><i style="background:var(--s${k + 1})"></i><span>${esc(gLabel(s.key))}</span><b>${v === null ? "—" : signed(v, gDec(s.key)) + "%"}</b></div>`;
+    }).join("");
+    tip.innerHTML = `<h3><span>${monthLabel(p.t)}</span></h3>${rows}<p>點一下切換到這個月</p>`;
+    tip.hidden = false;
+    const g = svg._geom, scale = svg.clientWidth / g.W, x = g.cx(i) * scale, tw = tip.offsetWidth;
+    let left = x + 14;
+    if (left + tw > svg.clientWidth) left = x - tw - 14;
+    tip.style.left = Math.max(0, left) + "px";
+    tip.style.top = "8px";
+  }
+
+  function renderGrowthReading() {
+    $("focus-label").textContent = "漲幅走勢";
+    const first = growthSel[0];
+    if (!first) {
+      $("hero-label").textContent = `漲幅走勢 · ${monthLabel(state.t)}`;
+      $("hero-num").innerHTML = "–";
+      $("hero-delta").innerHTML = "";
+      $("focus-name").innerHTML = `還沒有選擇指標<small>一張圖最多 ${MAX_GROW} 個指標</small>`;
+      $("stats").innerHTML = "";
+      $("story").innerHTML = "請在上方「漲幅走勢」清單勾選想看的指標。";
+      return;
+    }
+    const v = gValue(first.key, state.t), pv = gValue(first.key, state.t - 1);
+    $("hero-label").textContent = `${gLabel(first.key)} · ${monthLabel(state.t)} · 依 BEA 官方指數計算`;
+    $("hero-num").innerHTML = v === null ? "–" : `${v.toFixed(2)}<small>%</small>`;
+    $("hero-delta").innerHTML = v === null || pv === null ? "" : `較上月 <b>${signed(v - pv, 2)}</b> 個百分點`;
+    $("focus-name").innerHTML = `${growthSel.length} 個指標<small>以 BEA 官方價格指數計算 · 一張圖最多 ${MAX_GROW} 個</small>`;
+    $("stats").innerHTML = growthSel.slice(1).map(s => {
+      const x = gValue(s.key, state.t);
+      return `<div class="stat"><span>${esc(gLabel(s.key))}</span><b>${x === null ? "—" : signed(x, 2) + "%"}</b></div>`;
+    }).join("");
+    $("story").innerHTML = growthSel.some(s => ANN.has(s.key))
+      ? "年化指標以複利換算成一整年：3 個月年化＝（本月指數 ÷ 3 個月前指數）<sup>4</sup> − 1，6 個月年化＝（本月指數 ÷ 6 個月前指數）<sup>2</sup> − 1。"
+      : `${modeWord()}＝本月指數 ÷ ${state.mode === "yoy" ? "去年同月" : "上月"}指數 − 1，四捨五入後與 BEA 公布的數字一致。`;
+  }
+
+  function renderGrowthChrome() {
+    $("chart-title").innerHTML = `漲幅走勢<em>${esc(gMeasureWord())}，%</em>`;
+    $("chart-hint").textContent = "點柱子或空白處切換月份；折線或柱狀可在上方清單切換";
+    $("legend").innerHTML = growthSel.map((s, k) =>
+      `<span class="lg-static"><i class="${s.type === "line" ? "gp-key-line" : ""}" style="background:var(--s${k + 1})"></i>${esc(gLabel(s.key))}</span>`).join("");
+  }
+
+  function renderGrowthLedger() {
+    const bases = [];
+    growthSel.forEach((s, k) => { const b = gBase(s.key); if (!bases.some(x => x.id === b)) bases.push({ id: b, slot: k + 1 }); });
+    $("ledger-title").innerHTML = `${monthLabel(state.t)} · 所選指標的漲幅<em>%，年化只提供 PCE 與核心 PCE</em>`;
+    const head = `<div class="grow-row head" role="row"><span role="columnheader">項目</span><span class="num" role="columnheader">年增率</span><span class="num" role="columnheader">月增率</span><span class="num" role="columnheader">3 個月年化</span><span class="num" role="columnheader">6 個月年化</span></div>`;
+    const cell = (v, d) => `<span class="num" role="cell">${v === null ? "—" : signed(v, d) + "%"}</span>`;
+    const body = bases.map(b => {
+      const I = gIndex(b.id), ann = b.id === ROOT ? DATA.official.pce : b.id === -33 ? DATA.official.core : null;
+      const name = b.id === ROOT ? "PCE" : pickName(b.id);
+      return `<div class="grow-row" role="row">
+        <span class="name" role="cell"><i style="background:var(--s${b.slot})"></i><span>${esc(name)}<small><span class="en">${esc(enOf(b.id))} · </span>line ${pickLine(b.id)}</small></span></span>
+        ${cell(rateAt(I, state.t, "yoy"), 1)}${cell(rateAt(I, state.t, "mom"), 2)}${cell(rateAt(ann, state.t, 3), 2)}${cell(rateAt(ann, state.t, 6), 2)}
+      </div>`;
+    }).join("");
+    $("ledger").setAttribute("aria-label", "所選指標的漲幅表");
+    $("ledger").innerHTML = bases.length ? head + body : `<p class="hint">還沒有選擇指標。</p>`;
+  }
+
+  // 指標清單：BEA 樹（從 PCE 開始）＋通用分類＋年化指標
+  const gpExpanded = new Set([ROOT]);
+  function gBlock(key) {
+    if (growthSel.some(s => s.key === key)) return "";
+    if (!ANN.has(key) && N.has(+key) && !N.get(+key).price) return "沒有價格指數";
+    if (growthSel.length >= MAX_GROW) return `最多 ${MAX_GROW} 個`;
+    return "";
+  }
+  function gpRow(key, name, line, depth, hasKids, open) {
+    const sel = growthSel.some(s => s.key === key), why = gBlock(key);
+    return `<div class="cp-node" role="treeitem"${hasKids ? ` aria-expanded="${open}"` : ""} style="padding-left:${depth * 18}px">` +
+      (hasKids ? `<button type="button" class="cp-tog" id="gp-tog-${key}" data-tog="${key}" aria-label="${open ? "收合" : "展開"} ${esc(name)}">${open ? "▾" : "▸"}</button>` : `<span class="cp-tog-sp"></span>`) +
+      `<label class="${why ? "blocked" : ""}" for="gp-cb-${key}"><input type="checkbox" id="gp-cb-${key}" data-key="${key}" ${sel ? "checked" : ""} ${why ? "disabled" : ""}><span>${esc(name)}</span><small>${why ? why + " · " : ""}line ${line}</small></label></div>`;
+  }
+  function renderGrowthTree() {
+    const box = $("gp-tree"), scroll = box.scrollTop;
+    const q = $("gp-search").value.trim().toLowerCase();
+    const hit = (zh, en, line) => zh.toLowerCase().includes(q) || en.toLowerCase().includes(q) || String(line) === q;
+    let show = null;
+    if (q) {
+      show = new Set();
+      for (const n of DATA.nodes) if (hit(n.zh, n.en, n.id)) { show.add(n.id); ancestorsOf(n.id).forEach(a => show.add(a)); }
+    }
+    const rows = [];
+    (function walk(id, depth) {
+      if (show && !show.has(id)) return;
+      const n = N.get(id), hasKids = n.kids.length > 0;
+      const open = hasKids && (show ? true : gpExpanded.has(id));
+      rows.push(gpRow(String(id), id === ROOT ? "個人消費支出（PCE）" : n.zh, id, depth, hasKids, open));
+      if (open) for (const k of n.kids) walk(k, depth + 1);
+    })(ROOT, 0);
+    const aggRows = [];
+    for (const [k, a] of AGG) if (!q || hit(a.zh, a.en, a.line)) aggRows.push(gpRow(String(k), a.zh, a.line, 0, false, false));
+    if (aggRows.length) rows.push(`<div class="cp-group" role="none">通用分類</div>`, ...aggRows);
+    const annRows = [];
+    for (const [k, a] of ANN) if (!q || hit(a.zh, `${a.k}-month annualized`, a.line)) annRows.push(gpRow(k, a.zh, a.line, 0, false, false));
+    if (annRows.length) rows.push(`<div class="cp-group" role="none">年化指標（只提供 PCE、核心 PCE）</div>`, ...annRows);
+    box.innerHTML = rows.length ? rows.join("") : `<p class="hint">找不到符合「${esc(q)}」的指標</p>`;
+    box.scrollTop = scroll;
+  }
+  function renderGrowthPanel() {
+    const focusId = document.activeElement && $("growth-panel").contains(document.activeElement) ? document.activeElement.id : null;
+    renderGrowthTree();
+    $("gp-count").textContent = `已選 ${growthSel.length} / ${MAX_GROW} 個指標 · 清單順序就是顏色順序`;
+    $("gp-list").innerHTML = growthSel.length ? growthSel.map((s, i) => {
+      const nm = esc(gName(s.key)), k = s.key;
+      return `<li>
+        <i class="${s.type === "line" ? "gp-line" : ""}" style="background:var(--s${i + 1})"></i>
+        <span>${nm}<small>${esc(gMeasure(k))} · line ${gLine(k)}</small></span>
+        <span class="gp-tools">
+          <span class="gp-type" role="group" aria-label="${nm} 的圖形">
+            <button type="button" id="gp-line-${k}" data-type="line" data-key="${k}" aria-pressed="${s.type === "line"}">折線</button>
+            <button type="button" id="gp-bar-${k}" data-type="bar" data-key="${k}" aria-pressed="${s.type === "bar"}">柱狀</button>
+          </span>
+          <span class="cp-btns">
+            <button type="button" id="gp-up-${k}" data-move="${k}" data-dir="-1" ${i === 0 ? "disabled" : ""} aria-label="${nm} 往前移">↑</button>
+            <button type="button" id="gp-down-${k}" data-move="${k}" data-dir="1" ${i === growthSel.length - 1 ? "disabled" : ""} aria-label="${nm} 往後移">↓</button>
+            <button type="button" id="gp-del-${k}" data-del="${k}" aria-label="移除 ${nm}">✕</button>
+          </span>
+        </span>
+      </li>`;
+    }).join("") : `<li><p class="cp-empty">還沒有選擇指標。從左邊勾選，或用搜尋找指標。</p></li>`;
+    $("gp-clear").disabled = !growthSel.length;
+    if (focusId && $(focusId)) $(focusId).focus();
+  }
+  $("gp-tree").addEventListener("click", e => {
+    const t = e.target.closest("[data-tog]");
+    if (!t) return;
+    const id = +t.dataset.tog;
+    if (gpExpanded.has(id)) gpExpanded.delete(id); else gpExpanded.add(id);
+    renderGrowthTree();
+    if ($(`gp-tog-${id}`)) $(`gp-tog-${id}`).focus();
+  });
+  $("gp-tree").addEventListener("change", e => {
+    const cb = e.target.closest("input[data-key]");
+    if (!cb) return;
+    const key = cb.dataset.key;
+    setGrowth(cb.checked ? [...growthSel, { key, type: "line" }] : growthSel.filter(s => s.key !== key));
+    render();
+  });
+  let gpSearchTimer = 0;
+  $("gp-search").addEventListener("input", () => { clearTimeout(gpSearchTimer); gpSearchTimer = setTimeout(renderGrowthTree, 150); });
+  $("gp-list").addEventListener("click", e => {
+    const ty = e.target.closest("[data-type]"), mv = e.target.closest("[data-move]"), del = e.target.closest("[data-del]");
+    if (ty) {
+      setGrowth(growthSel.map(s => s.key === ty.dataset.key ? { key: s.key, type: ty.dataset.type } : s)); render();
+    } else if (mv) {
+      const i = growthSel.findIndex(s => s.key === mv.dataset.move), j = i + +mv.dataset.dir;
+      if (i < 0 || j < 0 || j >= growthSel.length) return;
+      const next = [...growthSel]; [next[i], next[j]] = [next[j], next[i]];
+      setGrowth(next); render();
+    } else if (del) {
+      setGrowth(growthSel.filter(s => s.key !== del.dataset.del)); render();
+    }
+  });
+  $("gp-clear").addEventListener("click", () => { setGrowth([]); render(); });
+
+  // 下載圖片：圖例在上方，柱狀並排、折線疊在上面；顏色依位置（第 1–4 色）
+  function drawGrowthExport() {
+    const pxW = Math.round(EXPORT.wcm / 2.54 * EXPORT.dpi), pxH = Math.round(EXPORT.hcm / 2.54 * EXPORT.dpi);
+    const pt = EXPORT.dpi / 72;
+    const cv = document.createElement("canvas");
+    cv.width = pxW; cv.height = pxH;
+    const g = cv.getContext("2d");
+    g.fillStyle = "#FFFFFF"; g.fillRect(0, 0, pxW, pxH);
+
+    const items = growthSel.map((s, k) => ({ name: exportName(`g${s.key}`, gLabel(s.key)), color: exportColor(k + 1), kind: s.type === "line" ? "line" : "box" }));
+    let L;
+    if (fontChoice === "auto") {
+      for (const f of AUTO_SIZES) { L = layoutLegend(g, items, f, pxW, pt); if (L.height <= pxH * 0.28) break; }
+    } else {
+      L = layoutLegend(g, items, +fontChoice, pxW, pt);
+    }
+    const axisPt = Math.max(6, L.fpt - 0.5);
+    g.textBaseline = "middle"; g.textAlign = "left";
+    L.rows.forEach((row, r) => {
+      const cy = L.top0 + r * L.rowH + L.rowH / 2;
+      for (const it of row) {
+        if (it.kind === "box") { g.fillStyle = it.color; g.fillRect(it.x, cy - L.sh / 2, L.sw, L.sh); }
+        else { g.strokeStyle = it.color; g.lineWidth = 1.5 * pt; g.beginPath(); g.moveTo(it.x, cy); g.lineTo(it.x + L.lineW, cy); g.stroke(); }
+        g.fillStyle = INK; g.font = L.font;
+        g.fillText(it.name, it.x + it.mark + L.gapIn, cy);
+      }
+    });
+
+    const top = L.height + Math.max(0.45 * L.fpt, 0.6 * axisPt) * pt;
+    const bottom = pxH - 1 * pt - 1.7 * axisPt * pt;
+    const ph = bottom - top;
+    let dlo = 0, dhi = 0;
+    for (const p of gData) for (const v of p.vals) if (v !== null) { dhi = Math.max(dhi, v); dlo = Math.min(dlo, v); }
+    const maxTicks = Math.max(2, Math.floor(ph / (axisPt * pt * 1.5)) + 1);
+    const nextNice = st => { const mag = Math.pow(10, Math.floor(Math.log10(st) + 1e-9)), n = Math.round(st / mag); return (n < 2 ? 2 : n < 5 ? 5 : 10) * mag; };
+    const pad = (dhi - dlo || 0.01) * 0.04;
+    let lo = dlo < 0 ? dlo - pad : 0, hi = dhi + pad;
+    const tickCount = st => Math.floor(hi / st + 1e-6) - Math.ceil(lo / st - 1e-6) + 1;
+    let step = niceStep(hi - lo);
+    for (let guard = 0; guard < 12 && tickCount(step) > maxTicks; guard++) step = nextNice(step);
+    const span = hi - lo, loT = Math.floor(lo / step - 1e-6) * step, hiT = Math.ceil(hi / step - 1e-6) * step;
+    if (lo - loT <= span * 0.12) lo = loT;
+    if (hiT - hi <= span * 0.12) hi = hiT;
+    const ticks = [];
+    for (let v = Math.ceil(lo / step - 1e-6) * step; v <= hi + step * 1e-6; v += step) ticks.push(Math.abs(v) < step * 1e-6 ? 0 : v);
+    const tickDec = Math.max(0, -Math.floor(Math.log10(step) + 1e-9));
+    const fmtY = v => v.toFixed(tickDec) + "%";
+    const numFont = `${axisPt * pt}px ${NUM}`;
+    g.font = numFont;
+    let yLabelW = 0;
+    for (const v of ticks) yLabelW = Math.max(yLabelW, g.measureText(fmtY(v)).width);
+
+    const plot = { l: L.padX + yLabelW + 0.4 * axisPt * pt, r: pxW - 4 * pt, t: top, b: bottom };
+    const pw = plot.r - plot.l;
+    const Y = v => plot.t + (hi - v) / (hi - lo) * ph;
+    const n = Math.max(1, gData.length), band = pw / n;
+    const cx = i => plot.l + band * i + band / 2;
+
+    g.fillStyle = TEXT2; g.textAlign = "right"; g.textBaseline = "middle";
+    for (const v of ticks) g.fillText(fmtY(v), plot.l - 0.4 * axisPt * pt, Y(v));
+    g.strokeStyle = GRID; g.lineWidth = 0.75 * pt;
+    for (const v of ticks) {
+      if (v === 0) continue;
+      const yy = Math.round(Y(v)) + 0.5;
+      g.beginPath(); g.moveTo(plot.l, yy); g.lineTo(plot.r, yy); g.stroke();
+    }
+
+    const bars = growthSel.map((s, k) => s.type === "bar" ? k : -1).filter(k => k >= 0);
+    const gw = band * 0.7, bw = bars.length ? gw / bars.length : 0, gap = bars.length > 1 ? Math.max(1, Math.round(0.3 * pt)) : 0;
+    gData.forEach((p, i) => bars.forEach((k, j) => {
+      const v = p.vals[k];
+      if (v === null) return;
+      const x0 = cx(i) - gw / 2 + j * bw;
+      const y0 = Y(Math.max(v, 0)), y1 = Y(Math.min(v, 0));
+      g.fillStyle = exportColor(k + 1);
+      g.fillRect(x0, y0, Math.max(1, bw - gap), Math.max(1, y1 - y0));
+    }));
+
+    g.strokeStyle = AXIS; g.lineWidth = 0.75 * pt;
+    g.beginPath(); g.moveTo(plot.l, Math.round(Y(0)) + 0.5); g.lineTo(plot.r, Math.round(Y(0)) + 0.5); g.stroke();
+
+    growthSel.forEach((s, k) => {
+      if (s.type !== "line") return;
+      g.strokeStyle = exportColor(k + 1); g.lineWidth = 1.5 * pt; g.lineJoin = "round"; g.lineCap = "round";
+      g.beginPath();
+      let pen = false;
+      gData.forEach((p, i) => {
+        const v = p.vals[k];
+        if (v === null) { pen = false; return; }
+        if (pen) g.lineTo(cx(i), Y(v)); else g.moveTo(cx(i), Y(v));
+        pen = true;
+      });
+      g.stroke();
+    });
+
+    g.font = numFont; g.fillStyle = TEXT2; g.textBaseline = "top";
+    const lab = t => { const [yy, mm] = DATA.months[t].split("-"); return `${yy}/${+mm}`; };
+    const need = g.measureText("2026/12").width + 0.8 * axisPt * pt;
+    const every = [1, 2, 3, 4, 6, 8, 12, 24, 36, 60].find(k => k * band >= need) || 120;
+    for (let i = 0; i < gData.length; i += every) {
+      const text = lab(gData[i].t), w = g.measureText(text).width;
+      let xx = cx(i), align = "center";
+      if (xx - w / 2 < 0) { xx = 0; align = "left"; }
+      else if (xx + w / 2 > pxW) { xx = pxW; align = "right"; }
+      g.textAlign = align;
+      g.fillText(text, xx, plot.b + 0.65 * axisPt * pt);
+    }
+    return { cv, legendPt: L.fpt, axisPt, share: L.height / pxH, plotShare: ph / pxH, pxW, pxH };
+  }
+  function renderGrowthExportPanel() {
+    const focusId = document.activeElement && panel.contains(document.activeElement) ? document.activeElement.id : null;
+    $("ex-items").innerHTML = growthSel.length ? growthSel.map((s, k) => {
+      const def = gLabel(s.key);
+      return `<div class="ex-row">
+        <span class="ex-spacer"></span><input type="color" class="ex-color" id="ex-color-g${k}" data-slot="${k + 1}" value="${exportColor(k + 1)}" aria-label="${esc(def)} 在下載圖上的顏色（第 ${k + 1} 色）">
+        <input type="text" id="ex-name-g${k}" data-id="g${s.key}" data-def="${esc(def)}" value="${esc(exportName(`g${s.key}`, def))}" aria-label="${esc(def)} 在下載圖上的名稱">
+      </div>`;
+    }).join("") : `<p class="hint">還沒有選擇指標。</p>`;
+    $("ex-font").value = String(fontChoice);
+    if (focusId && $(focusId)) $(focusId).focus();
+    updatePreview();
+  }
+
+  function renderGrowth() {
+    syncControls();
+    growthSeries();
+    renderGrowthReading();
+    renderGrowthChrome();
+    drawGrowthChart();
+    renderGrowthLedger();
+    $("custom-panel").hidden = true;
+    $("growth-panel").hidden = false;
+    $("crumbs").hidden = true;
+    $("sortbar").hidden = true;
+    renderGrowthPanel();
+    if (!$("export-panel").hidden) renderExportPanel();
+  }
+
   function render() {
+    if (view() === "growth") { renderGrowth(); return; }
+    $("growth-panel").hidden = true;                 // 從漲幅走勢切回來：恢復其他檢視共用的區塊
+    $("crumbs").hidden = false;
+    $("sortbar").hidden = false;
+    $("focus-label").textContent = "目前展開";
+    $("ledger").setAttribute("aria-label", "細項貢獻表");
     syncControls();
     const plan = colorPlan(state.node);
     const snap = snapshot(state.t);
@@ -1590,6 +2104,7 @@ const DATA = /*DATA*/null;
   if (m0 && known(+m0[1])) {
     if (V.has(+m0[1])) state.index = "general";
     if (+m0[1] === CUSTOM) state.index = "custom";
+    if (+m0[1] === GROWTH) state.index = "growth";
     drillTo(+m0[1], true);
   } else render();
 })();
