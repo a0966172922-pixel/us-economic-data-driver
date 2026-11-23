@@ -405,7 +405,7 @@ h2 em { font-style: normal; color: var(--muted); font-weight: 500; font-size: 15
     <div class="export-panel" id="export-panel" hidden>
       <div class="ex-head">
         <h3>下載設定</h3>
-        <p class="hint">這裡的設定只用在下載的圖片，網站上的名稱與顏色不會變。尺寸、字體、圖例位置、名稱與顏色會記在這台電腦的瀏覽器裡；顏色依位置記住，例如第 1 色改了，所有圖的第 1 色都會換。Y 軸範圍在重新整理網頁後恢復自動。</p>
+        <p class="hint">這裡的設定只用在下載的圖片，網站上的名稱與顏色不會變。尺寸、字體、圖例位置、名稱與顏色會記在這台電腦的瀏覽器裡；顏色依位置記住，例如第 1 色改了，所有圖的第 1 色都會換。Y 軸範圍與 X 軸間隔在重新整理網頁後恢復自動。</p>
       </div>
       <div class="ex-body">
         <div class="ex-preview">
@@ -470,6 +470,18 @@ h2 em { font-style: normal; color: var(--muted); font-weight: 500; font-size: 15
             <button type="button" class="dl-btn" id="ex-yauto">自動</button>
           </div>
           <p class="hint" id="ex-yhint"></p>
+          <label class="ex-field" for="ex-xstep">X 軸間隔
+            <select id="ex-xstep">
+              <option value="auto">自動</option>
+              <option value="1">每 1 個月</option>
+              <option value="2">每 2 個月</option>
+              <option value="3">每 3 個月</option>
+              <option value="4">每 4 個月</option>
+              <option value="6">每 6 個月</option>
+              <option value="12">每 12 個月</option>
+              <option value="24">每 24 個月</option>
+            </select>
+          </label>
           <p class="ex-warn" id="ex-warn" hidden></p>
           <p class="ex-label">圖例（勾選＝顯示；色塊＝點一下從預設色票選顏色；文字框＝下載圖上的名稱）</p>
           <div class="ex-items" id="ex-items"></div>
@@ -1243,6 +1255,8 @@ const DATA = /*DATA*/null;
   // Y 軸範圍：只用在下載的圖片；貢獻圖與漲幅走勢、年增率與月增率分開記，重新整理後恢復自動
   const yRange = { cyoy: [null, null], cmom: [null, null], gyoy: [null, null], gmom: [null, null] };
   const yKey = () => (view() === "growth" ? "g" : "c") + state.mode;
+  // X 軸間隔：只用在下載的圖片，重新整理後恢復自動；手動時每 1、2、3、4、6、12、24 個月標一次，對齊年曆
+  let xStep = "auto";
   const saveNames = () => { try { localStorage.setItem(NAMES_KEY, JSON.stringify(customNames)); } catch (e) {} };
   const nameKey = (id, def) => `${id}|${def}`;
   function exportName(id, def) {
@@ -1387,16 +1401,25 @@ const DATA = /*DATA*/null;
     const lab = t => { const [yy, mm] = DATA.months[t].split("-"); return `${yy}/${+mm}`; };
     const need = g.measureText("2026/12").width + 0.8 * xPt * pt;
     const every = [1, 2, 3, 4, 6, 8, 12, 24, 36, 60].find(k => k * band >= need) || 120;
-    for (let i = 0; i < ts.length; i += every) {
+    B.xAuto = every;
+    const draw = i => {
       const text = lab(ts[i]), w = g.measureText(text).width;
       let xx = cx(i), align = "center";
       if (xx - w / 2 < 0) { xx = 0; align = "left"; }
       else if (xx + w / 2 > pxW) { xx = pxW; align = "right"; }
       g.textAlign = align;
       g.fillText(text, xx, plot.b + xOff * pt);
+    };
+    if (xStep === "auto") {                        // 自動：從第一個月開始，挑不會擠在一起的最小間隔
+      for (let i = 0; i < ts.length; i += every) draw(i);
+      return;
     }
+    // 手動：對齊年曆（例如每 3 個月標在 1、4、7、10 月；每 12 個月標在 1 月；每 24 個月標在偶數年的 1 月）
+    const k = +xStep;
+    B.xCrowded = k * band < need;
+    ts.forEach((t, i) => { const [yy, mm] = DATA.months[t].split("-"); if ((+yy * 12 + +mm - 1) % k === 0) draw(i); });
   }
-  const exportResult = B => ({ cv: B.cv, legendPt: B.L.fpt, yPt: B.yPt, xPt: B.xPt, share: B.L.height / B.pxH, plotShare: B.ph / B.pxH, pxW: B.pxW, pxH: B.pxH, lo: B.lo, hi: B.hi });
+  const exportResult = B => ({ cv: B.cv, legendPt: B.L.fpt, yPt: B.yPt, xPt: B.xPt, share: B.L.height / B.pxH, plotShare: B.ph / B.pxH, pxW: B.pxW, pxH: B.pxH, lo: B.lo, hi: B.hi, xAuto: B.xAuto, xCrowded: !!B.xCrowded });
 
   function drawExport() {
     if (view() === "growth") return drawGrowthExport();
@@ -1464,11 +1487,14 @@ const DATA = /*DATA*/null;
     const [uLo, uHi] = yRange[yKey()];
     const unit = view() === "growth" ? "%" : "百分點";
     $("ex-yhint").textContent = `${uLo === null && uHi === null ? "目前自動" : "目前手動"}：${r.lo.toFixed(2)} 至 ${r.hi.toFixed(2)}（${unit}）。只影響下載的圖片；年增率、月增率分開記，重新整理網頁後恢復自動。`;
+    const xo = $("ex-xstep").querySelector('option[value="auto"]');
+    if (xo) xo.textContent = xStep === "auto" ? `自動（目前每 ${r.xAuto} 個月）` : "自動";
+    const msgs = [];
+    if (r.share > 0.4 || r.plotShare < 0.4) msgs.push(`圖例佔了圖片高度的 ${Math.round(r.share * 100)}%，圖表會變得很小。建議改小字體、縮短圖例名稱，或改用整欄尺寸。`);
+    if (r.xCrowded) msgs.push(`X 軸每 ${xStep} 個月標一次會太擠，月份文字可能重疊。建議改大間隔、縮小 X 軸字體，或改用整欄尺寸。`);
     const warn = $("ex-warn");
-    if (r.share > 0.4 || r.plotShare < 0.4) {
-      warn.textContent = `圖例佔了圖片高度的 ${Math.round(r.share * 100)}%，圖表會變得很小。建議改小字體、縮短圖例名稱，或改用整欄尺寸。`;
-      warn.hidden = false;
-    } else warn.hidden = true;
+    warn.textContent = msgs.join(" ");
+    warn.hidden = !msgs.length;
   }
   // 尺寸、字體、圖例位置、Y 軸範圍的控制項（貢獻圖與漲幅走勢共用）
   function syncExportOptions() {
@@ -1478,6 +1504,7 @@ const DATA = /*DATA*/null;
     $("ex-font").value = fontChoice;
     $("ex-font-y").value = fontY;
     $("ex-font-x").value = fontX;
+    $("ex-xstep").value = xStep;
     const [uLo, uHi] = yRange[yKey()];
     $("ex-ymin").value = uLo === null ? "" : uLo;
     $("ex-ymax").value = uHi === null ? "" : uHi;
@@ -1574,6 +1601,7 @@ const DATA = /*DATA*/null;
   panel.addEventListener("change", e => {
     const cb = e.target.closest('input[type="checkbox"][data-key]');
     if (cb) { toggleItem(cb.dataset.key); return; }
+    if (e.target.id === "ex-xstep") { xStep = e.target.value; updatePreview(); return; }   // 不記在瀏覽器裡
     const fk = { "ex-font": FONT_KEY, "ex-font-y": FONT_Y_KEY, "ex-font-x": FONT_X_KEY }[e.target.id];
     if (fk) {
       const v = e.target.value;
