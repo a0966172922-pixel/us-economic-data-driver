@@ -188,6 +188,22 @@ h2 em { font-style: normal; color: var(--muted); font-weight: 500; font-size: 15
 .ex-row.off i { opacity: 0.45; }
 .ex-spacer { width: 18px; }
 .ex-actions { display: flex; flex-wrap: wrap; gap: 8px; }
+/* 下載設定：尺寸、圖例位置切換（不用 .seg，避免和頁面上方的檢視切換混在一起）、字體、Y 軸範圍、色票 */
+.ex-form { position: relative; }
+.ex-seg { display: inline-flex; flex-wrap: wrap; background: var(--chip); border-radius: 8px; padding: 2px; gap: 2px; }
+.ex-seg button { font: inherit; font-size: 13px; border: 0; background: transparent; color: var(--ink-2); padding: 4px 10px; border-radius: 6px; cursor: pointer; white-space: nowrap; }
+.ex-seg button:hover { color: var(--ink); background: var(--surface); }
+.ex-seg button[aria-pressed="true"] { background: var(--ink); color: var(--surface); font-weight: 500; }
+.ex-fonts { display: flex; flex-wrap: wrap; gap: 8px 16px; }
+.ex-range { display: flex; flex-wrap: wrap; align-items: center; gap: 6px 8px; font-size: 13.5px; color: var(--ink-2); }
+.ex-range input[type="number"] { font: inherit; font-size: 13.5px; width: 92px; padding: 4px 8px; border-radius: 8px; border: 1px solid var(--rule); background: var(--surface); color: var(--ink); }
+.ex-range .dl-btn { padding: 3px 10px; }
+.ex-row button.ex-color { width: 28px; height: 24px; padding: 0; border: 1px solid var(--muted); border-radius: 6px; cursor: pointer; box-shadow: inset 0 0 0 2px var(--surface); }
+.ex-row button.ex-color:disabled { opacity: 0.45; cursor: default; }
+.ex-palette { position: absolute; z-index: 60; display: grid; grid-template-columns: repeat(6, 28px); gap: 6px; padding: 10px; background: var(--surface); border: 1px solid var(--rule); border-radius: 10px; box-shadow: 0 8px 28px rgba(0, 0, 0, 0.18); }
+.ex-palette .ex-sw { width: 28px; height: 28px; padding: 0; border: 1px solid var(--muted); border-radius: 6px; cursor: pointer; }
+.ex-palette .ex-sw[aria-pressed="true"] { outline: 2px solid var(--ink); outline-offset: 2px; }
+.ex-palette .ex-sw-reset { grid-column: 1 / -1; font-size: 12.5px; padding: 3px 10px; }
 @media (max-width: 760px) { .ex-body { grid-template-columns: minmax(0, 1fr); } }
 .legend { display: flex; flex-wrap: wrap; gap: 6px 16px; font-size: 13px; color: var(--ink-2); margin-bottom: 6px; }
 .legend span { display: inline-flex; align-items: center; gap: 6px; }
@@ -389,7 +405,7 @@ h2 em { font-style: normal; color: var(--muted); font-weight: 500; font-size: 15
     <div class="export-panel" id="export-panel" hidden>
       <div class="ex-head">
         <h3>下載設定</h3>
-        <p class="hint">這裡改的名稱與顏色只用在下載的圖片，網站上的名稱與顏色不會變。改過的設定會記在這台電腦的瀏覽器裡；顏色依位置記住，例如第 1 色改了，所有圖的第 1 色都會換。</p>
+        <p class="hint">這裡的設定只用在下載的圖片，網站上的名稱與顏色不會變。尺寸、字體、圖例位置、名稱與顏色會記在這台電腦的瀏覽器裡；顏色依位置記住，例如第 1 色改了，所有圖的第 1 色都會換。Y 軸範圍在重新整理網頁後恢復自動。</p>
       </div>
       <div class="ex-body">
         <div class="ex-preview">
@@ -397,8 +413,12 @@ h2 em { font-style: normal; color: var(--muted); font-weight: 500; font-size: 15
           <p class="hint" id="ex-size"></p>
         </div>
         <div class="ex-form">
-          <label class="ex-field" for="ex-font">字體大小
-            <select id="ex-font">
+          <div class="ex-field"><span>尺寸</span>
+            <div class="ex-seg" id="ex-preset" role="group" aria-label="圖片尺寸"></div>
+          </div>
+          <div class="ex-fonts">
+            <label class="ex-field" for="ex-font">圖例字體
+              <select id="ex-font">
               <option value="auto">自動</option>
               <option value="6">6 點</option>
               <option value="7">7 點</option>
@@ -407,11 +427,53 @@ h2 em { font-style: normal; color: var(--muted); font-weight: 500; font-size: 15
               <option value="10">10 點</option>
               <option value="11">11 點</option>
               <option value="12">12 點</option>
-            </select>
-          </label>
+              <option value="14">14 點</option>
+              </select>
+            </label>
+            <label class="ex-field" for="ex-font-y">Y 軸字體
+              <select id="ex-font-y">
+              <option value="auto">自動</option>
+              <option value="6">6 點</option>
+              <option value="7">7 點</option>
+              <option value="8">8 點</option>
+              <option value="9">9 點</option>
+              <option value="10">10 點</option>
+              <option value="11">11 點</option>
+              <option value="12">12 點</option>
+              <option value="14">14 點</option>
+              </select>
+            </label>
+            <label class="ex-field" for="ex-font-x">X 軸字體
+              <select id="ex-font-x">
+              <option value="auto">自動</option>
+              <option value="6">6 點</option>
+              <option value="7">7 點</option>
+              <option value="8">8 點</option>
+              <option value="9">9 點</option>
+              <option value="10">10 點</option>
+              <option value="11">11 點</option>
+              <option value="12">12 點</option>
+              <option value="14">14 點</option>
+              </select>
+            </label>
+          </div>
+          <div class="ex-field"><span>圖例位置</span>
+            <div class="ex-seg" id="ex-legend-align" role="group" aria-label="圖例位置">
+              <button type="button" id="ex-la-left" data-align="left">靠左</button>
+              <button type="button" id="ex-la-center" data-align="center">置中</button>
+            </div>
+          </div>
+          <div class="ex-range"><span>Y 軸範圍</span>
+            <input type="number" id="ex-ymin" step="any" placeholder="自動" aria-label="Y 軸下限">
+            <span>至</span>
+            <input type="number" id="ex-ymax" step="any" placeholder="自動" aria-label="Y 軸上限">
+            <button type="button" class="dl-btn" id="ex-yauto">自動</button>
+          </div>
+          <p class="hint" id="ex-yhint"></p>
           <p class="ex-warn" id="ex-warn" hidden></p>
-          <p class="ex-label">圖例（勾選＝顯示；色塊＝點一下改下載圖上的顏色；文字框＝下載圖上的名稱）</p>
+          <p class="ex-label">圖例（勾選＝顯示；色塊＝點一下從預設色票選顏色；文字框＝下載圖上的名稱）</p>
           <div class="ex-items" id="ex-items"></div>
+          <div class="ex-palette" id="ex-palette" role="dialog" aria-label="選擇顏色" hidden></div>
           <div class="ex-actions">
             <button type="button" class="dl-btn primary" id="ex-download">下載 PNG</button>
             <button type="button" class="dl-btn" id="ex-reset">還原預設名稱</button>
@@ -1093,9 +1155,14 @@ const DATA = /*DATA*/null;
     if (meta && meta.drill) { if (view() === "custom") openInPce(meta.key); else drillTo(meta.key); } else render();
   });
 
-  // ---------- 下載圖表：PNG，8.5 × 5.2 公分、300 dpi，對應報告左右並排的圖框 ----------
-  // 圖框儲存格：寬 8.55 公分、列高 5.42 公分；扣掉段前間距與文字基線下方的空間，圖片高 5.2 公分剛好不撐大表格
-  const EXPORT = { wcm: 8.5, hcm: 5.2, dpi: 300 };
+  // ---------- 下載圖表：PNG，300 dpi，兩種 Word 圖框尺寸 ----------
+  // 半欄：報告左右並排的圖框（儲存格寬 8.55 公分、列高 5.42 公分；圖片高 5.2 公分剛好不撐大表格）
+  // 整欄：A4 版心寬度。要改尺寸或加新尺寸，只需要改 PRESETS（file 是下載檔名結尾的文字）
+  const PRESETS = [
+    { id: "half", label: "半欄 8.5 × 5.2 公分", wcm: 8.5, hcm: 5.2, file: "半欄" },
+    { id: "full", label: "整欄 16 × 9 公分", wcm: 16, hcm: 9, file: "整欄" },
+  ];
+  const DPI = 300;
   const CRC_TABLE = (() => {
     const t = new Uint32Array(256);
     for (let n = 0; n < 256; n++) { let c = n; for (let k = 0; k < 8; k++) c = c & 1 ? 0xEDB88320 ^ (c >>> 1) : c >>> 1; t[n] = c >>> 0; }
@@ -1106,7 +1173,7 @@ const DATA = /*DATA*/null;
     for (let i = 0; i < bytes.length; i++) c = CRC_TABLE[(c ^ bytes[i]) & 0xFF] ^ (c >>> 8);
     return (c ^ 0xFFFFFFFF) >>> 0;
   }
-  // 在 PNG 裡寫入解析度（pHYs），Word 插入時就會自動用 8.5 × 5.2 公分
+  // 在 PNG 裡寫入解析度（pHYs），Word 插入時就會自動用設定的公分尺寸
   function withDpi(png, dpi) {
     const ppm = Math.round(dpi / 0.0254);
     const chunk = new Uint8Array(21), dv = new DataView(chunk.buffer);
@@ -1137,11 +1204,11 @@ const DATA = /*DATA*/null;
   function exportFileName() {
     if (state.index === "growth") {
       const [ga, gz] = rangeBounds();
-      return `PCE_Driver_漲幅走勢_${gMeasureWord()}_${DATA.months[ga]}_${DATA.months[gz]}.png`.replace(/[\\/:*?"<>|]/g, "_").replace(/\s+/g, "");
+      return `PCE_Driver_漲幅走勢_${gMeasureWord()}_${DATA.months[ga]}_${DATA.months[gz]}_${preset().file}.png`.replace(/[\\/:*?"<>|]/g, "_").replace(/\s+/g, "");
     }
     const view ={ pce: "PCE", core: "核心PCE", general: "通用分類", custom: "自訂" }[state.index];
     const [a, z] = rangeBounds();
-    const raw = `PCE_Driver_${view}_${label(state.node)}_${modeWord()}_${DATA.months[a]}_${DATA.months[z]}.png`;
+    const raw = `PCE_Driver_${view}_${label(state.node)}_${modeWord()}_${DATA.months[a]}_${DATA.months[z]}_${preset().file}.png`;
     return raw.replace(/[\\/:*?"<>|]/g, "_").replace(/\s+/g, "");
   }
   // ---------- 下載設定：只改下載圖片上的文字，網站上的名稱不變 ----------
@@ -1150,16 +1217,32 @@ const DATA = /*DATA*/null;
   const INK = "#1A1A1A", AXIS = "#7F7F7F", TEXT2 = "#404040";
   const AUTO_SIZES = [9, 8.5, 8, 7.5, 7, 6.5, 6];   // 「自動」由大到小試，圖例不超過圖高 28% 就採用
   const NAMES_KEY = "pce-driver-export-names", FONT_KEY = "pce-driver-export-font", COLORS_KEY = "pce-driver-export-colors";
+  const FONT_Y_KEY = "pce-driver-export-font-y", FONT_X_KEY = "pce-driver-export-font-x";
+  const PRESET_KEY = "pce-driver-export-size", ALIGN_KEY = "pce-driver-export-legend-align";
   const GRID = "#D9D9D9";                                     // 與 Excel 預設格線相同的淡灰色
   let customColors = {};
   try { customColors = JSON.parse(localStorage.getItem(COLORS_KEY) || "{}") || {}; } catch (e) { customColors = {}; }
   const saveColors = () => { try { localStorage.setItem(COLORS_KEY, JSON.stringify(customColors)); } catch (e) {} };
   const defaultColor = slot => slot === "line" ? INK : slot === "other" ? OTHER_HEX : CORP[slot - 1] || OTHER_HEX;
-  const exportColor = slot => customColors[slot] || defaultColor(slot);
+  // 下載圖的顏色只能從程式預設的色票挑：公司 9 色、亮青綠、「其他」的灰色、總計線的黑色
+  const PALETTE_NAMES = ["深藍", "橘", "深綠", "天藍", "紫", "綠", "青綠", "粉紅", "紅"];
+  const PALETTE = [...CORP.map((h, i) => [h, PALETTE_NAMES[i]]), ["#009E96", "亮青綠"], [OTHER_HEX, "灰"], [INK, "黑"]];
+  const inPalette = c => typeof c === "string" && PALETTE.some(([h]) => h.toLowerCase() === c.toLowerCase());
+  const exportColor = slot => inPalette(customColors[slot]) ? customColors[slot] : defaultColor(slot);   // 以前存的非色票顏色一律改回預設
   let customNames = {};
   try { customNames = JSON.parse(localStorage.getItem(NAMES_KEY) || "{}") || {}; } catch (e) { customNames = {}; }
-  let fontChoice = "auto";
-  try { fontChoice = localStorage.getItem(FONT_KEY) || "auto"; } catch (e) {}
+  // 字體大小：圖例、Y 軸、X 軸分開設定；「自動」時圖例依版面挑大小，兩軸比圖例小 0.5 點
+  const FONT_SIZES = ["6", "7", "8", "9", "10", "11", "12", "14"];
+  const loadFont = k => { let v = "auto"; try { v = localStorage.getItem(k) || "auto"; } catch (e) {} return FONT_SIZES.includes(v) ? v : "auto"; };
+  let fontChoice = loadFont(FONT_KEY), fontY = loadFont(FONT_Y_KEY), fontX = loadFont(FONT_X_KEY);
+  // 尺寸與圖例位置：記在瀏覽器裡
+  let presetId = "half", legendAlign = "left";
+  try { presetId = localStorage.getItem(PRESET_KEY) || "half"; legendAlign = localStorage.getItem(ALIGN_KEY) === "center" ? "center" : "left"; } catch (e) {}
+  if (!PRESETS.some(p => p.id === presetId)) presetId = "half";
+  const preset = () => PRESETS.find(p => p.id === presetId);
+  // Y 軸範圍：只用在下載的圖片；貢獻圖與漲幅走勢、年增率與月增率分開記，重新整理後恢復自動
+  const yRange = { cyoy: [null, null], cmom: [null, null], gyoy: [null, null], gmom: [null, null] };
+  const yKey = () => (view() === "growth" ? "g" : "c") + state.mode;
   const saveNames = () => { try { localStorage.setItem(NAMES_KEY, JSON.stringify(customNames)); } catch (e) {} };
   const nameKey = (id, def) => `${id}|${def}`;
   function exportName(id, def) {
@@ -1183,34 +1266,40 @@ const DATA = /*DATA*/null;
       const mark = it.kind === "line" ? L.lineW : L.sw;
       const w = mark + L.gapIn + g.measureText(it.name).width;
       if (L.rows[L.rows.length - 1].length && x + w > pxW - L.padX) { L.rows.push([]); x = L.padX; }
-      L.rows[L.rows.length - 1].push({ ...it, x, mark });
+      L.rows[L.rows.length - 1].push({ ...it, x, mark, w });
       x += w + L.gapOut;
+    }
+    if (legendAlign === "center") {                // 圖例置中：每一列各自置中
+      for (const row of L.rows) {
+        if (!row.length) continue;
+        const last = row[row.length - 1], shift = (pxW - 2 * L.padX - (last.x + last.w - L.padX)) / 2;
+        for (const it of row) it.x += shift;
+      }
     }
     L.height = L.top0 + L.rows.length * L.rowH;
     return L;
   }
 
-  function drawExport() {
-    if (view() === "growth") return drawGrowthExport();
-    const pxW = Math.round(EXPORT.wcm / 2.54 * EXPORT.dpi), pxH = Math.round(EXPORT.hcm / 2.54 * EXPORT.dpi);
-    const pt = EXPORT.dpi / 72;                                   // 1 點 = 4.17 像素
+  // 下載圖的共用版面：畫布、圖例、Y 軸刻度與格線；回傳畫柱子與折線需要的座標換算
+  // items：圖例項目；dlo、dhi：資料的最小、最大值；n：月份數
+  function exportBase(items, dlo, dhi, n) {
+    const P = preset();
+    const pxW = Math.round(P.wcm / 2.54 * DPI), pxH = Math.round(P.hcm / 2.54 * DPI);
+    const pt = DPI / 72;                                          // 1 點 = 4.17 像素
     const cv = document.createElement("canvas");
     cv.width = pxW; cv.height = pxH;
     const g = cv.getContext("2d");
     g.fillStyle = "#FFFFFF"; g.fillRect(0, 0, pxW, pxH);
 
-    // 圖例項目：顯示中的項目＋灰色「其他」＋總計線，文字用下載專用的名稱
-    const items = segMeta.map(s => ({ name: exportName(s.id, s.def), color: exportColor(s.slot), kind: "box" }));
-    if (lineShown()) items.push({ name: exportName("line", lineDefault()), color: exportColor("line"), kind: "line" });
-
-    // 字體：自動時挑最大、且圖例不超過圖高 28% 的大小；手動時照選擇
+    // 圖例字體：自動時挑最大、且圖例不超過圖高 28% 的大小；手動時照選擇
     let L;
     if (fontChoice === "auto") {
       for (const f of AUTO_SIZES) { L = layoutLegend(g, items, f, pxW, pt); if (L.height <= pxH * 0.28) break; }
     } else {
       L = layoutLegend(g, items, +fontChoice, pxW, pt);
     }
-    const axisPt = Math.max(6, L.fpt - 0.5);
+    const axisAuto = Math.max(6, L.fpt - 0.5);
+    const yPt = fontY === "auto" ? axisAuto : +fontY, xPt = fontX === "auto" ? axisAuto : +fontX;
 
     g.textBaseline = "middle"; g.textAlign = "left";
     L.rows.forEach((row, r) => {
@@ -1223,12 +1312,99 @@ const DATA = /*DATA*/null;
       }
     });
 
-    // 版面：圖例下方留空，再放柱狀圖；底部留給月份文字（依字體大小自動調整）
-    const top = L.height + Math.max(0.45 * L.fpt, 0.6 * axisPt) * pt;
-    const bottom = pxH - 1 * pt - 1.7 * axisPt * pt;
+    // 版面：圖例下方留空，再放圖；底部留給月份文字（依兩軸字體大小自動調整）
+    const xOff = Math.max(0.65 * yPt, 0.4 * xPt);                 // 月份文字離圖底的距離，留空間給最下面的 Y 軸數字
+    const top = L.height + Math.max(0.45 * L.fpt, 0.6 * yPt) * pt;
+    const bottom = pxH - 1 * pt - (xOff + 1.05 * xPt) * pt;
     const ph = bottom - top;
 
-    // 座標範圍；刻度數量依圖高與字體大小決定，避免數字疊在一起
+    // 座標範圍：自動時依資料，手動時照使用者輸入；刻度數量依圖高與字體大小決定，避免數字疊在一起
+    const [uLo, uHi] = yRange[yKey()];
+    const manualLo = uLo !== null, manualHi = uHi !== null;
+    const maxTicks = Math.max(2, Math.floor(ph / (yPt * pt * 1.5)) + 1);
+    const nextNice = st => { const mag = Math.pow(10, Math.floor(Math.log10(st) + 1e-9)), n = Math.round(st / mag); return (n < 2 ? 2 : n < 5 ? 5 : 10) * mag; };
+    const pad = (dhi - dlo || 0.01) * 0.04;
+    let lo = manualLo ? uLo : dlo < 0 ? dlo - pad : 0, hi = manualHi ? uHi : dhi + pad;
+    if (hi <= lo) hi = lo + (Math.abs(lo) || 1) * 0.1;
+    const tickCount = st => Math.floor(hi / st + 1e-6) - Math.ceil(lo / st - 1e-6) + 1;
+    let step = niceStep(hi - lo);
+    for (let guard = 0; guard < 12 && tickCount(step) > maxTicks; guard++) step = nextNice(step);
+    // 兩端對齊到整數刻度；若會浪費太多高度（超過 12%），就停在資料邊緣；手動設定的那一端不動
+    const span = hi - lo, loT = Math.floor(lo / step - 1e-6) * step, hiT = Math.ceil(hi / step - 1e-6) * step;
+    if (!manualLo && lo - loT <= span * 0.12) lo = loT;
+    if (!manualHi && hiT - hi <= span * 0.12) hi = hiT;
+    const ticks = [];
+    for (let v = Math.ceil(lo / step - 1e-6) * step; v <= hi + step * 1e-6; v += step) ticks.push(Math.abs(v) < step * 1e-6 ? 0 : v);
+    const tickDec = Math.max(0, -Math.floor(Math.log10(step) + 1e-9));
+    const fmtY = v => v.toFixed(tickDec) + "%";
+    const yFont = `${yPt * pt}px ${NUM}`, xFont = `${xPt * pt}px ${NUM}`;
+    g.font = yFont;
+    let yLabelW = 0;
+    for (const v of ticks) yLabelW = Math.max(yLabelW, g.measureText(fmtY(v)).width);
+
+    const plot = { l: L.padX + yLabelW + 0.4 * yPt * pt, r: pxW - 4 * pt, t: top, b: bottom };
+    const pw = plot.r - plot.l;
+    const Y = v => plot.t + (hi - v) / (hi - lo) * ph;
+    const band = pw / n;
+    const cx = i => plot.l + band * i + band / 2;
+
+    // Y 軸刻度與淡灰色橫向格線（仿 Excel，畫在柱子後面；0% 另畫較深的基準線）
+    g.fillStyle = TEXT2; g.textAlign = "right"; g.textBaseline = "middle";
+    for (const v of ticks) g.fillText(fmtY(v), plot.l - 0.4 * yPt * pt, Y(v));
+    g.strokeStyle = GRID; g.lineWidth = 0.75 * pt;
+    for (const v of ticks) {
+      if (v === 0) continue;
+      const yy = Math.round(Y(v)) + 0.5;
+      g.beginPath(); g.moveTo(plot.l, yy); g.lineTo(plot.r, yy); g.stroke();
+    }
+    return { cv, g, pt, pxW, pxH, L, yPt, xPt, xOff, xFont, plot, ph, Y, band, cx, lo, hi, manual: manualLo || manualHi };
+  }
+  // 手動設定範圍時，超出範圍的柱子與線截掉（回傳 true 表示已設定裁切，畫完要 restore）
+  function exportClip(B, extra) {
+    if (!B.manual) return false;
+    B.g.save();
+    B.g.beginPath(); B.g.rect(B.plot.l - extra, B.plot.t, B.plot.r - B.plot.l + 2 * extra, B.ph); B.g.clip();
+    return true;
+  }
+  // 零線（範圍含 0 時）；範圍不含 0 時，exportEdge 在圖的底部（或頂部）畫軸線
+  function exportZero(B) {
+    const { g, pt, plot, Y, lo, hi } = B;
+    if (lo > 0 || hi < 0) return;
+    g.strokeStyle = AXIS; g.lineWidth = 0.75 * pt;
+    g.beginPath(); g.moveTo(plot.l, Math.round(Y(0)) + 0.5); g.lineTo(plot.r, Math.round(Y(0)) + 0.5); g.stroke();
+  }
+  function exportEdge(B) {
+    const { g, pt, plot, lo, hi } = B;
+    if (lo <= 0 && hi >= 0) return;
+    g.strokeStyle = AXIS; g.lineWidth = 0.75 * pt;
+    const yy = Math.round(lo > 0 ? plot.b : plot.t) + 0.5;
+    g.beginPath(); g.moveTo(plot.l, yy); g.lineTo(plot.r, yy); g.stroke();
+  }
+  // X 軸月份（YYYY/M），依字體大小自動挑選間隔避免重疊
+  function exportXLabels(B, ts) {
+    const { g, pt, xPt, xOff, xFont, band, cx, plot, pxW } = B;
+    g.font = xFont; g.fillStyle = TEXT2; g.textBaseline = "top";
+    const lab = t => { const [yy, mm] = DATA.months[t].split("-"); return `${yy}/${+mm}`; };
+    const need = g.measureText("2026/12").width + 0.8 * xPt * pt;
+    const every = [1, 2, 3, 4, 6, 8, 12, 24, 36, 60].find(k => k * band >= need) || 120;
+    for (let i = 0; i < ts.length; i += every) {
+      const text = lab(ts[i]), w = g.measureText(text).width;
+      let xx = cx(i), align = "center";
+      if (xx - w / 2 < 0) { xx = 0; align = "left"; }
+      else if (xx + w / 2 > pxW) { xx = pxW; align = "right"; }
+      g.textAlign = align;
+      g.fillText(text, xx, plot.b + xOff * pt);
+    }
+  }
+  const exportResult = B => ({ cv: B.cv, legendPt: B.L.fpt, yPt: B.yPt, xPt: B.xPt, share: B.L.height / B.pxH, plotShare: B.ph / B.pxH, pxW: B.pxW, pxH: B.pxH, lo: B.lo, hi: B.hi });
+
+  function drawExport() {
+    if (view() === "growth") return drawGrowthExport();
+    // 圖例項目：顯示中的項目＋灰色「其他」＋總計線，文字用下載專用的名稱
+    const items = segMeta.map(s => ({ name: exportName(s.id, s.def), color: exportColor(s.slot), kind: "box" }));
+    if (lineShown()) items.push({ name: exportName("line", lineDefault()), color: exportColor("line"), kind: "line" });
+
+    // 資料範圍：正值、負值分別堆疊的最大高度，以及總計線
     let dlo = 0, dhi = 0;
     for (const p of series) {
       let ps = 0, ng = 0;
@@ -1236,43 +1412,10 @@ const DATA = /*DATA*/null;
       dhi = Math.max(dhi, ps); dlo = Math.min(dlo, ng);
       if (lineShown()) { dhi = Math.max(dhi, p.total); dlo = Math.min(dlo, p.total); }
     }
-    const maxTicks = Math.max(2, Math.floor(ph / (axisPt * pt * 1.5)) + 1);
-    const nextNice = st => { const mag = Math.pow(10, Math.floor(Math.log10(st) + 1e-9)), n = Math.round(st / mag); return (n < 2 ? 2 : n < 5 ? 5 : 10) * mag; };
-    const pad = (dhi - dlo || 0.01) * 0.04;
-    let lo = dlo < 0 ? dlo - pad : 0, hi = dhi + pad;
-    const tickCount = st => Math.floor(hi / st + 1e-6) - Math.ceil(lo / st - 1e-6) + 1;
-    let step = niceStep(hi - lo);
-    for (let guard = 0; guard < 12 && tickCount(step) > maxTicks; guard++) step = nextNice(step);
-    // 兩端對齊到整數刻度；若會浪費太多高度（超過 12%），就停在資料邊緣
-    const span = hi - lo, loT = Math.floor(lo / step - 1e-6) * step, hiT = Math.ceil(hi / step - 1e-6) * step;
-    if (lo - loT <= span * 0.12) lo = loT;
-    if (hiT - hi <= span * 0.12) hi = hiT;
-    const ticks = [];
-    for (let v = Math.ceil(lo / step - 1e-6) * step; v <= hi + step * 1e-6; v += step) ticks.push(Math.abs(v) < step * 1e-6 ? 0 : v);
-    const tickDec = Math.max(0, -Math.floor(Math.log10(step) + 1e-9));
-    const fmtY = v => v.toFixed(tickDec) + "%";
-    const numFont = `${axisPt * pt}px ${NUM}`;
-    g.font = numFont;
-    let yLabelW = 0;
-    for (const v of ticks) yLabelW = Math.max(yLabelW, g.measureText(fmtY(v)).width);
-
-    const plot = { l: L.padX + yLabelW + 0.4 * axisPt * pt, r: pxW - 4 * pt, t: top, b: bottom };
-    const pw = plot.r - plot.l;
-    const Y = v => plot.t + (hi - v) / (hi - lo) * ph;
-    const band = pw / series.length, bw = Math.max(1, band * 0.6);
-    const cx = i => plot.l + band * i + band / 2;
-
-    // y 軸刻度
-    g.fillStyle = TEXT2; g.textAlign = "right"; g.textBaseline = "middle";
-    for (const v of ticks) g.fillText(fmtY(v), plot.l - 0.4 * axisPt * pt, Y(v));
-
-    // 淡灰色橫向格線（仿 Excel，畫在柱子後面；0% 另畫較深的基準線）
-    g.strokeStyle = GRID; g.lineWidth = 0.75 * pt;
-    for (const v of ticks) {
-      if (v === 0) continue;
-      const yy = Math.round(Y(v)) + 0.5;
-      g.beginPath(); g.moveTo(plot.l, yy); g.lineTo(plot.r, yy); g.stroke();
-    }
+    const B = exportBase(items, dlo, dhi, series.length);
+    const { g, pt, Y, cx, band } = B;
+    const bw = Math.max(1, band * 0.6);
+    const clipped = exportClip(B, bw);
 
     // 堆疊柱（正值往上、負值往下；色塊之間留一條細白線）
     const gap = Math.max(1, Math.round(0.4 * pt));
@@ -1290,9 +1433,7 @@ const DATA = /*DATA*/null;
       }
     });
 
-    // 零線
-    g.strokeStyle = AXIS; g.lineWidth = 0.75 * pt;
-    g.beginPath(); g.moveTo(plot.l, Math.round(Y(0)) + 0.5); g.lineTo(plot.r, Math.round(Y(0)) + 0.5); g.stroke();
+    exportZero(B);
 
     // 總計折線
     if (lineShown()) {
@@ -1301,21 +1442,11 @@ const DATA = /*DATA*/null;
       series.forEach((p, i) => { const yy = Y(p.total); if (i) g.lineTo(cx(i), yy); else g.moveTo(cx(i), yy); });
       g.stroke();
     }
+    if (clipped) g.restore();
+    exportEdge(B);
 
-    // x 軸月份（YYYY/M），依字體大小自動挑選間隔避免重疊
-    g.font = numFont; g.fillStyle = TEXT2; g.textBaseline = "top";
-    const lab = t => { const [yy, mm] = DATA.months[t].split("-"); return `${yy}/${+mm}`; };
-    const need = g.measureText("2026/12").width + 0.8 * axisPt * pt;
-    const every = [1, 2, 3, 4, 6, 8, 12, 24, 36, 60].find(k => k * band >= need) || 120;
-    for (let i = 0; i < series.length; i += every) {
-      const text = lab(series[i].t), w = g.measureText(text).width;
-      let xx = cx(i), align = "center";
-      if (xx - w / 2 < 0) { xx = 0; align = "left"; }
-      else if (xx + w / 2 > pxW) { xx = pxW; align = "right"; }
-      g.textAlign = align;
-      g.fillText(text, xx, plot.b + 0.65 * axisPt * pt);   // 留空間給最下面的 y 軸數字
-    }
-    return { cv, legendPt: L.fpt, axisPt, share: L.height / pxH, plotShare: ph / pxH, pxW, pxH };
+    exportXLabels(B, series.map(p => p.t));
+    return exportResult(B);
   }
 
   // ---------- 下載設定面板 ----------
@@ -1323,20 +1454,39 @@ const DATA = /*DATA*/null;
   let previewTimer = 0;
   function schedulePreview() { clearTimeout(previewTimer); previewTimer = setTimeout(updatePreview, 120); }
   function updatePreview() {
-    const r = drawExport();
+    const r = drawExport(), P = preset();
     $("ex-img").src = r.cv.toDataURL("image/png");
-    $("ex-size").textContent = `實際尺寸 ${EXPORT.wcm} × ${EXPORT.hcm} 公分（${r.pxW} × ${r.pxH} 像素，${EXPORT.dpi} dpi）· 圖例 ${r.legendPt} 點、座標 ${r.axisPt} 點 · 圖例佔圖高 ${Math.round(r.share * 100)}%`;
-    const autoOpt = $("ex-font").querySelector('option[value="auto"]');
-    if (autoOpt) autoOpt.textContent = fontChoice === "auto" ? `自動（目前 ${r.legendPt} 點）` : "自動";
+    $("ex-size").textContent = `實際尺寸 ${P.wcm} × ${P.hcm} 公分（${r.pxW} × ${r.pxH} 像素，${DPI} dpi）· 圖例 ${r.legendPt} 點、Y 軸 ${r.yPt} 點、X 軸 ${r.xPt} 點 · 圖例佔圖高 ${Math.round(r.share * 100)}%`;
+    const autoText = (id, on, v) => { const o = $(id).querySelector('option[value="auto"]'); if (o) o.textContent = on ? `自動（目前 ${v} 點）` : "自動"; };
+    autoText("ex-font", fontChoice === "auto", r.legendPt);
+    autoText("ex-font-y", fontY === "auto", r.yPt);
+    autoText("ex-font-x", fontX === "auto", r.xPt);
+    const [uLo, uHi] = yRange[yKey()];
+    const unit = view() === "growth" ? "%" : "百分點";
+    $("ex-yhint").textContent = `${uLo === null && uHi === null ? "目前自動" : "目前手動"}：${r.lo.toFixed(2)} 至 ${r.hi.toFixed(2)}（${unit}）。只影響下載的圖片；年增率、月增率分開記，重新整理網頁後恢復自動。`;
     const warn = $("ex-warn");
     if (r.share > 0.4 || r.plotShare < 0.4) {
-      warn.textContent = `圖例佔了圖片高度的 ${Math.round(r.share * 100)}%，柱狀圖會變得很小。建議改小字體，或縮短圖例名稱。`;
+      warn.textContent = `圖例佔了圖片高度的 ${Math.round(r.share * 100)}%，圖表會變得很小。建議改小字體、縮短圖例名稱，或改用整欄尺寸。`;
       warn.hidden = false;
     } else warn.hidden = true;
   }
+  // 尺寸、字體、圖例位置、Y 軸範圍的控制項（貢獻圖與漲幅走勢共用）
+  function syncExportOptions() {
+    closePalette();
+    $("ex-preset").innerHTML = PRESETS.map(p => `<button type="button" id="ex-p-${p.id}" data-preset="${p.id}" aria-pressed="${p.id === presetId}">${p.label}</button>`).join("");
+    $("ex-legend-align").querySelectorAll("button").forEach(b => b.setAttribute("aria-pressed", String(b.dataset.align === legendAlign)));
+    $("ex-font").value = fontChoice;
+    $("ex-font-y").value = fontY;
+    $("ex-font-x").value = fontX;
+    const [uLo, uHi] = yRange[yKey()];
+    $("ex-ymin").value = uLo === null ? "" : uLo;
+    $("ex-ymax").value = uHi === null ? "" : uHi;
+  }
+  const colorBtn = (id, slot, on, label) => `<button type="button" class="ex-color" id="${id}" data-slot="${slot}" style="background:${exportColor(slot)}" ${on ? "" : "disabled"} aria-haspopup="dialog" aria-expanded="false" aria-label="${label}，點一下選色"></button>`;
   function renderExportPanel() {
     if (view() === "growth") return renderGrowthExportPanel();
     const focusId = document.activeElement && panel.contains(document.activeElement) ? document.activeElement.id : null;
+    syncExportOptions();
     const plan = colorPlan(state.node), hid = hiddenSet();
     const rows = [];
     for (const k of kidsOf(state.node)) {
@@ -1344,42 +1494,99 @@ const DATA = /*DATA*/null;
       const on = !hid.has(k), def = label(k);
       rows.push(`<div class="ex-row${on ? "" : " off"}">
         <input type="checkbox" id="ex-show-${k}" data-key="${k}" ${on ? "checked" : ""} aria-label="在圖上顯示 ${esc(def)}">
-        <input type="color" class="ex-color" id="ex-color-${k}" data-slot="${plan.slot.get(k)}" value="${exportColor(plan.slot.get(k))}" ${on ? "" : "disabled"} aria-label="${esc(def)} 在下載圖上的顏色（第 ${plan.slot.get(k)} 色）">
+        ${colorBtn(`ex-color-${k}`, plan.slot.get(k), on, `${esc(def)} 在下載圖上的顏色（第 ${plan.slot.get(k)} 色）`)}
         <input type="text" id="ex-name-${k}" data-id="${k}" data-def="${esc(def)}" value="${esc(exportName(k, def))}" ${on ? "" : "disabled"} aria-label="${esc(def)} 在下載圖上的名稱">
       </div>`);
     }
     const other = segMeta.find(s => s.key === "other");
     if (other) rows.push(`<div class="ex-row">
-        <span class="ex-spacer"></span><input type="color" class="ex-color" id="ex-color-other" data-slot="other" value="${exportColor("other")}" aria-label="「其他」在下載圖上的顏色">
+        <span class="ex-spacer"></span>${colorBtn("ex-color-other", "other", true, "「其他」在下載圖上的顏色")}
         <input type="text" id="ex-name-other" data-id="other" data-def="其他" value="${esc(exportName("other", "其他"))}" aria-label="「其他」在下載圖上的名稱">
       </div>`);
     const ld = lineDefault();
     rows.push(`<div class="ex-row${lineShown() ? "" : " off"}">
         <input type="checkbox" id="ex-show-line" data-key="line" ${lineShown() ? "checked" : ""} aria-label="在圖上顯示總計線">
-        <input type="color" class="ex-color" id="ex-color-line" data-slot="line" value="${exportColor("line")}" ${lineShown() ? "" : "disabled"} aria-label="總計線在下載圖上的顏色">
+        ${colorBtn("ex-color-line", "line", lineShown(), "總計線在下載圖上的顏色")}
         <input type="text" id="ex-name-line" data-id="line" data-def="${esc(ld)}" value="${esc(exportName("line", ld))}" ${lineShown() ? "" : "disabled"} aria-label="總計線在下載圖上的名稱">
       </div>`);
     $("ex-items").innerHTML = rows.join("");
-    $("ex-font").value = String(fontChoice);
     if (focusId && $(focusId)) $(focusId).focus();
     updatePreview();
   }
+
+  // 色票彈出框：只能選程式預設的顏色
+  let paletteBtn = null;
+  const slotVal = slot => isNaN(+slot) ? slot : +slot;
+  function closePalette() {
+    const pal = $("ex-palette");
+    if (pal.hidden) return;
+    pal.hidden = true;
+    if (paletteBtn) paletteBtn.setAttribute("aria-expanded", "false");
+    paletteBtn = null;
+  }
+  function openPalette(btn) {
+    const pal = $("ex-palette"), cur = exportColor(slotVal(btn.dataset.slot)).toLowerCase();
+    pal.innerHTML = PALETTE.map(([h, n], i) => `<button type="button" class="ex-sw" id="ex-sw-${i}" data-pick="${h}" style="background:${h}" title="${n} ${h}" aria-label="${n} ${h}" aria-pressed="${h.toLowerCase() === cur}"></button>`).join("") +
+      `<button type="button" class="dl-btn ex-sw-reset" id="ex-sw-default" data-pick="default">改回這個位置的預設顏色</button>`;
+    pal.hidden = false;
+    paletteBtn = btn; btn.setAttribute("aria-expanded", "true");
+    // 色票放在色塊正下方（相對於下載設定欄位定位，頁面捲動時跟著一起移動）
+    const fr = pal.parentElement.getBoundingClientRect(), r = btn.getBoundingClientRect();
+    pal.style.left = Math.max(0, Math.min(r.left - fr.left, fr.width - pal.offsetWidth)) + "px";
+    pal.style.top = (r.bottom - fr.top + 6) + "px";
+    const on = pal.querySelector('[aria-pressed="true"]') || pal.querySelector(".ex-sw");
+    if (on) on.focus({ preventScroll: true });
+  }
+  function pickColor(hex) {
+    if (!paletteBtn) return;
+    const btn = paletteBtn, slot = btn.dataset.slot, def = defaultColor(slotVal(slot));
+    if (hex === "default" || hex.toLowerCase() === def.toLowerCase()) delete customColors[slot]; else customColors[slot] = hex;
+    saveColors();
+    btn.style.background = exportColor(slotVal(slot));
+    closePalette();
+    btn.focus();
+    schedulePreview();
+  }
+  document.addEventListener("click", e => {
+    if (!paletteBtn) return;
+    if (!e.target.closest("#ex-palette") && e.target.closest(".ex-color") !== paletteBtn) closePalette();
+  });
+  document.addEventListener("keydown", e => { if (e.key === "Escape" && paletteBtn) { const b = paletteBtn; closePalette(); b.focus(); } });
+  window.addEventListener("resize", closePalette);
+
+  panel.addEventListener("click", e => {
+    const ps = e.target.closest("[data-preset]");
+    if (ps) { presetId = ps.dataset.preset; try { localStorage.setItem(PRESET_KEY, presetId); } catch (err) {} renderExportPanel(); return; }
+    const sw = e.target.closest("[data-pick]");
+    if (sw) { pickColor(sw.dataset.pick); return; }
+    const cb = e.target.closest("button.ex-color");
+    if (cb && !cb.disabled) { if (paletteBtn === cb) closePalette(); else openPalette(cb); return; }
+    const al = e.target.closest("[data-align]");
+    if (al) {
+      legendAlign = al.dataset.align;
+      try { localStorage.setItem(ALIGN_KEY, legendAlign); } catch (err) {}
+      $("ex-legend-align").querySelectorAll("button").forEach(b => b.setAttribute("aria-pressed", String(b.dataset.align === legendAlign)));
+      updatePreview();
+      return;
+    }
+    if (e.target.closest("#ex-yauto")) { yRange[yKey()] = [null, null]; renderExportPanel(); }
+  });
   panel.addEventListener("change", e => {
     const cb = e.target.closest('input[type="checkbox"][data-key]');
     if (cb) { toggleItem(cb.dataset.key); return; }
-    if (e.target.id === "ex-font") {
-      fontChoice = e.target.value;
-      try { localStorage.setItem(FONT_KEY, fontChoice); } catch (err) {}
+    const fk = { "ex-font": FONT_KEY, "ex-font-y": FONT_Y_KEY, "ex-font-x": FONT_X_KEY }[e.target.id];
+    if (fk) {
+      const v = e.target.value;
+      if (e.target.id === "ex-font") fontChoice = v; else if (e.target.id === "ex-font-y") fontY = v; else fontX = v;
+      try { localStorage.setItem(fk, v); } catch (err) {}
       updatePreview();
     }
   });
   panel.addEventListener("input", e => {
-    const c = e.target.closest('input[type="color"][data-slot]');
-    if (c) {
-      const slot = c.dataset.slot;
-      if (c.value.toLowerCase() === defaultColor(isNaN(+slot) ? slot : +slot).toLowerCase()) delete customColors[slot];
-      else customColors[slot] = c.value;
-      saveColors();
+    const yi = { "ex-ymin": 0, "ex-ymax": 1 }[e.target.id];
+    if (yi !== undefined) {
+      const v = e.target.value.trim(), n = v === "" ? null : Number(v);
+      yRange[yKey()][yi] = n === null || !isFinite(n) ? null : n;
       schedulePreview();
       return;
     }
@@ -1411,7 +1618,7 @@ const DATA = /*DATA*/null;
       try { await document.fonts.ready; } catch (e) {}
       const { cv } = drawExport();
       const blob = await new Promise((res, rej) => cv.toBlob(b => b ? res(b) : rej(new Error("瀏覽器無法產生圖檔")), "image/png"));
-      const png = withDpi(new Uint8Array(await blob.arrayBuffer()), EXPORT.dpi);
+      const png = withDpi(new Uint8Array(await blob.arrayBuffer()), DPI);
       const url = URL.createObjectURL(new Blob([png], { type: "image/png" }));
       const a = document.createElement("a");
       a.href = url; a.download = exportFileName();
@@ -1911,73 +2118,14 @@ const DATA = /*DATA*/null;
 
   // 下載圖片：圖例在上方，柱狀並排、折線疊在上面；顏色依位置（第 1–4 色）
   function drawGrowthExport() {
-    const pxW = Math.round(EXPORT.wcm / 2.54 * EXPORT.dpi), pxH = Math.round(EXPORT.hcm / 2.54 * EXPORT.dpi);
-    const pt = EXPORT.dpi / 72;
-    const cv = document.createElement("canvas");
-    cv.width = pxW; cv.height = pxH;
-    const g = cv.getContext("2d");
-    g.fillStyle = "#FFFFFF"; g.fillRect(0, 0, pxW, pxH);
-
     const items = growthSel.map((s, k) => ({ name: exportName(`g${s.key}`, gLabel(s.key)), color: exportColor(k + 1), kind: s.type === "line" ? "line" : "box" }));
-    let L;
-    if (fontChoice === "auto") {
-      for (const f of AUTO_SIZES) { L = layoutLegend(g, items, f, pxW, pt); if (L.height <= pxH * 0.28) break; }
-    } else {
-      L = layoutLegend(g, items, +fontChoice, pxW, pt);
-    }
-    const axisPt = Math.max(6, L.fpt - 0.5);
-    g.textBaseline = "middle"; g.textAlign = "left";
-    L.rows.forEach((row, r) => {
-      const cy = L.top0 + r * L.rowH + L.rowH / 2;
-      for (const it of row) {
-        if (it.kind === "box") { g.fillStyle = it.color; g.fillRect(it.x, cy - L.sh / 2, L.sw, L.sh); }
-        else { g.strokeStyle = it.color; g.lineWidth = 1.5 * pt; g.beginPath(); g.moveTo(it.x, cy); g.lineTo(it.x + L.lineW, cy); g.stroke(); }
-        g.fillStyle = INK; g.font = L.font;
-        g.fillText(it.name, it.x + it.mark + L.gapIn, cy);
-      }
-    });
-
-    const top = L.height + Math.max(0.45 * L.fpt, 0.6 * axisPt) * pt;
-    const bottom = pxH - 1 * pt - 1.7 * axisPt * pt;
-    const ph = bottom - top;
     let dlo = 0, dhi = 0;
     for (const p of gData) for (const v of p.vals) if (v !== null) { dhi = Math.max(dhi, v); dlo = Math.min(dlo, v); }
-    const maxTicks = Math.max(2, Math.floor(ph / (axisPt * pt * 1.5)) + 1);
-    const nextNice = st => { const mag = Math.pow(10, Math.floor(Math.log10(st) + 1e-9)), n = Math.round(st / mag); return (n < 2 ? 2 : n < 5 ? 5 : 10) * mag; };
-    const pad = (dhi - dlo || 0.01) * 0.04;
-    let lo = dlo < 0 ? dlo - pad : 0, hi = dhi + pad;
-    const tickCount = st => Math.floor(hi / st + 1e-6) - Math.ceil(lo / st - 1e-6) + 1;
-    let step = niceStep(hi - lo);
-    for (let guard = 0; guard < 12 && tickCount(step) > maxTicks; guard++) step = nextNice(step);
-    const span = hi - lo, loT = Math.floor(lo / step - 1e-6) * step, hiT = Math.ceil(hi / step - 1e-6) * step;
-    if (lo - loT <= span * 0.12) lo = loT;
-    if (hiT - hi <= span * 0.12) hi = hiT;
-    const ticks = [];
-    for (let v = Math.ceil(lo / step - 1e-6) * step; v <= hi + step * 1e-6; v += step) ticks.push(Math.abs(v) < step * 1e-6 ? 0 : v);
-    const tickDec = Math.max(0, -Math.floor(Math.log10(step) + 1e-9));
-    const fmtY = v => v.toFixed(tickDec) + "%";
-    const numFont = `${axisPt * pt}px ${NUM}`;
-    g.font = numFont;
-    let yLabelW = 0;
-    for (const v of ticks) yLabelW = Math.max(yLabelW, g.measureText(fmtY(v)).width);
-
-    const plot = { l: L.padX + yLabelW + 0.4 * axisPt * pt, r: pxW - 4 * pt, t: top, b: bottom };
-    const pw = plot.r - plot.l;
-    const Y = v => plot.t + (hi - v) / (hi - lo) * ph;
-    const n = Math.max(1, gData.length), band = pw / n;
-    const cx = i => plot.l + band * i + band / 2;
-
-    g.fillStyle = TEXT2; g.textAlign = "right"; g.textBaseline = "middle";
-    for (const v of ticks) g.fillText(fmtY(v), plot.l - 0.4 * axisPt * pt, Y(v));
-    g.strokeStyle = GRID; g.lineWidth = 0.75 * pt;
-    for (const v of ticks) {
-      if (v === 0) continue;
-      const yy = Math.round(Y(v)) + 0.5;
-      g.beginPath(); g.moveTo(plot.l, yy); g.lineTo(plot.r, yy); g.stroke();
-    }
-
+    const B = exportBase(items, dlo, dhi, Math.max(1, gData.length));
+    const { g, pt, Y, cx, band } = B;
     const bars = growthSel.map((s, k) => s.type === "bar" ? k : -1).filter(k => k >= 0);
     const gw = band * 0.7, bw = bars.length ? gw / bars.length : 0, gap = bars.length > 1 ? Math.max(1, Math.round(0.3 * pt)) : 0;
+    const clipped = exportClip(B, gw);
     gData.forEach((p, i) => bars.forEach((k, j) => {
       const v = p.vals[k];
       if (v === null) return;
@@ -1987,8 +2135,7 @@ const DATA = /*DATA*/null;
       g.fillRect(x0, y0, Math.max(1, bw - gap), Math.max(1, y1 - y0));
     }));
 
-    g.strokeStyle = AXIS; g.lineWidth = 0.75 * pt;
-    g.beginPath(); g.moveTo(plot.l, Math.round(Y(0)) + 0.5); g.lineTo(plot.r, Math.round(Y(0)) + 0.5); g.stroke();
+    exportZero(B);
 
     growthSel.forEach((s, k) => {
       if (s.type !== "line") return;
@@ -2003,31 +2150,22 @@ const DATA = /*DATA*/null;
       });
       g.stroke();
     });
+    if (clipped) g.restore();
+    exportEdge(B);
 
-    g.font = numFont; g.fillStyle = TEXT2; g.textBaseline = "top";
-    const lab = t => { const [yy, mm] = DATA.months[t].split("-"); return `${yy}/${+mm}`; };
-    const need = g.measureText("2026/12").width + 0.8 * axisPt * pt;
-    const every = [1, 2, 3, 4, 6, 8, 12, 24, 36, 60].find(k => k * band >= need) || 120;
-    for (let i = 0; i < gData.length; i += every) {
-      const text = lab(gData[i].t), w = g.measureText(text).width;
-      let xx = cx(i), align = "center";
-      if (xx - w / 2 < 0) { xx = 0; align = "left"; }
-      else if (xx + w / 2 > pxW) { xx = pxW; align = "right"; }
-      g.textAlign = align;
-      g.fillText(text, xx, plot.b + 0.65 * axisPt * pt);
-    }
-    return { cv, legendPt: L.fpt, axisPt, share: L.height / pxH, plotShare: ph / pxH, pxW, pxH };
+    exportXLabels(B, gData.map(p => p.t));
+    return exportResult(B);
   }
   function renderGrowthExportPanel() {
     const focusId = document.activeElement && panel.contains(document.activeElement) ? document.activeElement.id : null;
+    syncExportOptions();
     $("ex-items").innerHTML = growthSel.length ? growthSel.map((s, k) => {
       const def = gLabel(s.key);
       return `<div class="ex-row">
-        <span class="ex-spacer"></span><input type="color" class="ex-color" id="ex-color-g${k}" data-slot="${k + 1}" value="${exportColor(k + 1)}" aria-label="${esc(def)} 在下載圖上的顏色（第 ${k + 1} 色）">
+        <span class="ex-spacer"></span>${colorBtn(`ex-color-g${k}`, k + 1, true, `${esc(def)} 在下載圖上的顏色（第 ${k + 1} 色）`)}
         <input type="text" id="ex-name-g${k}" data-id="g${s.key}" data-def="${esc(def)}" value="${esc(exportName(`g${s.key}`, def))}" aria-label="${esc(def)} 在下載圖上的名稱">
       </div>`;
     }).join("") : `<p class="hint">還沒有選擇指標。</p>`;
-    $("ex-font").value = String(fontChoice);
     if (focusId && $(focusId)) $(focusId).focus();
     updatePreview();
   }
