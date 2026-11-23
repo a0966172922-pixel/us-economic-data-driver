@@ -477,9 +477,14 @@ h2 em { font-style: normal; color: var(--muted); font-weight: 500; font-size: 15
               <option value="2">每 2 個月</option>
               <option value="3">每 3 個月</option>
               <option value="4">每 4 個月</option>
+              <option value="5">每 5 個月</option>
               <option value="6">每 6 個月</option>
+              <option value="7">每 7 個月</option>
+              <option value="8">每 8 個月</option>
+              <option value="9">每 9 個月</option>
+              <option value="10">每 10 個月</option>
+              <option value="11">每 11 個月</option>
               <option value="12">每 12 個月</option>
-              <option value="24">每 24 個月</option>
             </select>
           </label>
           <p class="ex-warn" id="ex-warn" hidden></p>
@@ -1255,7 +1260,7 @@ const DATA = /*DATA*/null;
   // Y 軸範圍：只用在下載的圖片；貢獻圖與漲幅走勢、年增率與月增率分開記，重新整理後恢復自動
   const yRange = { cyoy: [null, null], cmom: [null, null], gyoy: [null, null], gmom: [null, null] };
   const yKey = () => (view() === "growth" ? "g" : "c") + state.mode;
-  // X 軸間隔：只用在下載的圖片，重新整理後恢復自動；手動時每 1、2、3、4、6、12、24 個月標一次，對齊年曆
+  // X 軸間隔：只用在下載的圖片，重新整理後恢復自動；手動時每 1～12 個月標一次，從期間內第一個 1 月起算
   let xStep = "auto";
   const saveNames = () => { try { localStorage.setItem(NAMES_KEY, JSON.stringify(customNames)); } catch (e) {} };
   const nameKey = (id, def) => `${id}|${def}`;
@@ -1414,10 +1419,15 @@ const DATA = /*DATA*/null;
       for (let i = 0; i < ts.length; i += every) draw(i);
       return;
     }
-    // 手動：對齊年曆（例如每 3 個月標在 1、4、7、10 月；每 12 個月標在 1 月；每 24 個月標在偶數年的 1 月）
+    // 手動：從期間內第一個 1 月起算，每 k 個月標一次（期間內沒有 1 月時，從第一個月那年的 1 月起算）。
+    // 1、2、3、4、6、12 個月能整除一年，標籤每年都落在固定月份，例如每 3 個月是 1、4、7、10 月；
+    // 5、7、8、9、10、11 個月無法每年固定，從第一個 1 月往前、往後每 k 個月標一次。
     const k = +xStep;
     B.xCrowded = k * band < need;
-    ts.forEach((t, i) => { const [yy, mm] = DATA.months[t].split("-"); if ((+yy * 12 + +mm - 1) % k === 0) draw(i); });
+    const abs = t => { const [yy, mm] = DATA.months[t].split("-"); return +yy * 12 + +mm - 1; };
+    const jan = ts.find(t => DATA.months[t].endsWith("-01"));
+    const anchor = jan !== undefined ? abs(jan) : Math.floor(abs(ts[0]) / 12) * 12;
+    ts.forEach((t, i) => { if (((abs(t) - anchor) % k + k) % k === 0) draw(i); });
   }
   const exportResult = B => ({ cv: B.cv, legendPt: B.L.fpt, yPt: B.yPt, xPt: B.xPt, share: B.L.height / B.pxH, plotShare: B.ph / B.pxH, pxW: B.pxW, pxH: B.pxH, lo: B.lo, hi: B.hi, xAuto: B.xAuto, xCrowded: !!B.xCrowded });
 
