@@ -19,11 +19,11 @@ concurrency:
   cancel-in-progress: false
 
 jobs:
+  # 第一段：抓資料、保存新資料、產生網頁並上傳
   update:
     runs-on: ubuntu-latest
-    environment:
-      name: github-pages
-      url: ${{ steps.deploy.outputs.page_url }}
+    outputs:
+      publish: ${{ steps.publish.outputs.publish }}
     steps:
       - uses: actions/checkout@v6
 
@@ -55,15 +55,48 @@ jobs:
           git commit -m "BEA 資料更新：$(python -c 'import json; print(json.load(open("data/pce.json"))["vintage"])')"
           git push
 
+      - name: 決定要不要發布網站
+        id: publish
+        # 有新資料，或是手動執行、修改程式時才發布；排程執行且沒有新資料就到此結束
+        run: |
+          if [ "${{ steps.diff.outputs.changed }}" = "true" ] || [ "${{ github.event_name }}" != "schedule" ]; then
+            echo "publish=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "publish=false" >> "$GITHUB_OUTPUT"
+          fi
+
       - name: 產生網頁
-        if: steps.diff.outputs.changed == 'true' || github.event_name != 'schedule'
+        if: steps.publish.outputs.publish == 'true'
         run: python build_site.py data/pce.json public/index.html
 
       - uses: actions/upload-pages-artifact@v5
-        if: steps.diff.outputs.changed == 'true' || github.event_name != 'schedule'
+        if: steps.publish.outputs.publish == 'true'
         with:
           path: public
 
-      - id: deploy
+  # 第二段：發布到 GitHub Pages。
+  # 和上傳分成兩段（GitHub 官方範本的做法），中間多等一下，避免 GitHub 還沒準備好剛上傳的網頁檔案
+  # （錯誤訊息：No artifacts named "github-pages" were found）；第一次失敗會等 60 秒自動再試一次。
+  # 需要手動重跑時按「Re-run failed jobs」，只會重跑這一段，不會重複上傳網頁檔案。
+  deploy:
+    needs: update
+    if: needs.update.outputs.publish == 'true'
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.retry.outputs.page_url || steps.first.outputs.page_url }}
+    steps:
+      - name: 等 GitHub 準備好剛上傳的網頁檔案
+        run: sleep 20
+
+      - id: first
         uses: actions/deploy-pages@v5
-        if: steps.diff.outputs.changed == 'true' || github.event_name != 'schedule'
+        continue-on-error: true
+
+      - name: 第一次發布失敗，等 60 秒後再試
+        if: steps.first.outcome == 'failure'
+        run: sleep 60
+
+      - id: retry
+        if: steps.first.outcome == 'failure'
+        uses: actions/deploy-pages@v5
